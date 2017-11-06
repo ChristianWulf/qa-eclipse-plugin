@@ -1,0 +1,37 @@
+[Quickfix]
+https://wiki.eclipse.org/FAQ_How_do_I_implement_Quick_Fixes_for_my_own_language%3F
+
+[Text Editor Annotation]
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="pmd.eclipse.plugin.markers.violation"
+            name="pmd.eclipse.plugin.ui.specification.priority.high"
+            super="org.eclipse.ui.workbench.texteditor.error">
+      </type>
+   </extension>
+
+Attribute "super" decides on which icon is displayed on the vertical ruler.
+Wenn "super" nicht angegeben wird, wird auch nichts on the vertical ruler angezeigt.
+
+[Problems View]
+   <extension
+         id="pmd.eclipse.plugin.markers.violation"
+         name="PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <attribute
+            name="pmd.priority">
+      </attribute>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+Attribute "super" decides on whether the marker is displayed in the Problems view.
+Wenn "super" nicht angegeben wird, wird auch nichts in the Problems view angezeigt.
+
+// whether it is displayed as error, warning, info or other in the Problems View
+marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='pmd.eclipse.plugin.ui' version='1.0.0.201711050116'>
+    <update id='pmd.eclipse.plugin.ui' range='[0.0.0,1.0.0.201711050116)' severity='0'/>
+    <properties size='4'>
+      <property name='org.eclipse.equinox.p2.name' value='pmd-eclipse-plugin'/>
+      <property name='maven-groupId' value='chw.experimental'/>
+      <property name='maven-artifactId' value='pmd.eclipse.plugin.ui'/>
+      <property name='maven-version' value='1.0.0-SNAPSHOT'/>
+    </properties>
+    <provides size='4'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='pmd.eclipse.plugin.ui' version='1.0.0.201711050116'/>
+      <provided namespace='osgi.bundle' name='pmd.eclipse.plugin.ui' version='1.0.0.201711050116'/>
+      <provided namespace='java.package' name='net.sourceforge.pmd' version='0.0.0'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='4'>
+      <required namespace='osgi.bundle' name='org.eclipse.ui' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.core.resources' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.core.runtime' range='3.13.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.jdt.core' range='0.0.0'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='pmd.eclipse.plugin.ui' version='1.0.0.201711050116'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: pmd.eclipse.plugin.ui;singleton:=true&#xA;Bundle-Version: 1.0.0.201711050116&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

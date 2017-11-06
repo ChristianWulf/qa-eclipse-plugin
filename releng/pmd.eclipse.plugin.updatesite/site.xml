@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/pmd.eclipse.plugin.singlefeature_1.0.0.qualifier.jar" id="pmd.eclipse.plugin.singlefeature" version="1.0.0.qualifier" nl="en"/>
+</site>
