@@ -1,26 +1,19 @@
 package pmdeclipseplugin.decorators;
 
-//architectural hint: may use eclipse packages
-import java.io.File;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import pmdeclipseplugin.PmdUIPlugin;
+import net.sourceforge.pmd.RulePriority;
+import pmd.eclipse.plugin.markers.PmdMarkers;
 
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
-	private static final ImageDescriptor SAMPLE_DECORATOR;
-
-	static {
-		SAMPLE_DECORATOR = AbstractUIPlugin.imageDescriptorFromPlugin(PmdUIPlugin.PLUGIN_ID,
-				"icons/sample_decorator.gif");
-	}
+	private final PmdImageDescriptors pmdImageDescriptors = new PmdImageDescriptors();
 
 	@Override
 	public boolean isLabelProperty(Object element, String property) {
@@ -31,24 +24,30 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 	@Override
 	public void decorate(Object element, IDecoration decoration) {
-		// if (element instanceof IProject) {
-		//
-		// }
-		// if (element instanceof IFolder) {
-		//
-		// }
-		if (element instanceof IFile) { // decorator for file could/should(?) be defined in the xml config file
-			IPath location = ((IFile) element).getLocation();
-			if (location == null) return;
-
-			File file = location.makeAbsolute().toFile();
-//			PmdPriority highestPriority = pmdTool.getHighestPriorityForFile(file);
-			
-			ImageDescriptor imageDescriptor;
-//			imageDescriptor = PmdImageDescriptors.getForPriority(highestPriority);
-			imageDescriptor = SAMPLE_DECORATOR;
-			decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
+		if (!(element instanceof IResource)) {
+			return;
 		}
+
+		IResource resource = (IResource) element;
+		IMarker[] markers;
+		try {
+			markers = resource.findMarkers(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false,
+					IResource.DEPTH_ZERO);
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
+
+		int highestPriority = RulePriority.LOW.getPriority();
+		for (IMarker marker : markers) {
+			int priority = marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY, 5);
+			// 1 is the highest priority, so compare with '<'
+			if (priority < highestPriority) {
+				highestPriority = priority;
+			}
+		}
+
+		ImageDescriptor imageDescriptor = pmdImageDescriptors.getForPriority(highestPriority);
+		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
 	}
 
 }

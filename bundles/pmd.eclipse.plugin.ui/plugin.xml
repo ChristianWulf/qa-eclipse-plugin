@@ -11,6 +11,23 @@
                commandId="pmd.eclipse.plugin.ui.command.packageexplorer"
                label="Run PMD"
                style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <or>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFile">
+                  </instanceof>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFolder">
+                  </instanceof>
+                  <adapt
+                        type="org.eclipse.core.resources.IFile">
+                  </adapt>
+                  <adapt
+                        type="org.eclipse.core.resources.IFolder">
+                  </adapt>
+               </or>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution

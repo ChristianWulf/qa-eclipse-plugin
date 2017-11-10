@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -23,24 +22,13 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
 import org.osgi.framework.Bundle;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -50,6 +38,7 @@ import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmdeclipseplugin.PmdUIPlugin;
 import pmdeclipseplugin.eclipse.FileUtil;
 import pmdeclipseplugin.eclipse.ProjectUtil;
@@ -59,7 +48,6 @@ import pmdeclipseplugin.settings.SettingsFileCache;
 
 public class PmdTool {
 
-	private static final String PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION = "pmd.eclipse.plugin.markers.violation";
 	private static final String PROP_KEY_CUSTOM_RULES_JARS = "customRulesJars";
 	private static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
 
@@ -103,7 +91,7 @@ public class PmdTool {
 				}
 
 				// remove previous PMD markers
-				eclipseFile.deleteMarkers(PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false, IResource.DEPTH_ZERO);
+				eclipseFile.deleteMarkers(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false, IResource.DEPTH_ZERO);
 
 				String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 				PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
@@ -162,9 +150,9 @@ public class PmdTool {
 	protected void appendViolationMarker(IFile eclipseFile, RuleViolation violation) {
 		IMarker marker;
 		try {
-			marker = eclipseFile.createMarker(PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION);
+			marker = eclipseFile.createMarker(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION);
 			marker.setAttribute(IMarker.MESSAGE, violation.getDescription());
-			marker.setAttribute("pmd.priority", violation.getRule().getPriority().getPriority());
+			marker.setAttribute(PmdMarkers.ATTR_KEY_PRIORITY, violation.getRule().getPriority().getPriority());
 			// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 			// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
@@ -174,55 +162,6 @@ public class PmdTool {
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
-		}
-	}
-
-	private void addAnnotations(IFile eclipseFile, ExecutionEvent event) {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage activePage = window.getActivePage();
-		if (activePage == null)
-			return;
-		IEditorPart editor = activePage.getActiveEditor();
-		if (editor == null)
-			return;
-		if (editor instanceof ITextEditor) {
-			ITextEditor textEditor = (ITextEditor) editor;
-			IDocumentProvider documentProvider = textEditor.getDocumentProvider();
-
-			IDocument document = documentProvider.getDocument(editor.getEditorInput());
-			IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editor.getEditorInput());
-
-			IMarker[] markers;
-			try {
-				markers = eclipseFile.findMarkers(PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, true, IResource.DEPTH_ZERO);
-			} catch (CoreException e) {
-				throw new IllegalStateException(e);
-			}
-
-			annotationModel.connect(document);
-			try {
-				for (IMarker marker : markers) {
-					RulePriority pmdPriority;
-					try {
-						pmdPriority = (RulePriority) marker.getAttribute("pmd.priority");
-					} catch (CoreException e) {
-						throw new IllegalStateException(e);
-					}
-
-					String annotationTypeName;
-					switch (pmdPriority) {
-					default:
-						annotationTypeName = "pmd.eclipse.plugin.ui.specification.priority.high";
-						break;
-					}
-
-					SimpleMarkerAnnotation markerAnnotation = new SimpleMarkerAnnotation(annotationTypeName, marker);
-					annotationModel.addAnnotation(markerAnnotation,
-							new Position(marker.getAttribute(IMarker.LINE_NUMBER, 0)));
-				}
-			} finally {
-				annotationModel.disconnect(document);
-			}
 		}
 	}
 

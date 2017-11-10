@@ -18,7 +18,7 @@ public class ResourceVisitor implements IResourceVisitor {
 	@Override
 	public boolean visit(IResource resource) throws CoreException {
 		int resourceType = resource.getType();
-		System.out.println("resource: " + resource + ", " + resourceType);
+		// System.out.println("resource: " + resource + ", " + resourceType);
 		switch (resourceType) {
 		case IResource.FILE: {
 			IFile eclipseFile = (IFile) resource;
