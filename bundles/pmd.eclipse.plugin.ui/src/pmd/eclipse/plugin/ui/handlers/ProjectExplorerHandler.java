@@ -15,6 +15,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import pmdeclipseplugin.PmdUIPlugin;
 import pmdeclipseplugin.pmd.PmdTool;
 
 public class ProjectExplorerHandler extends AbstractHandler {
@@ -22,7 +23,7 @@ public class ProjectExplorerHandler extends AbstractHandler {
 	private final PmdTool pmdTool;
 
 	public ProjectExplorerHandler() {
-		pmdTool = new PmdTool();
+		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class ProjectExplorerHandler extends AbstractHandler {
 	private void processSelectedObject(Object selectedObject, ExecutionEvent event) {
 		// project explorer:
 		if (selectedObject instanceof IFile) {
-			pmdTool.startAsyncAnalysis((IFile) selectedObject, event);
+			pmdTool.startAsyncAnalysis((IFile) selectedObject);
 		} else if (selectedObject instanceof IFolder) {
 			// TODO
 		} else if (selectedObject instanceof IProject) {

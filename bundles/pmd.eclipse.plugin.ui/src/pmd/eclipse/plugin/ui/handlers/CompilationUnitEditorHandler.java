@@ -11,6 +11,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import pmdeclipseplugin.PmdUIPlugin;
 import pmdeclipseplugin.pmd.PmdTool;
 
 // used by, for example, 
@@ -20,7 +21,7 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 	private final PmdTool pmdTool;
 
 	public CompilationUnitEditorHandler() {
-		pmdTool = new PmdTool();
+		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 			IFileEditorInput fileEditorInput = (IFileEditorInput) input;
 			IFile file = fileEditorInput.getFile();
 
-			pmdTool.startAsyncAnalysis(file, event);
+			pmdTool.startAsyncAnalysis(file);
 		}
 
 		return null;

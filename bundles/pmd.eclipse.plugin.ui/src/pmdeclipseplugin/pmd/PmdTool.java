@@ -78,9 +78,11 @@ public class PmdTool {
 		ruleSetCache = new RuleSetCache();
 	}
 
-	public void startAsyncAnalysis(IFile eclipseFile, ExecutionEvent event) {
-		final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+	public void startAsyncAnalysis(List<IFile> eclipseFile) {
 
+	}
+
+	public void startAsyncAnalysis(IFile eclipseFile) {
 		final IProject eclipseProject = eclipseFile.getProject();
 
 		// load custom rules from settings file
@@ -89,15 +91,16 @@ public class PmdTool {
 			loadUpdatedRuleSet(eclipseProject);
 		}
 
-		final RuleSet ruleSet = ruleSetCache.getCachedRuleSet(eclipseProject);
-		if (!ruleSet.applies(sourceCodeFile)) {
-			return;
-		}
-
 		Job job = Job.create("Analysis by PMD", new ICoreRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
+
+				final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+				final RuleSet ruleSet = ruleSetCache.getCachedRuleSet(eclipseProject);
+				if (!ruleSet.applies(sourceCodeFile)) {
+					return;
+				}
 
 				// remove previous PMD markers
 				eclipseFile.deleteMarkers(PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false, IResource.DEPTH_ZERO);
@@ -166,7 +169,7 @@ public class PmdTool {
 			marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 			// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
 			// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
-			
+
 			// whether it is displayed as error, warning, info or other in the Problems View
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (CoreException e) {
