@@ -115,10 +115,10 @@
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
+            annotationImageProvider="pmd.eclipse.plugin.annotations.AnnotationImageProvider"
             annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
             colorPreferenceKey="clcolor"
             colorPreferenceValue="255,0,0"
-            icon="icons/sample.png"
             includeOnPreferencePage="true"
             label="High Priority Annotation Declaration"
             overviewRulerPreferenceKey="clruler"
