@@ -4,16 +4,30 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.markers.PmdMarkers;
+import pmdeclipseplugin.PmdUIPlugin;
 
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
-	private final PmdImageDescriptors pmdImageDescriptors = new PmdImageDescriptors();
+	private final ImageRegistry imageRegistry;
+
+	public FileIconDecorator() {
+		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
+
+		for (int i = 1; i <= 5; i++) {
+			String imageRegistryKey = String.valueOf(i);
+			String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
+			// AbstractUIPlugin.imageDescriptorFromPluginalways returns null
+			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
+			imageRegistry.put(imageRegistryKey, imageDescriptor);
+		}
+	}
 
 	@Override
 	public boolean isLabelProperty(Object element, String property) {
@@ -46,7 +60,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			}
 		}
 
-		ImageDescriptor imageDescriptor = pmdImageDescriptors.getForPriority(highestPriority);
+		ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(String.valueOf(highestPriority));
 		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
 	}
 

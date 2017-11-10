@@ -1,5 +1,6 @@
 package pmdeclipseplugin;
 
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -83,6 +84,20 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 
 	public PmdTool getPmdTool() {
 		return pmdTool;
+	}
+
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+
+		// for (int i = 1; i <= 5; i++) {
+		// String imageRegistryKey = String.valueOf(i);
+		// String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
+		// // AbstractUIPlugin.imageDescriptorFromPluginalways returns null
+		// ImageDescriptor imageDescriptor =
+		// ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
+		// reg.put(imageRegistryKey, imageDescriptor);
+		// }
 	}
 
 }
