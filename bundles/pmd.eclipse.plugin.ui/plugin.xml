@@ -13,20 +13,16 @@
                style="push">
             <visibleWhen
                   checkEnabled="false">
-               <or>
-                  <instanceof
-                        value="org.eclipse.core.resources.IFile">
-                  </instanceof>
-                  <instanceof
-                        value="org.eclipse.core.resources.IFolder">
-                  </instanceof>
-                  <adapt
-                        type="org.eclipse.core.resources.IFile">
-                  </adapt>
-                  <adapt
-                        type="org.eclipse.core.resources.IFolder">
-                  </adapt>
-               </or>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate
+                        ifEmpty="false">
+                     <or>
+                        <instanceof
+                              value="org.eclipse.jdt.core.IJavaElement">
+                        </instanceof></or>
+                  </iterate>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>
@@ -46,6 +42,22 @@
                commandId="pmd.eclipse.plugin.ui.command.projectexplorer"
                label="Run PMD"
                style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <or>
+                     <instanceof
+                           value="org.eclipse.core.resources.IResource">
+                     </instanceof>
+                     <instanceof
+                           value="org.eclipse.core.resources.IFolder">
+                     </instanceof>
+                     <instanceof
+                           value="org.eclipse.core.resources.IFile">
+                     </instanceof></or>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
