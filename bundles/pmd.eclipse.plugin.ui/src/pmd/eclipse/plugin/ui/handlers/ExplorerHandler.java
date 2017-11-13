@@ -19,11 +19,11 @@ import pmd.eclipse.plugin.ui.visitors.ResourceVisitor;
 import pmdeclipseplugin.PmdUIPlugin;
 import pmdeclipseplugin.pmd.PmdTool;
 
-public class PackageExplorerHandler extends AbstractHandler {
+public class ExplorerHandler extends AbstractHandler {
 
 	private final ResourceVisitor resourceVisitor;
 
-	public PackageExplorerHandler() {
+	public ExplorerHandler() {
 		PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 		resourceVisitor = new ResourceVisitor(pmdTool);
 	}
