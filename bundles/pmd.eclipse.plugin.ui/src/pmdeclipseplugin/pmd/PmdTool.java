@@ -2,8 +2,8 @@ package pmdeclipseplugin.pmd;
 
 //architectural hint: may use eclipse packages
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -113,18 +113,21 @@ public class PmdTool {
 				PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
 				List<Renderer> collectingRenderers = Arrays.asList(problemRenderer);
 
-				try (InputStreamReader input = new InputStreamReader(eclipseFile.getContents(),
-						eclipseFile.getCharset())) {
-					DataSource dataSource = new ReaderDataSource(input, eclipseFile.getName());
-					List<DataSource> dataSources = Arrays.asList(dataSource);
-
-					MonoThreadProcessor pmdProcessor = new MonoThreadProcessor(configuration);
-
-					subMonitor.split(1);
-					pmdProcessor.processFiles(ruleSetFactory, dataSources, context, collectingRenderers);
-				} catch (IOException e) {
-					throw new IllegalStateException(e);
+				InputStreamReader input;
+				try {
+					input = new InputStreamReader(eclipseFile.getContents(), eclipseFile.getCharset());
+				} catch (UnsupportedEncodingException e) {
+					Status status = new Status(IStatus.ERROR, PmdUIPlugin.PLUGIN_ID,
+							"Aborted PMD analysis of " + sourceCodeFile.toString(), e);
+					throw new CoreException(status);
 				}
+				DataSource dataSource = new ReaderDataSource(input, eclipseFile.getName());
+				List<DataSource> dataSources = Arrays.asList(dataSource);
+
+				MonoThreadProcessor pmdProcessor = new MonoThreadProcessor(configuration);
+
+				subMonitor.split(1);
+				pmdProcessor.processFiles(ruleSetFactory, dataSources, context, collectingRenderers);
 
 				Report report = problemRenderer.getProblemReport();
 				if (report.size() > 0) {
