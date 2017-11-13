@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -137,41 +136,20 @@ public class PmdTool {
 				return Status.OK_STATUS;
 			}
 		};
-		WorkspaceJob.create("Analysis by PMD", new ICoreRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-
-				// from:
-				// http://www.vogella.com/tutorials/EclipseJobs/article.html#using-syncexec-and-asyncexec
-				// Display.getDefault().asyncExec(new Runnable() {
-				// @Override
-				// public void run() {
-				// // addAnnotations(eclipseFile, event);
-				// }
-				// });
-
-				// fileCache.put(file, result);
-			}
-		});
 		job.schedule();
 	}
 
-	protected void appendViolationMarker(IFile eclipseFile, RuleViolation violation) {
-		IMarker marker;
-		try {
-			marker = eclipseFile.createMarker(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION);
-			marker.setAttribute(IMarker.MESSAGE, violation.getDescription());
-			marker.setAttribute(PmdMarkers.ATTR_KEY_PRIORITY, violation.getRule().getPriority().getPriority());
-			// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
-			// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
-			// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
+	protected void appendViolationMarker(IFile eclipseFile, RuleViolation violation) throws CoreException {
+		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION);
+		marker.setAttribute(IMarker.MESSAGE, violation.getDescription());
+		marker.setAttribute(PmdMarkers.ATTR_KEY_PRIORITY, violation.getRule().getPriority().getPriority());
+		// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
+		// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
+		// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
 
-			// whether it is displayed as error, warning, info or other in the Problems View
-			// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
+		// whether it is displayed as error, warning, info or other in the Problems View
+		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 
 	private void loadUpdatedRuleSet(final IProject eclipseProject) {
