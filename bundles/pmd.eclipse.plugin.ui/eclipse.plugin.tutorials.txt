@@ -41,3 +41,15 @@ own property tester with tag <test>:
 
 https://stackoverflow.com/questions/7049670/how-to-limit-visibility-of-a-popup-menu-only-to-a-certain-project-type
 
+[asyncExec within jobs]
+// from:
+// http://www.vogella.com/tutorials/EclipseJobs/article.html#using-syncexec-and-asyncexec
+// Display.getDefault().asyncExec(new Runnable() {
+// @Override
+// public void run() {
+// // addAnnotations(eclipseFile, event);
+// }
+// });
+
+
+
