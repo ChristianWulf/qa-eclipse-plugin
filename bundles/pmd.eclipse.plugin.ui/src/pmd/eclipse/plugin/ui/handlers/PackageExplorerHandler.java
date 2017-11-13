@@ -50,40 +50,20 @@ public class PackageExplorerHandler extends AbstractHandler {
 
 	private void processSelectedObject(Object selectedObject, ExecutionEvent event) {
 		// package explorer:
+		IResource resource = null;
 		if (selectedObject instanceof IJavaElement) {
-			IResource resource = ((IJavaElement) selectedObject).getResource();
+			// includes ICompilationUnit, IPackageFragment, IJavaProject
+			resource = ((IJavaElement) selectedObject).getResource();
+		} else if (selectedObject instanceof IResource) {
+			resource = (IResource) selectedObject;
+		}
+
+		if (resource != null) {
 			try {
 				resource.accept(resourceVisitor);
 			} catch (CoreException e) {
 				throw new IllegalStateException(e);
 			}
 		}
-
-		// if (selectedObject instanceof ICompilationUnit) {
-		// processCompilationUnit((ICompilationUnit) selectedObject, event);
-		// } else if (selectedObject instanceof IPackageFragment) {
-		// processPackageFragment((IPackageFragment) selectedObject);
-		// } else if (selectedObject instanceof IJavaProject) {
-		// // TODO
-		// }
 	}
-
-	// private void processCompilationUnit(ICompilationUnit compilationUnit,
-	// ExecutionEvent event) {
-	// IResource resource = compilationUnit.getResource();
-	// try {
-	// resource.accept(resourceVisitor);
-	// } catch (CoreException e) {
-	// throw new IllegalStateException(e);
-	// }
-	// }
-	//
-	// private void processPackageFragment(IPackageFragment selectedObject) {
-	// IResource resource = selectedObject.getResource();
-	// try {
-	// resource.accept(resourceVisitor);
-	// } catch (CoreException e) {
-	// throw new IllegalStateException(e);
-	// }
-	// }
 }

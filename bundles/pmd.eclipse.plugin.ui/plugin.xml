@@ -20,6 +20,9 @@
                      <or>
                         <instanceof
                               value="org.eclipse.jdt.core.IJavaElement">
+                        </instanceof>
+                        <instanceof
+                              value="org.eclipse.core.resources.IResource">
                         </instanceof></or>
                   </iterate>
                </with>
@@ -48,13 +51,13 @@
                      variable="activeMenuSelection">
                   <or>
                      <instanceof
-                           value="org.eclipse.core.resources.IResource">
-                     </instanceof>
-                     <instanceof
                            value="org.eclipse.core.resources.IFolder">
                      </instanceof>
                      <instanceof
                            value="org.eclipse.core.resources.IFile">
+                     </instanceof>
+                     <instanceof
+                           value="org.eclipse.core.resources.IProject">
                      </instanceof></or>
                </with>
             </visibleWhen>

@@ -35,3 +35,9 @@ Wenn "super" nicht angegeben wird, wird auch nichts in the Problems view angezei
 
 // whether it is displayed as error, warning, info or other in the Problems View
 marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+
+[visibleWhen]
+own property tester with tag <test>:
+
+https://stackoverflow.com/questions/7049670/how-to-limit-visibility-of-a-popup-menu-only-to-a-certain-project-type
+
