@@ -17,9 +17,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.Bundle;
@@ -78,15 +81,17 @@ public class PmdTool {
 			loadUpdatedRuleSet(eclipseProject);
 		}
 
-		Job job = Job.create("Analysis by PMD", new ICoreRunnable() {
+		Job job = new WorkspaceJob("Analysis by PMD") {
 			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
-
+			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 				final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+				String taskName = "Analyzing " + sourceCodeFile.toString();
+
+				SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, 1);
+
 				final RuleSet ruleSet = ruleSetCache.getCachedRuleSet(eclipseProject);
 				if (!ruleSet.applies(sourceCodeFile)) {
-					return;
+					return Status.OK_STATUS;
 				}
 
 				// remove previous PMD markers
@@ -128,6 +133,13 @@ public class PmdTool {
 						appendViolationMarker(eclipseFile, violation);
 					}
 				}
+
+				return Status.OK_STATUS;
+			}
+		};
+		WorkspaceJob.create("Analysis by PMD", new ICoreRunnable() {
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
 
 				// from:
 				// http://www.vogella.com/tutorials/EclipseJobs/article.html#using-syncexec-and-asyncexec
