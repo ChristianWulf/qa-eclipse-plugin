@@ -20,8 +20,8 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	public FileIconDecorator() {
 		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 
-		for (int i = 1; i <= 5; i++) {
-			String imageRegistryKey = String.valueOf(i);
+		for (int priority = 1; priority <= 5; priority++) {
+			String imageRegistryKey = getImageRegistryKeyByPriority(priority);
 			String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPluginalways returns null
 			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
@@ -43,12 +43,24 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		}
 
 		IResource resource = (IResource) element;
+
+		int depth = IResource.DEPTH_INFINITE;
+		// if (resource instanceof IFolder) {
+		// depth = IResource.DEPTH_INFINITE;
+		// } else if (resource instanceof IFile) {
+		// depth = IResource.DEPTH_ZERO;
+		// }
+
 		IMarker[] markers;
 		try {
-			markers = resource.findMarkers(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false,
-					IResource.DEPTH_ZERO);
+			markers = resource.findMarkers(PmdMarkers.PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION, false, depth);
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
+		}
+
+		// do not display any file decorator if there are no markers
+		if (markers.length == 0) {
+			return;
 		}
 
 		int highestPriority = RulePriority.LOW.getPriority();
@@ -60,8 +72,12 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			}
 		}
 
-		ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(String.valueOf(highestPriority));
+		String imageRegistryKey = getImageRegistryKeyByPriority(highestPriority);
+		ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
 	}
 
+	private String getImageRegistryKeyByPriority(int pmdPriority) {
+		return String.valueOf(pmdPriority) + "-decorator";
+	}
 }

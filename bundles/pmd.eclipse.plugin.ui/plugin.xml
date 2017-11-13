@@ -45,20 +45,17 @@
                commandId="pmd.eclipse.plugin.ui.command.projectexplorer"
                label="Run PMD"
                style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <or>
+            <visibleWhen checkEnabled="false">
+               <with variable="selection">
+                  <iterate ifEmpty="false">
+                        <or>
                      <instanceof
-                           value="org.eclipse.core.resources.IFolder">
-                     </instanceof>
+                              value="org.eclipse.jdt.core.IJavaElement">
+                        </instanceof>
                      <instanceof
-                           value="org.eclipse.core.resources.IFile">
-                     </instanceof>
-                     <instanceof
-                           value="org.eclipse.core.resources.IProject">
+                           value="org.eclipse.core.resources.IResource">
                      </instanceof></or>
+                  </iterate>
                </with>
             </visibleWhen>
          </command>
@@ -96,13 +93,13 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.handlers.PackageExplorerHandler"
+            defaultHandler="pmd.eclipse.plugin.ui.handlers.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.packageexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.handlers.ProjectExplorerHandler"
+            defaultHandler="pmd.eclipse.plugin.ui.handlers.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.projectexplorer"
             name="Run PMD">
       </command>

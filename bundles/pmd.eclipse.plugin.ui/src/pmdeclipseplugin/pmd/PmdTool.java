@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 
 import net.sourceforge.pmd.PMD;
@@ -126,20 +125,18 @@ public class PmdTool {
 				Report report = problemRenderer.getProblemReport();
 				if (report.size() > 0) {
 					for (RuleViolation violation : report.getViolationTree()) {
-						// violation.getFilename();
-						System.out.println("violation: " + violation);
 						appendViolationMarker(eclipseFile, violation);
 					}
 				}
 
 				// from:
 				// http://www.vogella.com/tutorials/EclipseJobs/article.html#using-syncexec-and-asyncexec
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						// addAnnotations(eclipseFile, event);
-					}
-				});
+				// Display.getDefault().asyncExec(new Runnable() {
+				// @Override
+				// public void run() {
+				// // addAnnotations(eclipseFile, event);
+				// }
+				// });
 
 				// fileCache.put(file, result);
 			}
@@ -159,7 +156,7 @@ public class PmdTool {
 			// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
 
 			// whether it is displayed as error, warning, info or other in the Problems View
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}
