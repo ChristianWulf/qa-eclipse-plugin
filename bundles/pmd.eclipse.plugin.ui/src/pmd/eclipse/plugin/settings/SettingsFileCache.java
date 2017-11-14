@@ -1,4 +1,4 @@
-package pmdeclipseplugin.settings;
+package pmd.eclipse.plugin.settings;
 
 import java.io.File;
 import java.io.IOException;

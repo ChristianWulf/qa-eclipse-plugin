@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.annotations;
+package pmd.eclipse.plugin.icons;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -9,8 +9,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
+import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmdeclipseplugin.PmdUIPlugin;
 
 public class AnnotationImageProvider implements IAnnotationImageProvider {
 

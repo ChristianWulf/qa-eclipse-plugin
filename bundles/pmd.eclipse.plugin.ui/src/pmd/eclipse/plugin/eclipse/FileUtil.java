@@ -1,22 +1,16 @@
-package pmdeclipseplugin.eclipse;
+package pmd.eclipse.plugin.eclipse;
 // architectural hint: may use eclipse packages
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.osgi.framework.Bundle;
-
-import pmdeclipseplugin.PmdUIPlugin;
+import pmd.eclipse.plugin.PmdUIPlugin;
 
 public final class FileUtil {
 
 	private FileUtil() {
 		// utility class
-	}
-
-	public static URL getResourceFromClasspath(Bundle bundle, String resourceName) {
-		return bundle.getResource(resourceName);
 	}
 
 	public static File makeAbsoluteFile(String absoluteOrRelativeFilePath, File parentFile) {

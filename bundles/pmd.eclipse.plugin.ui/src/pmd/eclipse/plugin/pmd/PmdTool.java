@@ -1,4 +1,4 @@
-package pmdeclipseplugin.pmd;
+package pmd.eclipse.plugin.pmd;
 
 import java.util.List;
 

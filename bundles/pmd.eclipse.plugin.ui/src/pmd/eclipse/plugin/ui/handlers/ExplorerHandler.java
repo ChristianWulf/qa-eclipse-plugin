@@ -21,9 +21,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import pmd.eclipse.plugin.PmdUIPlugin;
+import pmd.eclipse.plugin.pmd.PmdTool;
 import pmd.eclipse.plugin.ui.visitors.ResourceCollector;
-import pmdeclipseplugin.PmdUIPlugin;
-import pmdeclipseplugin.pmd.PmdTool;
 
 public class ExplorerHandler extends AbstractHandler {
 

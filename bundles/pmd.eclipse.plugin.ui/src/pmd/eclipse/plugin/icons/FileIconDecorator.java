@@ -1,4 +1,4 @@
-package pmdeclipseplugin.decorators;
+package pmd.eclipse.plugin.icons;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -10,8 +10,8 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import net.sourceforge.pmd.RulePriority;
+import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmdeclipseplugin.PmdUIPlugin;
 
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 

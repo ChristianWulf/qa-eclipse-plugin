@@ -1,4 +1,4 @@
-package pmdeclipseplugin.pmd;
+package pmd.eclipse.plugin.pmd;
 
 import java.io.IOException;
 
@@ -8,12 +8,12 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class ProgressRenderer extends AbstractRenderer {
+public class PmdProgressRenderer extends AbstractRenderer {
 
 	private SubMonitor subMonitor;
 
-	public ProgressRenderer(SubMonitor subMonitor) {
-		super(ProgressRenderer.class.getName(), "Renderer that informs about the progress");
+	public PmdProgressRenderer(SubMonitor subMonitor) {
+		super(PmdProgressRenderer.class.getName(), "Renderer that informs about the progress");
 		this.subMonitor = subMonitor;
 	}
 

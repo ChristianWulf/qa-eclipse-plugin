@@ -1,4 +1,4 @@
-package pmdeclipseplugin.pmd;
+package pmd.eclipse.plugin.pmd;
 
 import java.io.File;
 import java.net.URL;
@@ -33,12 +33,12 @@ import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
+import pmd.eclipse.plugin.PmdUIPlugin;
+import pmd.eclipse.plugin.eclipse.FileUtil;
+import pmd.eclipse.plugin.eclipse.ProjectUtil;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmdeclipseplugin.PmdUIPlugin;
-import pmdeclipseplugin.eclipse.FileUtil;
-import pmdeclipseplugin.eclipse.ProjectUtil;
-import pmdeclipseplugin.settings.RuleSetFileLoader;
-import pmdeclipseplugin.settings.SettingsFileCache;
+import pmd.eclipse.plugin.settings.RuleSetFileLoader;
+import pmd.eclipse.plugin.settings.SettingsFileCache;
 
 class PmdWorkspaceJob extends WorkspaceJob {
 
@@ -118,7 +118,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 		final RuleContext context = new RuleContext();
 
-		Renderer progressRenderer = new ProgressRenderer(subMonitor);
+		Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
 		PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
 		final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
 

@@ -1,11 +1,11 @@
-package pmdeclipseplugin;
+package pmd.eclipse.plugin;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import pmdeclipseplugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdTool;
 
 /**
  * The activator class controls the plug-in life cycle

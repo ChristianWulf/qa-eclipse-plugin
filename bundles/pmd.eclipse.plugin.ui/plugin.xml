@@ -65,7 +65,7 @@
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
-            class="pmdeclipseplugin.decorators.FileIconDecorator"
+            class="pmd.eclipse.plugin.icons.FileIconDecorator"
             icon="icons/sample_decorator.gif"
             id="pmd-eclipse-plugin.decorator"
             label="Resource Decorator"
@@ -127,7 +127,7 @@
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
-            annotationImageProvider="pmd.eclipse.plugin.annotations.AnnotationImageProvider"
+            annotationImageProvider="pmd.eclipse.plugin.icons.AnnotationImageProvider"
             annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
             colorPreferenceKey="clcolor"
             colorPreferenceValue="255,0,0"

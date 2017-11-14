@@ -1,4 +1,4 @@
-package pmdeclipseplugin.settings;
+package pmd.eclipse.plugin.settings;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;

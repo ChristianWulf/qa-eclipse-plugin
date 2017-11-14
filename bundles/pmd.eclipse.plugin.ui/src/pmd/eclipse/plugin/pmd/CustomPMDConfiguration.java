@@ -1,4 +1,4 @@
-package pmdeclipseplugin.pmd;
+package pmd.eclipse.plugin.pmd;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;

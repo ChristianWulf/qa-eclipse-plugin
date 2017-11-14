@@ -14,8 +14,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import pmdeclipseplugin.PmdUIPlugin;
-import pmdeclipseplugin.pmd.PmdTool;
+import pmd.eclipse.plugin.PmdUIPlugin;
+import pmd.eclipse.plugin.pmd.PmdTool;
 
 // used by, for example, 
 //	popup:#CompilationUnitEditorContext
