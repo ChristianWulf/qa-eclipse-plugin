@@ -1,5 +1,8 @@
 package pmd.eclipse.plugin.ui.handlers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -38,7 +41,8 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 			IFileEditorInput fileEditorInput = (IFileEditorInput) input;
 			IFile file = fileEditorInput.getFile();
 
-			pmdTool.startAsyncAnalysis(file);
+			List<IFile> files = Arrays.asList(file);
+			pmdTool.startAsyncAnalysis(files);
 		}
 
 		return null;

@@ -6,7 +6,7 @@ public final class PmdMarkers {
 		// utility class
 	}
 
-	public static final String PMD_ECLIPSE_PLUGIN_MARKERS_VIOLATION = "pmd.eclipse.plugin.markers.violation";
+	public static final String PMD_VIOLATION_MARKER = "pmd.eclipse.plugin.markers.violation";
 
 	/**
 	 * @see {@link net.sourceforge.pmd.RulePriority}

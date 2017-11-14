@@ -2,17 +2,19 @@ package pmdeclipseplugin.pmd;
 
 import java.io.IOException;
 
+import org.eclipse.core.runtime.SubMonitor;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-class PmdProblemRenderer extends AbstractRenderer {
+public class ProgressRenderer extends AbstractRenderer {
 
-	private final Report problemReport = new Report();
+	private SubMonitor subMonitor;
 
-	public PmdProblemRenderer() {
-		super(PmdProblemRenderer.class.getName(),
-				"Renderer that collects PMD problems, e.g., violations and processing errors");
+	public ProgressRenderer(SubMonitor subMonitor) {
+		super(ProgressRenderer.class.getName(), "Renderer that informs about the progress");
+		this.subMonitor = subMonitor;
 	}
 
 	@Override
@@ -27,21 +29,17 @@ class PmdProblemRenderer extends AbstractRenderer {
 
 	@Override
 	public void startFileAnalysis(DataSource dataSource) {
-		// do nothing
+		subMonitor.split(1);
 	}
 
 	@Override
-	public void renderFileReport(Report workerThreadReport) throws IOException {
-		problemReport.merge(workerThreadReport);
+	public void renderFileReport(Report report) throws IOException {
+		// do nothing
 	}
 
 	@Override
 	public void end() throws IOException {
 		// do nothing
-	}
-
-	public Report getProblemReport() {
-		return problemReport;
 	}
 
 }
