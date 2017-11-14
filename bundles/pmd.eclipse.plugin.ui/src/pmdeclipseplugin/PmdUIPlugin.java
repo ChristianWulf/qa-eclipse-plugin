@@ -1,6 +1,7 @@
 package pmdeclipseplugin;
 
-import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -86,18 +87,9 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 		return pmdTool;
 	}
 
-	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
-		super.initializeImageRegistry(reg);
-
-		// for (int i = 1; i <= 5; i++) {
-		// String imageRegistryKey = String.valueOf(i);
-		// String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
-		// // AbstractUIPlugin.imageDescriptorFromPluginalways returns null
-		// ImageDescriptor imageDescriptor =
-		// ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
-		// reg.put(imageRegistryKey, imageDescriptor);
-		// }
+	public void logException(String message, Exception exception) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message, exception);
+		getLog().log(status);
 	}
 
 }

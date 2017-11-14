@@ -5,13 +5,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
-class RuleSetFileLoader {
-
-	private final ClassLoader osgiClassLoaderWithCustomRules;
-
-	public RuleSetFileLoader(ClassLoader osgiClassLoaderWithCustomRules) {
-		this.osgiClassLoaderWithCustomRules = osgiClassLoaderWithCustomRules;
-	}
+public class RuleSetFileLoader {
 
 	/**
 	 * @param ruleSetFilePath
@@ -25,11 +19,12 @@ class RuleSetFileLoader {
 	 *             classpath</li>
 	 *             </ul>
 	 */
-	public RuleSet load(String ruleSetFilePath) throws RuleSetNotFoundException {
+	public RuleSet load(String ruleSetFilePath, ClassLoader classLoaderWithCustomRules)
+			throws RuleSetNotFoundException {
 		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
 
-		ClassLoader factoryClassLoader = osgiClassLoaderWithCustomRules;
-		final RuleSetFactory factory = new RuleSetFactory(factoryClassLoader, RulePriority.LOW, false, true);
+		final RuleSetFactory factory = new RuleSetFactory(classLoaderWithCustomRules, RulePriority.LOW, false, true);
+		Thread.currentThread().setContextClassLoader(classLoaderWithCustomRules);
 		try {
 			// Explanation for overwriting the context class loader:
 			// The call factory.createRuleSet(..) internally calls ServiceLoader.load(..)
@@ -39,7 +34,6 @@ class RuleSetFileLoader {
 			// correct implementation.
 			// Hence, we overwrite the context class loader with an equinox class loader.
 			// Finally, we rollback the context class loader to its original one.
-			Thread.currentThread().setContextClassLoader(osgiClassLoaderWithCustomRules);
 			return factory.createRuleSet(ruleSetFilePath);
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
