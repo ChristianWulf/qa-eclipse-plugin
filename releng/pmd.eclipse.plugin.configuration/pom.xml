@@ -8,6 +8,7 @@
 
 	<properties>
 		<tycho.version>0.26.0</tycho.version>
+		<tycho-extras.version>0.26.0</tycho-extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- <mars-repo.url>http://download.eclipse.org/releases/mars</mars-repo.url> -->
 		<oxygen-repo.url>http://download.eclipse.org/releases/oxygen</oxygen-repo.url>
@@ -28,6 +29,14 @@
 			<layout>p2</layout>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<!-- repository with credentials are defined in ~/m2/settings.xml -->
+			<id>ftp-repository</id>
+			<url>https://build.se.informatik.uni-kiel.de/eus/qa.eclipse.plugin</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -73,6 +82,14 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
 
+		<extensions>
+			<!-- Enabling the use of FTP -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
+	</build>
 </project>

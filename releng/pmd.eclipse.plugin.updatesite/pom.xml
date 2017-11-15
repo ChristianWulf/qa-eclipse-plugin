@@ -6,6 +6,8 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 
+	<name>Eclipse Plugins for QA Tools - Update Site</name>
+
 	<!-- Link to the parent pom -->
 	<parent>
 		<groupId>chw.experimental</groupId>
