@@ -2,20 +2,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>pmd.eclipse.plugin.updatesite</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>eclipse-repository</packaging>
+	<artifactId>pmd.eclipse.plugin.releng</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
 	<!-- Link to the parent pom -->
 	<parent>
 		<groupId>chw.experimental</groupId>
 		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../pmd.eclipse.plugin.configuration</relativePath>
+		<relativePath>../releng/pmd.eclipse.plugin.configuration</relativePath>
 	</parent>
 
-	<properties>
-		<maven.deploy.skip>false</maven.deploy.skip>
-	</properties>
-
+    <modules>
+        <module>pmd.eclipse.plugin.updatesite</module>
+    </modules>
 </project>

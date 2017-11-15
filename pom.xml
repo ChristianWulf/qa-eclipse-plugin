@@ -11,7 +11,7 @@
 		<groupId>chw.experimental</groupId>
 		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>releng/pmd.eclipse.plugin.configuration</relativePath>
+		<relativePath>./releng/pmd.eclipse.plugin.configuration</relativePath>
 	</parent>
 
 	<properties>
@@ -21,6 +21,7 @@
 	<modules>
 		<module>bundles</module>
 		<module>features</module>
+		<module>releng</module> 
 	</modules>
 </project>
 
