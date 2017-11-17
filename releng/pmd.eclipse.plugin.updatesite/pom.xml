@@ -18,6 +18,53 @@
 
 	<properties>
 		<maven.deploy.skip>false</maven.deploy.skip>
+		<updatesite_repo_path>${project.build.directory}/repository/</updatesite_repo_path>
+		<updatesite_target_path>file:///srv/vhosts/eus/qa/snapshot/</updatesite_target_path>
 	</properties>
+
+	<!-- <distributionManagement> -->
+	<!-- <repository> -->
+	<!-- repository with credentials are defined in ~/m2/settings.xml -->
+	<!-- <id>ftp-repository</id> -->
+	<!-- <url>https://build.se.informatik.uni-kiel.de/eus/qa.eclipse.plugin</url> -->
+	<!-- </repository> -->
+	<!-- </distributionManagement> -->
+
+	<build>
+		<plugins>
+			<!-- copy the updatesite from the current location to the indicated one 
+				on the current server -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-5</version>
+				<executions>
+					<execution>
+						<id>upload-repo</id>
+						<phase>package</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<fromDir>${updatesite_repo_path}</fromDir>
+							<includes>**</includes>
+							<url>${updatesite_target_path}</url>
+							<toDir>.</toDir>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+		<extensions>
+			<!-- Enabling the use of file transfer -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-file</artifactId>
+				<version>2.6</version>
+			</extension>
+		</extensions>
+
+	</build>
 
 </project>
