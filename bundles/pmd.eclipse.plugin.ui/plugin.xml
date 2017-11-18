@@ -150,5 +150,15 @@
             super="org.eclipse.ui.workbench.texteditor.error">
       </type>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="pmd.eclipse.plugin.views.PmdViolationsView"
+            icon="icons/pmd-icon-16.gif"
+            id="pmd.eclipse.plugin.views.PmdViolationsView"
+            name="PMD Violations"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>

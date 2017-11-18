@@ -19,7 +19,6 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 	// http://www.vogella.com/tutorials/EclipseJFaceTableAdvanced/article.html
 
 	private TableViewer tableViewer;
-	private ViewerFilter viewerFilter;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -92,6 +91,7 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		// line, and selects it
 		tableViewer.addSelectionChangedListener(this);
 		// arrow down symbol: opens a menu with five priority-based filters
+		ViewerFilter viewerFilter = null;// FIXME create filter
 		tableViewer.addFilter(viewerFilter);
 		// interprets the input and transforms it into rows
 		tableViewer.setContentProvider(new ArrayContentProvider());
