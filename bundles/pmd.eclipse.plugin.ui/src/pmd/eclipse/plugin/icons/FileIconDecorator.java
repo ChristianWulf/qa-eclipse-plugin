@@ -23,7 +23,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		for (int priority = 1; priority <= 5; priority++) {
 			String imageRegistryKey = getImageRegistryKeyByPriority(priority);
 			String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
-			// AbstractUIPlugin.imageDescriptorFromPluginalways returns null
+			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
 			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
 			imageRegistry.put(imageRegistryKey, imageDescriptor);
 		}

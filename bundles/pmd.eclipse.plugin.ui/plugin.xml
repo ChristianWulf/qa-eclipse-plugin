@@ -9,6 +9,7 @@
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
          <command
                commandId="pmd.eclipse.plugin.ui.command.packageexplorer"
+               icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
             <visibleWhen
@@ -34,6 +35,7 @@
             locationURI="popup:org.eclipse.jdt.ui.CompilationUnitEditor.EditorContext?after=additions">
          <command
                commandId="pmd.eclipse.plugin.ui.command.compilationuniteditor"
+               icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
          </command>
@@ -43,6 +45,7 @@
             locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
          <command
                commandId="pmd.eclipse.plugin.ui.command.projectexplorer"
+               icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
             <visibleWhen checkEnabled="false">
