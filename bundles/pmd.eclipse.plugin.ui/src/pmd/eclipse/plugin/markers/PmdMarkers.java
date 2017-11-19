@@ -18,13 +18,18 @@ public final class PmdMarkers {
 	 * @see {@link net.sourceforge.pmd.RulePriority}
 	 */
 	public static final String ATTR_KEY_PRIORITY = "pmd.priority";
+	public static final String ATTR_KEY_RULENAME = "pmd.rulename";
+	public static final String ATTR_KEY_RULESETNAME = "pmd.rulesetname";
 
 	public static void appendViolationMarker(IFile eclipseFile, RuleViolation violation) throws CoreException {
 		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_VIOLATION_MARKER);
 		marker.setAttribute(IMarker.MESSAGE, violation.getDescription());
-		marker.setAttribute(PmdMarkers.ATTR_KEY_PRIORITY, violation.getRule().getPriority().getPriority());
 		marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 		// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+
+		marker.setAttribute(PmdMarkers.ATTR_KEY_PRIORITY, violation.getRule().getPriority().getPriority());
+		marker.setAttribute(PmdMarkers.ATTR_KEY_RULENAME, violation.getRule().getName());
+		marker.setAttribute(PmdMarkers.ATTR_KEY_RULESETNAME, violation.getRule().getRuleSetName());
 
 		// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
 		// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());

@@ -26,6 +26,7 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public PmdUIPlugin() {
+		// default constructor is required by Eclipse
 	}
 
 	/*

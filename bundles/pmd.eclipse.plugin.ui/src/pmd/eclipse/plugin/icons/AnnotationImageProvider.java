@@ -1,7 +1,6 @@
 package pmd.eclipse.plugin.icons;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.text.source.Annotation;
@@ -10,12 +9,19 @@ import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.markers.PmdMarkers;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
+/**
+ * @author Christian Wulf
+ *
+ */
 public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 	private final ImageRegistry imageRegistry;
 
+	/**
+	 * Is created automatically once from the Eclipse Plugin Environment.
+	 */
 	public AnnotationImageProvider() {
 		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 
@@ -59,19 +65,14 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 	/**
 	 * @return "pmdPriority"-annotation
 	 */
-	private String getImageRegistryKeyByPriority(int pmdPriority) {
+	public static String getImageRegistryKeyByPriority(int pmdPriority) {
 		return String.valueOf(pmdPriority) + "-annotation";
 	}
 
 	private int getPriorityFromAnnotation(MarkerAnnotation markerAnnotation) {
 		IMarker marker = markerAnnotation.getMarker();
-		Integer priority;
-		try {
-			priority = (Integer) marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return priority;
+		PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
+		return violationMarker.getPriority();
 	}
 
 }

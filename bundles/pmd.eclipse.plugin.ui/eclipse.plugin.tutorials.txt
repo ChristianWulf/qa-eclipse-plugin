@@ -51,5 +51,8 @@ https://stackoverflow.com/questions/7049670/how-to-limit-visibility-of-a-popup-m
 // }
 // });
 
+[open editor from selected marker]
+org.eclipse.ui.internal.views.markers.ExtendedMarkersView.openMarkerInEditor(IMarker, IWorkbenchPage)
+
 
 

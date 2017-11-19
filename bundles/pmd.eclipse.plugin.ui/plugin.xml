@@ -123,6 +123,12 @@
       <attribute
             name="pmd.priority">
       </attribute>
+      <attribute
+            name="pmd.rulesetname">
+      </attribute>
+      <attribute
+            name="pmd.rulename">
+      </attribute>
       <persistent
             value="true">
       </persistent>
