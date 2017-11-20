@@ -151,7 +151,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		try {
 			return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
 		} catch (RuleSetNotFoundException e) {
-			// RuleSetNotFoundException at this place means: fiel not found.
+			// RuleSetNotFoundException at this place means: file not found.
 			// Since PMD does not work without any ruleset file, we stop the loop here.
 			String message = String.format("Ruleset file not found on file path '%s'", ruleSetFilePathValue);
 			PmdUIPlugin.getDefault().logException(message, e);

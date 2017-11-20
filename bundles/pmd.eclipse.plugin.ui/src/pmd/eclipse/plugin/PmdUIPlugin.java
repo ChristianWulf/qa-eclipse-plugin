@@ -89,7 +89,12 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 	}
 
 	public void logException(String message, Exception exception) {
-		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message, exception);
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, exception);
+		getLog().log(status);
+	}
+
+	public void logWarning(String message) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
 		getLog().log(status);
 	}
 
