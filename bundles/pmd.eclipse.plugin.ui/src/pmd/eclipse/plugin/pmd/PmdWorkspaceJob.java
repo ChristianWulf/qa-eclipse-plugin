@@ -1,6 +1,7 @@
 package pmd.eclipse.plugin.pmd;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import org.osgi.framework.Bundle;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
@@ -46,15 +46,19 @@ class PmdWorkspaceJob extends WorkspaceJob {
 	private static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
 
 	private static class ConstantRuleSetFactory extends RuleSetFactory {
-		private final RuleSet ruleSet;
+		private final RuleSets ruleSets;
 
-		private ConstantRuleSetFactory(RuleSet ruleSet) {
-			this.ruleSet = ruleSet;
+		// ConstantRuleSetFactory(RuleSet ruleSet) {
+		// this.ruleSets = new RuleSets(ruleSet);
+		// }
+
+		ConstantRuleSetFactory(RuleSets ruleSets) {
+			this.ruleSets = ruleSets;
 		}
 
 		@Override
 		public synchronized RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
-			return new RuleSets(ruleSet);
+			return ruleSets;
 		}
 	}
 
@@ -63,7 +67,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 	private final List<IFile> eclipseFiles;
 	private final SettingsFileCache settingsFileCache;
 	private final RuleSetFileLoader ruleSetFileLoader;
-	private final Map<IProject, RuleSet> ruleSetCache = new HashMap<>();
+	private final Map<IProject, RuleSets> ruleSetCache = new HashMap<>();
 
 	public PmdWorkspaceJob(String name, List<IFile> eclipseFiles) {
 		super(name);
@@ -81,12 +85,22 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// load custom rules from settings file
 		// but only if the settings file has changed since last loading
 		if (!settingsFileCache.isUpToDate(eclipseProject)) {
-			final Properties properties = settingsFileCache.load(eclipseProject);
+			Properties properties;
+			try {
+				properties = settingsFileCache.load(eclipseProject);
+			} catch (FileNotFoundException e) {
+				settingsFileCache.createDefaultPropertiesFile(eclipseProject);
+				try {
+					properties = settingsFileCache.load(eclipseProject);
+				} catch (FileNotFoundException e1) {
+					throw new IllegalStateException(e);
+				}
+			}
 			final File eclipseProjectFile = eclipseProject.getRawLocation().makeAbsolute().toFile();
 
-			RuleSet ruleSet = loadUpdatedRuleSet(properties, eclipseProjectFile);
+			RuleSets ruleSets = loadUpdatedRuleSet(properties, eclipseProjectFile);
 
-			ruleSetCache.put(eclipseProject, ruleSet);
+			ruleSetCache.put(eclipseProject, ruleSets);
 		}
 
 		final Map<String, IFile> eclipseFilesMap = new HashMap<>();
@@ -113,8 +127,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 		final MonoThreadProcessor pmdProcessor = new MonoThreadProcessor(configuration);
 
-		RuleSet ruleSet = ruleSetCache.get(eclipseProject);
-		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSet);
+		RuleSets ruleSets = ruleSetCache.get(eclipseProject);
+		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
 		final RuleContext context = new RuleContext();
 
@@ -136,27 +150,25 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		return Status.OK_STATUS;
 	}
 
-	private RuleSet loadUpdatedRuleSet(Properties properties, File eclipseProjectFile) {
-		final String customRulesJarsValue = properties.getProperty(PROP_KEY_CUSTOM_RULES_JARS);
+	private RuleSets loadUpdatedRuleSet(Properties properties, File eclipseProjectFile) {
+		URL[] urls;
 
 		// load custom rules into a new class loader
-		String[] customRulesJars = customRulesJarsValue.split(",");
-		URL[] urls = FileUtil.filePathsToUrls(eclipseProjectFile, customRulesJars);
+		final String customRulesJarsValue = properties.getProperty(PROP_KEY_CUSTOM_RULES_JARS);
+		if (customRulesJarsValue.trim().isEmpty()) {
+			urls = new URL[0];
+		} else {
+			String[] customRulesJars = customRulesJarsValue.split(",");
+			urls = FileUtil.filePathsToUrls(eclipseProjectFile, customRulesJars);
+		}
+
 		URLClassLoader osgiClassLoaderWithCustomRules = new URLClassLoader(urls, getClass().getClassLoader());
 
 		String ruleSetFilePathValue = properties.getProperty(PROP_KEY_RULE_SET_FILE_PATH);
 		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectFile);
 		String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
-		try {
-			return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
-		} catch (RuleSetNotFoundException e) {
-			// RuleSetNotFoundException at this place means: file not found.
-			// Since PMD does not work without any ruleset file, we stop the loop here.
-			String message = String.format("Ruleset file not found on file path '%s'", ruleSetFilePathValue);
-			PmdUIPlugin.getDefault().logException(message, e);
-			throw new IllegalStateException(message, e);
-		}
+		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
 	}
 
 }

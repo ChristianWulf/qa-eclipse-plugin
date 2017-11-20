@@ -1,9 +1,14 @@
 package pmd.eclipse.plugin.settings;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -12,12 +17,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.Bundle;
 
 public class SettingsFileCache {
 
 	// constants for the project-specific settings file
-	private static final long NO_CACHED_TIMESTAMP = 0L;
+	private static final long NO_CACHED_TIMESTAMP = -1L;
 	private static final String PROJECT_SETTINGS_FOLDER = ".settings";
 	private static final String PMD_SETTINGS_FILE_NAME = "pmd.eclipse.plugin.properties";
 	private static final String PMD_DEFAULT_SETTINGS_FILE_NAME = "META-INF/pmd.eclipse.plugin.default.properties";
@@ -48,14 +54,19 @@ public class SettingsFileCache {
 		return propertiesObjects.get(eclipseProject);
 	}
 
-	public Properties load(IProject eclipseProject) {
+	public Properties load(IProject eclipseProject) throws FileNotFoundException {
 		final IFile settingsFileHandle = getSettingsFileHandle(eclipseProject);
 		File settingsFile = settingsFileHandle.getRawLocation().toFile();
 
 		Properties properties = new Properties();
 		try (InputStream is = settingsFileHandle.getContents(true)) {
 			properties.load(is);
-		} catch (IOException | CoreException e) {
+		} catch (CoreException e) {
+			if (e.getCause() instanceof FileNotFoundException) {
+				throw (FileNotFoundException) e.getCause();
+			}
+			throw new IllegalStateException(e);
+		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 
@@ -65,6 +76,28 @@ public class SettingsFileCache {
 		modificationStamps.put(eclipseProject, settingsFile.lastModified());
 
 		return properties;
+	}
+
+	public void createDefaultPropertiesFile(IProject eclipseProject) {
+		String defaultPropertiesFilePath = "/META-INF/pmd.eclipse.plugin.default.properties";
+		URL defaultPropertiesFileUrl = getClass().getResource(defaultPropertiesFilePath);
+		// URL defaultPropertiesFileUrl =
+		// PmdUIPlugin.getDefault().getBundle().getEntry(defaultPropertiesFilePath);
+		URI defaultPropertiesFileUri;
+		try {
+			defaultPropertiesFileUri = FileLocator.resolve(defaultPropertiesFileUrl).toURI();
+		} catch (URISyntaxException | IOException e) {
+			throw new IllegalStateException(e);
+		}
+
+		final IFile settingsFileHandle = getSettingsFileHandle(eclipseProject);
+		String settingsFilePath = settingsFileHandle.getRawLocation().toString();
+
+		try {
+			Files.copy(Paths.get(defaultPropertiesFileUri), Paths.get(settingsFilePath));
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	private IFile getSettingsFileHandle(IProject eclipseProject) {
