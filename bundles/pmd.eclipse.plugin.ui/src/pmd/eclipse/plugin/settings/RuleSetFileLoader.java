@@ -18,10 +18,15 @@ public class RuleSetFileLoader {
 		final RuleSetFactory factory = new RuleSetFactory(getClass().getClassLoader(), RulePriority.LOW, false, true);
 
 		Iterator<RuleSet> registeredRuleSets;
+
+		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		try {
 			registeredRuleSets = factory.getRegisteredRuleSets();
 		} catch (RuleSetNotFoundException e) {
 			throw new IllegalStateException(e);
+		} finally {
+			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
 		}
 
 		defaultRuleSets = new RuleSets();

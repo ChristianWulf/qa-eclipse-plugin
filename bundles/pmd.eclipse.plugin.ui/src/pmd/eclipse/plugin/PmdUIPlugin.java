@@ -1,5 +1,13 @@
 package pmd.eclipse.plugin;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -10,7 +18,7 @@ import pmd.eclipse.plugin.pmd.PmdTool;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class PmdUIPlugin extends AbstractUIPlugin {
+public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "pmd-eclipse-plugin"; //$NON-NLS-1$
@@ -46,9 +54,7 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 	}
 
 	private void registerResourceChangeListener() {
-		// IResourceChangeListener resourceChangeListener = new
-		// PmdResourceChangeListener();
-		// ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
 		// ISaveParticipant saveParticipant = new PmdSaveParticipant();
 		// try {
@@ -57,6 +63,32 @@ public class PmdUIPlugin extends AbstractUIPlugin {
 		// } catch (CoreException e) {
 		// throw new IllegalStateException(e);
 		// }
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		// IMarkerDelta[] markerDeltas =
+		// event.findMarkerDeltas(PmdMarkers.PMD_VIOLATION_MARKER, false);
+		// for (IMarkerDelta markerDelta : markerDeltas) {
+		// markerDelta.
+		// }
+
+		try {
+			event.getDelta().accept(new IResourceDeltaVisitor() {
+				@Override
+				public boolean visit(IResourceDelta delta) throws CoreException {
+					if (delta.getResource() instanceof IFile) {
+						IResource file = delta.getResource();
+						return false;
+					}
+					return true;
+				}
+			});
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
+
+		return;
 	}
 
 	/*
