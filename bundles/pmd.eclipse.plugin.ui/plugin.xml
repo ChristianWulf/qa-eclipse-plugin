@@ -12,19 +12,30 @@
                icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        ifEmpty="false">
+            <visibleWhen checkEnabled="false">
+               <with variable="activeMenuSelection">
+                  <iterate ifEmpty="false">
+                  <!--	does not work
+                		<adapt type="org.eclipse.core.resources.IFile">
+	                		<test 	property="org.eclipse.core.resources.contentTypeId"
+	            					value="org.eclipse.jdt.core.javaSource"/>
+                        </adapt>
+                  -->
                      <or>
-                        <instanceof
-                              value="org.eclipse.jdt.core.IJavaElement">
-                        </instanceof>
-                        <instanceof
-                              value="org.eclipse.core.resources.IResource">
-                        </instanceof></or>
+                        <adapt type="org.eclipse.core.resources.IFile"></adapt>
+                        <adapt type="org.eclipse.core.resources.IFolder"></adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+		                    <test
+		                          property="org.eclipse.core.resources.open">
+		                    </test>
+                        </adapt>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragmentRoot"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragment"></adapt>
+                        <!-- a closed java project is simply an IProject, since its nature and type is not known -->
+                        <adapt type="org.eclipse.jdt.core.IJavaProject"></adapt>
+                     </or>
+
                   </iterate>
                </with>
             </visibleWhen>
@@ -51,13 +62,20 @@
             <visibleWhen checkEnabled="false">
                <with variable="selection">
                   <iterate ifEmpty="false">
-                        <or>
-                     <instanceof
-                              value="org.eclipse.jdt.core.IJavaElement">
-                        </instanceof>
-                     <instanceof
-                           value="org.eclipse.core.resources.IResource">
-                     </instanceof></or>
+                     <or>
+                        <adapt type="org.eclipse.core.resources.IFile"></adapt>
+                        <adapt type="org.eclipse.core.resources.IFolder"></adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+		                    <test
+		                          property="org.eclipse.core.resources.open">
+		                    </test>
+                        </adapt>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragmentRoot"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragment"></adapt>
+                        <!-- a closed java project is simply an IProject, since its nature and type is not known -->
+                        <adapt type="org.eclipse.jdt.core.IJavaProject"></adapt>
+                     </or>
                   </iterate>
                </with>
             </visibleWhen>

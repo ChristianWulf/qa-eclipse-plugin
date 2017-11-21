@@ -54,5 +54,6 @@ https://stackoverflow.com/questions/7049670/how-to-limit-visibility-of-a-popup-m
 [open editor from selected marker]
 org.eclipse.ui.internal.views.markers.ExtendedMarkersView.openMarkerInEditor(IMarker, IWorkbenchPage)
 
-
+[available property tester]
+https://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2Fworkbench_cmd_expressions.htm
 
