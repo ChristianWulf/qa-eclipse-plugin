@@ -9,6 +9,9 @@ The plugin provides for each qa tool:
 - a command entry in the context menu (a.k.a. right-click menu) to execute the tool (example: "Run PMD")
 - a view to display the issues detected by the tool. This view needs to be opened manually via "Settings -> Open View -> ...".
 
+## Configuration
+The plugin expectes a dedicated properties file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically upon the first execution of one of the run commands. Afterwards, you can change the default settings, such as the path to the tool's xml configuration file and the path(s) to the jar file(s) containing your custom rules/checks.
+
 ## Install
 - via Eclipse Updatesite: https://build.se.informatik.uni-kiel.de/eus/qa/
 
