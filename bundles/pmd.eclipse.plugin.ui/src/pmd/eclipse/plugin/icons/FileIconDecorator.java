@@ -44,6 +44,10 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		}
 
 		IResource resource = (IResource) element;
+		// do not decorate if the project has been closed
+		if (!resource.isAccessible()) {
+			return;
+		}
 
 		int depth = IResource.DEPTH_INFINITE;
 		// if (resource instanceof IFolder) {
