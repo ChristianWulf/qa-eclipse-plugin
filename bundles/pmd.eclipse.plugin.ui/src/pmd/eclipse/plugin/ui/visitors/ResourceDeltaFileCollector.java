@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -66,9 +67,11 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 			}
 
 			// TODO use exclude patterns instead to be independent of java in this class
-			IPath outputFolderPath = javaUtil.getDefaultBuildOutputFolderPath(project);
-			if (outputFolderPath.isPrefixOf(file.getFullPath())) {
-				return false;
+			Set<IPath> outputFolderPaths = javaUtil.getDefaultBuildOutputFolderPaths(project);
+			for (IPath outputFolderPath : outputFolderPaths) {
+				if (outputFolderPath.isPrefixOf(file.getFullPath())) {
+					return false;
+				}
 			}
 
 			switch (delta.getKind()) {
