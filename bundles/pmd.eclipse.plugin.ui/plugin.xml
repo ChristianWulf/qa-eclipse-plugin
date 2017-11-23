@@ -184,6 +184,7 @@
             restorable="true">
       </view>
    </extension>
+   <!--
    <extension
          id="pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder"
          name="PMD Violation Marker Builder"
@@ -193,5 +194,5 @@
                class="pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder">
          </run></builder>
    </extension>
-
+	-->
 </plugin>

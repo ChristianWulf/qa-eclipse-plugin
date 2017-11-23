@@ -1,6 +1,10 @@
 package pmd.eclipse.plugin;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -14,6 +18,7 @@ import org.osgi.framework.BundleContext;
 
 import pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder;
 import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,52 +55,29 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		this.context = context;
 		this.pmdTool = new PmdTool();
 
-		registerResourceChangeListener();
-	}
-
-	private void registerResourceChangeListener() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-
-		// ISaveParticipant saveParticipant = new PmdSaveParticipant();
-		// try {
-		// ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID,
-		// saveParticipant);
-		// } catch (CoreException e) {
-		// throw new IllegalStateException(e);
-		// }
 	}
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		// ResourceDeltaFileCollector resourceDeltaFileCollector = new
-		// ResourceDeltaFileCollector();
-		//
-		// Object source = event.getSource();
-		// System.out.println("source: " + source);
-		//
-		// int buildKind = event.getBuildKind();
-		// System.out.println("buildKind: " + buildKind);
-		//
-		// try {
-		// event.getDelta().accept(resourceDeltaFileCollector);
-		// } catch (CoreException e) {
-		// throw new IllegalStateException(e);
-		// }
+		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
-		// for (Entry<IProject, List<IFile>> addedFiles :
-		// resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-		// pmdTool.startAsyncAnalysis(addedFiles.getValue());
-		// }
-		//
-		// for (Entry<IProject, List<IFile>> changedFiles :
-		// resourceDeltaFileCollector.getChangedFiles().entrySet()) {
-		// pmdTool.startAsyncAnalysis(changedFiles.getValue());
-		// }
+		try {
+			event.getDelta().accept(resourceDeltaFileCollector);
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
+
+		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+		}
+
+		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
+			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+		}
 
 		// your view listens to marker changes and thus is indirectly notified about
 		// removed resource
-		// for (Entry<IProject, List<IFile>> removedFiles :
-		// resourceDeltaFileCollector.getRemovedFiles().entrySet()) {}
 
 		return;
 	}
@@ -148,8 +130,6 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	}
 
 	/**
-	 * Returns the shared instance
-	 *
 	 * @return the shared instance
 	 */
 	public static PmdUIPlugin getDefault() {

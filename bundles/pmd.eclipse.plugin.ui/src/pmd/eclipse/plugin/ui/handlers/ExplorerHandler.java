@@ -57,7 +57,6 @@ public class ExplorerHandler extends AbstractHandler {
 
 			PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 			for (Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
-				PmdUIPlugin.getDefault().registerBuilder(entry.getKey());
 				pmdTool.startAsyncAnalysis(entry.getValue());
 			}
 		}
