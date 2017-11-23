@@ -1,11 +1,10 @@
 package pmd.eclipse.plugin;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -13,6 +12,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder;
 import pmd.eclipse.plugin.pmd.PmdTool;
 
 /**
@@ -67,28 +67,72 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		// IMarkerDelta[] markerDeltas =
-		// event.findMarkerDeltas(PmdMarkers.PMD_VIOLATION_MARKER, false);
-		// for (IMarkerDelta markerDelta : markerDeltas) {
-		// markerDelta.
+		// ResourceDeltaFileCollector resourceDeltaFileCollector = new
+		// ResourceDeltaFileCollector();
+		//
+		// Object source = event.getSource();
+		// System.out.println("source: " + source);
+		//
+		// int buildKind = event.getBuildKind();
+		// System.out.println("buildKind: " + buildKind);
+		//
+		// try {
+		// event.getDelta().accept(resourceDeltaFileCollector);
+		// } catch (CoreException e) {
+		// throw new IllegalStateException(e);
 		// }
 
+		// for (Entry<IProject, List<IFile>> addedFiles :
+		// resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+		// pmdTool.startAsyncAnalysis(addedFiles.getValue());
+		// }
+		//
+		// for (Entry<IProject, List<IFile>> changedFiles :
+		// resourceDeltaFileCollector.getChangedFiles().entrySet()) {
+		// pmdTool.startAsyncAnalysis(changedFiles.getValue());
+		// }
+
+		// your view listens to marker changes and thus is indirectly notified about
+		// removed resource
+		// for (Entry<IProject, List<IFile>> removedFiles :
+		// resourceDeltaFileCollector.getRemovedFiles().entrySet()) {}
+
+		return;
+	}
+
+	public void registerBuilder(IProject project) {
+		IProjectDescription desc;
 		try {
-			event.getDelta().accept(new IResourceDeltaVisitor() {
-				@Override
-				public boolean visit(IResourceDelta delta) throws CoreException {
-					if (delta.getResource() instanceof IFile) {
-						IResource file = delta.getResource();
-						return false;
-					}
-					return true;
-				}
-			});
+			desc = project.getDescription();
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}
+		ICommand[] commands = desc.getBuildSpec();
+		boolean found = false;
 
-		return;
+		for (int i = 0; i < commands.length; ++i) {
+			if (commands[i].getBuilderName().equals(IncrementalViolationMarkerBuilder.BUILDER_ID)) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			// add builder to project
+			ICommand command = desc.newCommand();
+			command.setBuilderName(IncrementalViolationMarkerBuilder.BUILDER_ID);
+			ICommand[] newCommands = new ICommand[commands.length + 1];
+
+			// Add it before other builders.
+			System.arraycopy(commands, 0, newCommands, 1, commands.length);
+			newCommands[0] = command;
+			desc.setBuildSpec(newCommands);
+			try {
+				project.setDescription(desc, null);
+			} catch (CoreException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 	}
 
 	/*
