@@ -16,16 +16,22 @@ import java.util.Properties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.BackingStoreException;
+
+import pmd.eclipse.plugin.experimental.PreferenceInitializer;
 
 public class SettingsFileCache {
 
 	// constants for the project-specific settings file
 	private static final long NO_CACHED_TIMESTAMP = -1L;
 	private static final String PROJECT_SETTINGS_FOLDER = ".settings";
-	private static final String PMD_SETTINGS_FILE_NAME = "pmd.eclipse.plugin.properties";
+	private static final String PMD_SETTINGS_FILE_NAME = "pmd.eclipse.plugin2.properties";
 	private static final String PMD_DEFAULT_SETTINGS_FILE_NAME = "META-INF/pmd.eclipse.plugin.default.properties";
 
 	private final Bundle bundle;
@@ -115,6 +121,16 @@ public class SettingsFileCache {
 			// create project-specific settings file by using the default settings file from
 			// the bundle
 			URL defaultSettingsFileUrl = bundle.getEntry(PMD_DEFAULT_SETTINGS_FILE_NAME);
+
+			IScopeContext projectScope = new ProjectScope(eclipseProject);
+			IEclipsePreferences preferences = projectScope.getNode(PreferenceInitializer.PREFERENCE_NODE);
+			preferences.putBoolean("works", true);
+			try {
+				preferences.flush();
+			} catch (BackingStoreException e) {
+				throw new IllegalStateException(e);
+			}
+
 			try (InputStream is = defaultSettingsFileUrl.openStream()) {
 				settingsFileHandle.create(is, false, null);
 			} catch (IOException | CoreException e) {
