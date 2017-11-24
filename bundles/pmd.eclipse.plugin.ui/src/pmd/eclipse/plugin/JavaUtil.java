@@ -1,5 +1,6 @@
 package pmd.eclipse.plugin;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +17,21 @@ public class JavaUtil {
 
 	private final Map<IProject, IJavaProject> javaProjectByIProject = new HashMap<>();
 
+	/**
+	 * @param project
+	 * @return a (possibly empty) read-only set of output folder paths
+	 * @throws JavaModelException
+	 */
 	public Set<IPath> getDefaultBuildOutputFolderPaths(IProject project) throws JavaModelException {
+		if (!project.isAccessible()) {
+			return Collections.emptySet();
+		}
+		// "External Plug-In Libraries" are represented as an accessible project,
+		// but do not exits on the file system.
+		if (project.getRawLocation() == null) {
+			return Collections.emptySet();
+		}
+
 		Set<IPath> outputFolderPaths = new HashSet<>();
 
 		IJavaProject jProject = getAssociatedCachedJavaProject(project);

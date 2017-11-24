@@ -9,10 +9,12 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.JavaModelException;
 
 import pmd.eclipse.plugin.JavaUtil;
 
@@ -34,73 +36,97 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
 	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
-		if (delta.getResource() instanceof IFile) {
-			IFile file = (IFile) delta.getResource();
+		switch (delta.getResource().getType()) {
+		case IResource.PROJECT: {
+			return shouldVisitChildren(delta.getResource());
+		}
+		case IResource.FILE: {
+			addFileIfApplicable(delta);
+			return false;
+		}
+		default: {
+			return true;
+		}
+		}
+	}
 
-			// ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
-			// filter.setWorkingSet(workingSet);
-			// fileInWorkingSet = filter.select(null, null, file);
-
-			IProject project = file.getProject();
-			int flags = delta.getFlags();
-
-			String fileMessageFormat = "file: %s, rel path = %s, flags = %d";
-			String fileMessage = String.format(fileMessageFormat, file, file.getProjectRelativePath(), flags);
-			System.out.println(fileMessage);
-
-			for (IMarkerDelta markerDelta : delta.getMarkerDeltas()) {
-				String message = String.format("%s: %s, kind=%s", markerDelta, markerDelta.getMarker(),
-						markerDelta.getKind());
-				System.out.println(message);
-			}
-
-			// TODO make configurable
-			boolean isHidden = file.isHidden();
-			if (isHidden) {
-				return false;
-			}
-
-			// TODO make configurable
-			boolean isDerived = file.isDerived();
-			if (isDerived) {
-				return false;
-			}
-
-			// TODO use exclude patterns instead to be independent of java in this class
-			Set<IPath> outputFolderPaths = javaUtil.getDefaultBuildOutputFolderPaths(project);
-			for (IPath outputFolderPath : outputFolderPaths) {
-				if (outputFolderPath.isPrefixOf(file.getFullPath())) {
-					return false;
-				}
-			}
-
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED: {
-				addFileToProjectMap(file, project, addedFiles);
-				break;
-			}
-			// case IResourceDelta.REMOVED: {
-			// addFileToProjectMap(file, project, removedFiles);
-			// break;
-			// }
-			case IResourceDelta.CHANGED: {
-				// Skip PMD analysis if only markers have been changed
-				if (flags == IResourceDelta.MARKERS) {
-					// if ((flags & IResourceDelta.MARKERS) == IResourceDelta.MARKERS) {
-					break;
-				}
-
-				addFileToProjectMap(file, project, changedFiles);
-				break;
-			}
-			default: {
-				// ignore other kinds
-			}
-			}
-
+	private boolean shouldVisitChildren(IResource resource) {
+		if (!resource.isAccessible()) {
+			return false;
+		}
+		// "External Plug-In Libraries" is a read-only project,
+		// which we do not want to analyze with PMD.
+		// Although it is represented as an accessible project,
+		// it does, however, not exit on the file system.
+		if (resource.getRawLocation() == null) {
 			return false;
 		}
 		return true;
+	}
+
+	private void addFileIfApplicable(IResourceDelta delta) throws JavaModelException {
+		IFile file = (IFile) delta.getResource();
+
+		// ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
+		// filter.setWorkingSet(workingSet);
+		// fileInWorkingSet = filter.select(null, null, file);
+
+		IProject project = file.getProject();
+		int flags = delta.getFlags();
+
+		String fileMessageFormat = "file: %s, rel path = %s, flags = %d";
+		String fileMessage = String.format(fileMessageFormat, file, file.getProjectRelativePath(), flags);
+		System.out.println(fileMessage);
+
+		for (IMarkerDelta markerDelta : delta.getMarkerDeltas()) {
+			String message = String.format("%s: %s, kind=%s", markerDelta, markerDelta.getMarker(),
+					markerDelta.getKind());
+			System.out.println(message);
+		}
+
+		// TODO make configurable
+		boolean isHidden = file.isHidden();
+		if (isHidden) {
+			return;
+		}
+
+		// TODO make configurable
+		boolean isDerived = file.isDerived();
+		if (isDerived) {
+			return;
+		}
+
+		// TODO use exclude patterns instead to be independent of java in this class
+		Set<IPath> outputFolderPaths = javaUtil.getDefaultBuildOutputFolderPaths(project);
+		for (IPath outputFolderPath : outputFolderPaths) {
+			if (outputFolderPath.isPrefixOf(file.getFullPath())) {
+				return;
+			}
+		}
+
+		switch (delta.getKind()) {
+		case IResourceDelta.ADDED: {
+			addFileToProjectMap(file, project, addedFiles);
+			break;
+		}
+		// case IResourceDelta.REMOVED: {
+		// addFileToProjectMap(file, project, removedFiles);
+		// break;
+		// }
+		case IResourceDelta.CHANGED: {
+			// Skip PMD analysis if only markers have been changed
+			if (flags == IResourceDelta.MARKERS) {
+				// if ((flags & IResourceDelta.MARKERS) == IResourceDelta.MARKERS) {
+				break;
+			}
+
+			addFileToProjectMap(file, project, changedFiles);
+			break;
+		}
+		default: {
+			// ignore other kinds
+		}
+		}
 	}
 
 	private void addFileToProjectMap(IFile file, IProject project, Map<IProject, List<IFile>> projectMap) {
