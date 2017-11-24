@@ -266,6 +266,20 @@
             class="pmd.eclipse.plugin.experimental.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="pmd.eclipse.plugin.experimental.properties.SamplePropertyPage"
+            id="pmd.eclipse.plugin.experimental.properties.samplePropertyPage"
+            name="Sample Page"
+            nameFilter="*.*">
+            <!--
+         <enabledWhen>
+         	<adapt type="org.eclipse.jdt.core.IJavaProject"></adapt>
+         </enabledWhen>
+         -->
+      </page>
+   </extension>
    <!--
    <extension
          id="pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder"
