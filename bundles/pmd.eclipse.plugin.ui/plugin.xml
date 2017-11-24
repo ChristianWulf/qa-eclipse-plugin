@@ -190,7 +190,7 @@
             includeOnPreferencePage="true"
             label="PMD Violation"
             overviewRulerPreferenceKey="clruler"
-            overviewRulerPreferenceValue="true"
+            overviewRulerPreferenceValue="false"
             textPreferenceKey="cltext"
             textPreferenceValue="true"
             verticalRulerPreferenceKey="clvertical"
