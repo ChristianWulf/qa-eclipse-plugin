@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.save;
+package pmd.eclipse.plugin.experimental;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;

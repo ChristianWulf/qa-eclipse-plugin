@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -74,15 +73,17 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		IProject project = file.getProject();
 		int flags = delta.getFlags();
 
-		String fileMessageFormat = "file: %s, rel path = %s, flags = %d";
-		String fileMessage = String.format(fileMessageFormat, file, file.getProjectRelativePath(), flags);
-		System.out.println(fileMessage);
-
-		for (IMarkerDelta markerDelta : delta.getMarkerDeltas()) {
-			String message = String.format("%s: %s, kind=%s", markerDelta, markerDelta.getMarker(),
-					markerDelta.getKind());
-			System.out.println(message);
-		}
+		// String fileMessageFormat = "file: %s, rel path = %s, flags = %d";
+		// String fileMessage = String.format(fileMessageFormat, file,
+		// file.getProjectRelativePath(), flags);
+		// System.out.println(fileMessage);
+		//
+		// for (IMarkerDelta markerDelta : delta.getMarkerDeltas()) {
+		// String message = String.format("%s: %s, kind=%s", markerDelta,
+		// markerDelta.getMarker(),
+		// markerDelta.getKind());
+		// System.out.println(message);
+		// }
 
 		// TODO make configurable
 		boolean isHidden = file.isHidden();

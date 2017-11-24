@@ -2,6 +2,7 @@ package pmd.eclipse.plugin.views;
 
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_LINENUMBER;
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_PRIORITY;
+import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME;
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RULENAME;
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RULESET;
 
@@ -47,6 +48,8 @@ import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
 public class PmdViolationsView extends ViewPart implements ISelectionChangedListener, IResourceChangeListener {
+
+	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
 
 	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
 	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
@@ -112,6 +115,12 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		updateView();
 	}
 
+	@Override
+	public void dispose() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		super.dispose();
+	}
+
 	private void createColumns() {
 		TableViewerColumn tableViewerColumn;
 		TableColumn column;
@@ -172,6 +181,65 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 			@Override
 			public String getText(Object element) {
 				PmdViolationMarker marker = (PmdViolationMarker) element;
+				return marker.getMessage();
+			}
+		});
+		column = tableViewerColumn.getColumn();
+		column.setText("Violation message");
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setWidth(400);
+
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				PmdViolationMarker marker = (PmdViolationMarker) element;
+				return String.valueOf(marker.getProjectName());
+			}
+		});
+		column = tableViewerColumn.getColumn();
+		column.setText("Project");
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setWidth(100);
+		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_PROJECTNAME));
+
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				PmdViolationMarker marker = (PmdViolationMarker) element;
+				return String.valueOf(marker.getLineNumer());
+			}
+		});
+		column = tableViewerColumn.getColumn();
+		column.setText("Line");
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setWidth(50);
+		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_LINENUMBER));
+
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				PmdViolationMarker marker = (PmdViolationMarker) element;
+				return marker.getRuleSetName();
+			}
+		});
+		column = tableViewerColumn.getColumn();
+		column.setText("Rule set");
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setWidth(100);
+		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULESET));
+
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getDirectoryPath();
 			}
 		});
@@ -194,50 +262,6 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		column.setResizable(true);
 		column.setMoveable(true);
 		column.setWidth(200);
-
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
-		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
-				return String.valueOf(marker.getLineNumer());
-			}
-		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Line");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_LINENUMBER));
-
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
-				return marker.getMessage();
-			}
-		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Violation message");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setWidth(400);
-
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
-				return marker.getRuleSetName();
-			}
-		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Rule set");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULESET));
 	}
 
 	private IMarker[] getPmdMarkers() {

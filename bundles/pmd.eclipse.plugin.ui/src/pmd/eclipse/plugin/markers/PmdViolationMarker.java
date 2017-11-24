@@ -34,6 +34,10 @@ public class PmdViolationMarker {
 		return marker.getAttribute(IMarker.MESSAGE, "");
 	}
 
+	public String getProjectName() {
+		return marker.getResource().getProject().getName();
+	}
+
 	public String getDirectoryPath() {
 		File file = marker.getResource().getRawLocation().toFile();
 		return file.getParent();
@@ -65,32 +69,36 @@ public class PmdViolationMarker {
 		}
 	}
 
-	public Comparable<?> getAttributeValueByIndex(int creationColumnIndex) {
-		switch (creationColumnIndex) {
-		case 0: {
-			return getPriority();
-		}
-		case 1: {
-			return getRuleName();
-		}
-		case 2: {
-			return getDirectoryPath();
-		}
-		case 3: {
-			return getFileName();
-		}
-		case 4: {
-			return getLineNumer();
-		}
-		case 5: {
-			return getMessage();
-		}
-		case 6: {
-			return getRuleSetName();
-		}
-		default: {
-			return 0;
-		}
-		}
-	}
+	// public Comparable<?> getAttributeValueByIndex(int creationColumnIndex) {
+	// switch (creationColumnIndex) {
+	// case 0: {
+	// return getPriority();
+	// }
+	// case 1: {
+	// return getRuleName();
+	// }
+	// case 2: {
+	// return getDirectoryPath();
+	// }
+	// case 3: {
+	// return getFileName();
+	// }
+	// case 4: {
+	// return getLineNumer();
+	// }
+	// case 5: {
+	// return getMessage();
+	// }
+	// case 6: {
+	// return getRuleSetName();
+	// }
+	// case 7: {
+	// return getProjectName();
+	// }
+	// default: {
+	// return 0;
+	// }
+	// }
+	// }
+
 }
