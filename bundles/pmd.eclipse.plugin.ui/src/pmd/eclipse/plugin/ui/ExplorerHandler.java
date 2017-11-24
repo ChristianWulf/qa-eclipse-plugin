@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.ui.handlers;
+package pmd.eclipse.plugin.ui;
 
 //architectural hint: may use eclipse packages
 import java.util.Iterator;

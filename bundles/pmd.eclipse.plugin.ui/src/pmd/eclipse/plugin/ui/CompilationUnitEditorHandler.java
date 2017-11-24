@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.ui.handlers;
+package pmd.eclipse.plugin.ui;
 
 import java.util.Arrays;
 import java.util.List;

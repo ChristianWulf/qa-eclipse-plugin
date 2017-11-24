@@ -93,22 +93,23 @@
              style="push">
        </command>
     </menuContribution>
+    <!--
     <menuContribution
           allPopups="false"
-          class="pmd.eclipse.plugin.ui.handlers.MyMenuContribution"
+          class="pmd.eclipse.plugin.experimental.MyMenuContribution"
           locationURI="toolbar:org.eclipse.jdt.ui.CompilationUnitEditor">
        <command
-             commandId="pmd.eclipse.plugin.ui.ruler.click"
              style="push">
        </command>
        <dynamic
              class="org.eclipse.ui.ExtensionFactory:showInContribution"
              id="pmd.eclipse.plugin.ui.dynamic2">
           <class
-                class="pmd.eclipse.plugin.ui.MyExecutableExtension">
+                class="pmd.eclipse.plugin.experimental.MyExecutableExtension">
           </class>
        </dynamic>
     </menuContribution>
+    -->
    </extension>
    <extension
          point="org.eclipse.ui.decorators">
@@ -142,26 +143,28 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.handlers.ExplorerHandler"
+            defaultHandler="pmd.eclipse.plugin.ui.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.packageexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.handlers.ExplorerHandler"
+            defaultHandler="pmd.eclipse.plugin.ui.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.projectexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.handlers.CompilationUnitEditorHandler"
+            defaultHandler="pmd.eclipse.plugin.ui.CompilationUnitEditorHandler"
             id="pmd.eclipse.plugin.ui.command.compilationuniteditor"
             name="Run PMD">
       </command>
+      <!--
       <command
             id="pmd.eclipse.plugin.ui.ruler.click"
             name="Jump to Violations View">
       </command>
+      -->
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation"
@@ -212,10 +215,11 @@
             restorable="true">
       </view>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="pmd.eclipse.plugin.ui.handlers.JumpToViolationsView"
+            class="pmd.eclipse.plugin.experimental.JumpToViolationsView"
             commandId="pmd.eclipse.plugin.ui.ruler.click">
          <activeWhen>
          	<and>
@@ -235,6 +239,7 @@
          </activeWhen>
       </handler>
    </extension>
+   -->
    <extension point="org.eclipse.jdt.ui.javaEditorTextHovers">
    	 <hover
             class="pmd.eclipse.plugin.ui.PmdAnnotationHover"

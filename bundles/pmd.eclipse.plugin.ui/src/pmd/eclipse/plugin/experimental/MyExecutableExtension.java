@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.ui;
+package pmd.eclipse.plugin.experimental;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

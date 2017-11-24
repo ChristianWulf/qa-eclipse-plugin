@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.ui.handlers;
+package pmd.eclipse.plugin.experimental;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
