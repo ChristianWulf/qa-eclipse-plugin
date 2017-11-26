@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,12 +32,18 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -47,7 +55,8 @@ import pmd.eclipse.plugin.icons.AnnotationImageProvider;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
-public class PmdViolationsView extends ViewPart implements ISelectionChangedListener, IResourceChangeListener {
+public class PmdViolationsView extends ViewPart
+		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener, MouseListener {
 
 	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
 
@@ -80,10 +89,9 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		// configure table
 		tableViewer.getTable().setHeaderVisible(true);
 		tableViewer.getTable().setLinesVisible(true);
-
+		// we use the comparator when sorting by column
 		tableViewer.setComparator(comparator);
-		// on selection: opens the corresponding file in the proper editor, jumps to the
-		// line, and selects it
+
 		tableViewer.addSelectionChangedListener(this);
 		// arrow down symbol: opens a menu with five priority-based filters
 		ViewerFilter viewerFilter = new ViewerFilter() {
@@ -97,6 +105,13 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		tableViewer.addFilter(viewerFilter);
 		// interprets the input and transforms it into rows
 		tableViewer.setContentProvider(new ArrayContentProvider());
+		// on double click: opens the corresponding file in the proper editor, jumps to
+		// the line, and selects it
+		tableViewer.addDoubleClickListener(this);
+
+		tableViewer.getTable().addMouseListener(this);
+
+		addContextMenu();
 
 		// Layout the viewer
 		GridData gridData = new GridData();
@@ -113,6 +128,39 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
 		updateView();
+	}
+
+	private void addContextMenu() {
+		// MenuManager menuManager = new MenuManager();
+		// Menu contextMenu = menuManager.createContextMenu(tableViewer.getTable());
+		// tableViewer.getTable().setMenu(contextMenu);
+		// getSite().registerContextMenu(menuManager, tableViewer);
+		// getEditorSite().registerContextMenu(menuManager, tableViewer, false);
+
+		Menu contextMenu = new Menu(tableViewer.getTable());
+		tableViewer.getTable().setMenu(contextMenu);
+
+		for (TableColumn tableColumn : tableViewer.getTable().getColumns()) {
+			createMenuItem(contextMenu, tableColumn);
+		}
+	}
+
+	private void createMenuItem(Menu contextMenu, TableColumn tableColumn) {
+		final MenuItem itemName = new MenuItem(contextMenu, SWT.CHECK);
+		itemName.setText(tableColumn.getText());
+		itemName.setSelection(tableColumn.getResizable());
+		itemName.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (itemName.getSelection()) {
+					tableColumn.setWidth(150);
+					tableColumn.setResizable(true);
+				} else {
+					tableColumn.setWidth(0);
+					tableColumn.setResizable(false);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -282,17 +330,8 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		PmdViolationMarker pmdViolationMarker = (PmdViolationMarker) selection.getFirstElement();
-		if (pmdViolationMarker == null) {
-			return;
-		}
-
-		try {
-			IDE.openEditor(getSite().getPage(), pmdViolationMarker.getMarker());
-		} catch (PartInitException e) {
-			throw new IllegalStateException(e);
-		}
+		// do nothing when selecting (the event is not aware of left-click or
+		// right-click)
 	}
 
 	/**
@@ -336,6 +375,39 @@ public class PmdViolationsView extends ViewPart implements ISelectionChangedList
 				tableViewer.setInput(pmdViolationMarkers);
 			}
 		});
+	}
+
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+		PmdViolationMarker pmdViolationMarker = (PmdViolationMarker) selection.getFirstElement();
+		if (pmdViolationMarker == null) {
+			return;
+		}
+
+		try {
+			IDE.openEditor(getSite().getPage(), pmdViolationMarker.getMarker());
+		} catch (PartInitException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public void mouseDoubleClick(MouseEvent e) {
+		// TODO Auto-generated method stub
+		return;
+	}
+
+	@Override
+	public void mouseDown(MouseEvent e) {
+		// TODO Auto-generated method stub
+		return;
+	}
+
+	@Override
+	public void mouseUp(MouseEvent e) {
+		// TODO Auto-generated method stub
+		return;
 	}
 
 }
