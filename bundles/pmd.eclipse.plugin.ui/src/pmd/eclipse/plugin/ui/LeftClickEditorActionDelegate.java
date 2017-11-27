@@ -1,7 +1,8 @@
 package pmd.eclipse.plugin.ui;
 
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -43,23 +44,29 @@ public class LeftClickEditorActionDelegate extends SelectRulerAction /* Abstract
 
 	@Override
 	public void mouseUp(MouseEvent e) {
-		// super.mouseUp(e);
+		super.mouseUp(e);
 
 		if (e.button != 1) {
 			return;
 		}
 
-		Object source = e.getSource();
+		// Object source = e.getSource();
 
 		IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-		IEditorPart activeEditor = activePage.getActiveEditor();
+		// IEditorPart activeEditor = activePage.getActiveEditor();
 
-		try {
-			PmdViolationsView viewPart = (PmdViolationsView) activePage.showView(PmdViolationsView.ID);
-			// viewPart.selectRow();
-		} catch (PartInitException ex) {
-			throw new IllegalStateException(ex);
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
+					PmdViolationsView violationView = (PmdViolationsView) viewPart;
+					// viewPart.selectRow();
+				} catch (PartInitException ex) {
+					throw new IllegalStateException(ex);
+				}
+			}
+		});
 	}
 }
