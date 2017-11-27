@@ -51,7 +51,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.icons.AnnotationImageProvider;
+import pmd.eclipse.plugin.icons.ImageRegistryKey;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
@@ -179,7 +179,7 @@ public class PmdViolationsView extends ViewPart
 			public Image getImage(Object element) {
 				PmdViolationMarker violationMarker = (PmdViolationMarker) element;
 				int pmdPriority = violationMarker.getPriority();
-				String imageRegistryKey = AnnotationImageProvider.getImageRegistryKeyByPriority(pmdPriority);
+				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
 				Image image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}

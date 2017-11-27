@@ -20,14 +20,6 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 	public FileIconDecorator() {
 		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
-
-		for (int priority = 1; priority <= 5; priority++) {
-			String imageRegistryKey = getImageRegistryKeyByPriority(priority);
-			String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
-			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
-			imageRegistry.put(imageRegistryKey, imageDescriptor);
-		}
 	}
 
 	@Override
@@ -75,15 +67,16 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			// 1 is the highest priority, so compare with '<'
 			if (priority < highestPriority) {
 				highestPriority = priority;
+				// fast exit: if highest priority is max priority, then quit at once
+				if (highestPriority == RulePriority.HIGH.getPriority()) {
+					break;
+				}
 			}
 		}
 
-		String imageRegistryKey = getImageRegistryKeyByPriority(highestPriority);
+		String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
 		ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
 	}
 
-	private String getImageRegistryKeyByPriority(int pmdPriority) {
-		return String.valueOf(pmdPriority) + "-decorator";
-	}
 }

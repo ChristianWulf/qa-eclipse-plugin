@@ -13,10 +13,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder;
+import pmd.eclipse.plugin.icons.ImageRegistryKey;
 import pmd.eclipse.plugin.pmd.PmdTool;
 import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 
@@ -127,6 +129,13 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
+	}
+
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+
+		ImageRegistryKey.initialize(reg);
 	}
 
 	/**

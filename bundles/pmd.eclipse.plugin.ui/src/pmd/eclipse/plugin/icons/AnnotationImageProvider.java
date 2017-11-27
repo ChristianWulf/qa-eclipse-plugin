@@ -24,14 +24,6 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 	 */
 	public AnnotationImageProvider() {
 		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
-
-		for (int priority = 1; priority <= 5; priority++) {
-			String imageRegistryKey = getImageRegistryKeyByPriority(priority);
-			String imageFilePath = "/icons/pmd" + imageRegistryKey + ".png";
-			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
-			imageRegistry.put(imageRegistryKey, imageDescriptor);
-		}
 	}
 
 	@Override
@@ -42,7 +34,7 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 		int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
-		String imageRegistryKey = getImageRegistryKeyByPriority(priority);
+		String imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
 		return imageRegistry.get(imageRegistryKey);
 	}
 
@@ -54,19 +46,12 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 		int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
-		return getImageRegistryKeyByPriority(priority);
+		return ImageRegistryKey.getAnnotationKeyByPriority(priority);
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor(String imageDescriptorId) {
 		return imageRegistry.getDescriptor(imageDescriptorId);
-	}
-
-	/**
-	 * @return "pmdPriority"-annotation
-	 */
-	public static String getImageRegistryKeyByPriority(int pmdPriority) {
-		return String.valueOf(pmdPriority) + "-annotation";
 	}
 
 	private int getPriorityFromAnnotation(MarkerAnnotation markerAnnotation) {
