@@ -7,6 +7,8 @@ import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
 
+// triggered whenever the cursor hovers over arbittrary text within the editor.
+// that's why the interface name contains the term "text" and not "annotation". 
 public class PmdAnnotationHover extends DefaultAnnotationHover implements IJavaEditorTextHover {
 
 	@Override
