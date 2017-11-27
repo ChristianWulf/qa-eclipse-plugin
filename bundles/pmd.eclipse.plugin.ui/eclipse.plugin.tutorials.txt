@@ -12,7 +12,7 @@ https://wiki.eclipse.org/FAQ_How_do_I_implement_Quick_Fixes_for_my_own_language%
    </extension>
 
 Attribute "super" decides on which icon is displayed on the vertical ruler.
-Wenn "super" nicht angegeben wird, wird auch nichts on the vertical ruler angezeigt.
+Wenn "super" nicht angegeben wird, wird auch nichts in the vertical ruler angezeigt.
 
 [Problems View]
    <extension
@@ -57,3 +57,11 @@ org.eclipse.ui.internal.views.markers.ExtendedMarkersView.openMarkerInEditor(IMa
 [available property tester]
 https://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2Fworkbench_cmd_expressions.htm
 
+[quickfixes]
+   <extension point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="net.sourceforge.pmd.eclipse.ui.quickfix.PMDResolutionGenerator"
+            markerType="net.sourceforge.pmd.eclipse.plugin.pmdMarker">
+      </markerResolutionGenerator>
+   </extension>
+   

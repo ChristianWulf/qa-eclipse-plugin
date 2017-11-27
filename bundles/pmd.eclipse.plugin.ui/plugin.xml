@@ -201,8 +201,7 @@
          point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerType="pmd.eclipse.plugin.markers.violation"
-            name="pmd.eclipse.plugin.ui.specification.priority.high"
-            super="org.eclipse.ui.workbench.texteditor.info">
+            name="pmd.eclipse.plugin.ui.specification.priority.high">
       </type>
    </extension>
    <extension
@@ -279,6 +278,12 @@
          </enabledWhen>
          -->
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.filebuffers.annotationModelCreation">
+      <factory
+            class="pmd.eclipse.plugin.experimental.PmdAnnotationModelFactory">
+      </factory>
    </extension>
    <!--
    <extension
