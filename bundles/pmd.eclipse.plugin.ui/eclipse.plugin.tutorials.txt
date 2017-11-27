@@ -11,8 +11,8 @@ https://wiki.eclipse.org/FAQ_How_do_I_implement_Quick_Fixes_for_my_own_language%
       </type>
    </extension>
 
-Attribute "super" decides on which icon is displayed on the vertical ruler.
-Wenn "super" nicht angegeben wird, wird auch nichts in the vertical ruler angezeigt.
+Attribute "super" decides on which icon is displayed on the overview ruler.
+Wenn "super" nicht angegeben wird, wird auch nichts im overview ruler angezeigt.
 
 [Problems View]
    <extension
@@ -30,8 +30,16 @@ Wenn "super" nicht angegeben wird, wird auch nichts in the vertical ruler angeze
       </persistent>
    </extension>
 
-Attribute "super" decides on whether the marker is displayed in the Problems view.
-Wenn "super" nicht angegeben wird, wird auch nichts in the Problems view angezeigt.
+Predefined marker types (https://help.eclipse.org/oxygen/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fapi%2Forg%2Feclipse%2Fcore%2Fresources%2FIMarker.html):
+    org.eclipse.core.resources.marker
+    org.eclipse.core.resources.taskmarker
+    org.eclipse.core.resources.problemmarker
+    org.eclipse.core.resources.bookmark
+    org.eclipse.core.resources.textmarker
+
+Attribute "super" decides on
+1.) whether the marker is displayed in the Problems view (problemmarker with severity; see below)
+2.) whether the marker is displayed in the vertical ruler and overview ruler automatically when the editor is open (textmarker)
 
 // whether it is displayed as error, warning, info or other in the Problems View
 marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
