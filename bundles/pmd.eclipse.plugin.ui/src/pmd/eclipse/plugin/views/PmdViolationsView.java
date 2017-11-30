@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -54,6 +55,7 @@ import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.icons.ImageRegistryKey;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.markers.PmdViolationMarker;
+import pmd.eclipse.plugin.settings.PmdPreferences;
 
 public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener, MouseListener {
@@ -70,6 +72,14 @@ public class PmdViolationsView extends ViewPart
 	private TableViewer tableViewer;
 
 	private final ViewerComparator comparator = new PmdViolationMarkerComparator();
+
+	public PmdViolationsView() {
+		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
+		// defaultPreferences.put
+
+		// tableViewer.getTable().setSortColumn(column);
+		// tableViewer.getTable().setSortDirection(direction);
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
