@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.service.prefs.Preferences;
 
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.PmdUIPlugin;
@@ -65,20 +66,24 @@ public class PmdViolationsView extends ViewPart
 	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
 	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
 
+	private static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
+	private static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
+
 	// tutorial used from
 	// http://www.vogella.com/tutorials/EclipseJFaceTableAdvanced/article.html
+
+	private final ViewerComparator comparator = new PmdViolationMarkerComparator();
+	private final Preferences viewPreferences;
 
 	private Label label;
 	private TableViewer tableViewer;
 
-	private final ViewerComparator comparator = new PmdViolationMarkerComparator();
-
 	public PmdViolationsView() {
 		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
-		// defaultPreferences.put
+		defaultPreferences.putInt(PREF_SORT_DIRECTION, SWT.DOWN);
+		defaultPreferences.putInt(PREF_SORT_COLUMN_INDEX, SWT.DOWN);
 
-		// tableViewer.getTable().setSortColumn(column);
-		// tableViewer.getTable().setSortDirection(direction);
+		viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
 	}
 
 	@Override
@@ -99,6 +104,9 @@ public class PmdViolationsView extends ViewPart
 		// configure table
 		tableViewer.getTable().setHeaderVisible(true);
 		tableViewer.getTable().setLinesVisible(true);
+		tableViewer.getTable().setSortDirection(loadSavedSortDirection());
+		tableViewer.getTable().setSortColumn(loadSavedSortColumn());
+
 		// we use the comparator when sorting by column
 		tableViewer.setComparator(comparator);
 
@@ -140,6 +148,26 @@ public class PmdViolationsView extends ViewPart
 		updateView();
 	}
 
+	private int loadSavedSortDirection() {
+		int savedSortDirection = viewPreferences.getInt(PREF_SORT_DIRECTION, SWT.NONE);
+		return savedSortDirection;
+	}
+
+	private TableColumn loadSavedSortColumn() {
+		Integer columnIndex = viewPreferences.getInt(PREF_SORT_COLUMN_INDEX, 0);
+		TableColumn savedSortColumn;
+		try {
+			savedSortColumn = tableViewer.getTable().getColumn(columnIndex);
+		} catch (IllegalArgumentException e) {
+			savedSortColumn = tableViewer.getTable().getColumn(0);
+		}
+		return savedSortColumn;
+	}
+
+	private Integer getSortColumnIndex() {
+		return (Integer) tableViewer.getTable().getSortColumn().getData();
+	}
+
 	private void addContextMenu() {
 		// MenuManager menuManager = new MenuManager();
 		// Menu contextMenu = menuManager.createContextMenu(tableViewer.getTable());
@@ -174,7 +202,9 @@ public class PmdViolationsView extends ViewPart
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose() { // is called on closing the view and on closing Eclipse itself
+		flushSettings();
+
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
 	}
@@ -216,6 +246,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Priority"); // only icon; hover shows explanation (HIGH, LOW, ...)
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
 		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_PRIORITY));
 
@@ -231,6 +262,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Rule name");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULENAME));
 
@@ -246,6 +278,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Violation message");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(400);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
@@ -260,6 +293,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Project");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
 		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_PROJECTNAME));
 
@@ -275,6 +309,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Line");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
 		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_LINENUMBER));
 
@@ -290,6 +325,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Rule set");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
 		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULESET));
 
@@ -305,6 +341,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Directory path");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
@@ -319,6 +356,7 @@ public class PmdViolationsView extends ViewPart
 		column.setText("File name");
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 	}
 
@@ -418,6 +456,18 @@ public class PmdViolationsView extends ViewPart
 	public void mouseUp(MouseEvent e) {
 		// TODO Auto-generated method stub
 		return;
+	}
+
+	private void flushSettings() {
+		try {
+			viewPreferences.putInt(PREF_SORT_DIRECTION, tableViewer.getTable().getSortDirection());
+			viewPreferences.putInt(PREF_SORT_COLUMN_INDEX, getSortColumnIndex());
+
+			viewPreferences.flush();
+		} catch (Exception e) {
+			// we do not want to hinder Eclipse to quit.
+			// So, we catch all exceptions here.
+		}
 	}
 
 }
