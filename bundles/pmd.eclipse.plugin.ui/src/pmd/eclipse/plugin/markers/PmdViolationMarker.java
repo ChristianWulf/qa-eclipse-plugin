@@ -21,7 +21,7 @@ public class PmdViolationMarker {
 	}
 
 	/**
-	 * @return the priority or 0 otherwise.
+	 * @return the priority (1 highest to 5 lowest) or 0 otherwise.
 	 */
 	public int getPriority() {
 		return marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY, 0);

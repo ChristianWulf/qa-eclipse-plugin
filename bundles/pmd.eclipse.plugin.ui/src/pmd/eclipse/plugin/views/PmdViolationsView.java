@@ -78,12 +78,16 @@ public class PmdViolationsView extends ViewPart
 	private Label label;
 	private TableViewer tableViewer;
 
+	protected volatile PmdViewFilter filter = new PmdPassAllFilter();
+
 	public PmdViolationsView() {
 		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(PREF_SORT_DIRECTION, SWT.DOWN);
 		defaultPreferences.putInt(PREF_SORT_COLUMN_INDEX, SWT.DOWN);
 
 		viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
+
+		// filter = new PmdPriorityFilter(filter, RulePriority.MEDIUM.getPriority());
 	}
 
 	@Override
@@ -116,8 +120,7 @@ public class PmdViolationsView extends ViewPart
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				PmdViolationMarker marker = (PmdViolationMarker) element;
-				// TODO Auto-generated method stub
-				return true;
+				return filter.canPass(marker);
 			}
 		};
 		tableViewer.addFilter(viewerFilter);
