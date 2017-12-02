@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.ToolTip;
@@ -69,6 +68,9 @@ public class PmdViolationsView extends ViewPart
 	private static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
 	private static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
 
+	private static final int FILTER_INDEX_PRIORITY = 0;
+	private static final int FILTER_INDEX_PROJECT = 1;
+
 	// tutorial used from
 	// http://www.vogella.com/tutorials/EclipseJFaceTableAdvanced/article.html
 
@@ -78,7 +80,8 @@ public class PmdViolationsView extends ViewPart
 	private Label label;
 	private TableViewer tableViewer;
 
-	protected volatile PmdViewFilter filter = new PmdPassAllFilter();
+	// private final Map<String, PmdViewFilter> filterByAttribute = new HashMap<>();
+	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
 
 	public PmdViolationsView() {
 		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
@@ -87,7 +90,12 @@ public class PmdViolationsView extends ViewPart
 
 		viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
 
-		// filter = new PmdPriorityFilter(filter, RulePriority.MEDIUM.getPriority());
+		// PmdViewFilter underlyingFilter = new PmdPassAllFilter();
+		// filter = new PmdPriorityFilter(underlyingFilter,
+		// RulePriority.LOW.getPriority();
+		// filterByAttribute.put("priority", ));
+		viewerFilters[FILTER_INDEX_PRIORITY] = new PmdPriorityViewerFilter();
+		viewerFilters[FILTER_INDEX_PROJECT] = new PmdProjectNameViewerFilter();
 	}
 
 	@Override
@@ -119,14 +127,14 @@ public class PmdViolationsView extends ViewPart
 
 		tableViewer.addSelectionChangedListener(this);
 		// arrow down symbol: opens a menu with five priority-based filters
-		ViewerFilter viewerFilter = new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
-				return filter.canPass(marker);
-			}
-		};
-		tableViewer.addFilter(viewerFilter);
+		// ViewerFilter viewerFilter = new ViewerFilter() {
+		// @Override
+		// public boolean select(Viewer viewer, Object parentElement, Object element) {
+		// PmdViolationMarker marker = (PmdViolationMarker) element;
+		// return filter.canPass(marker);
+		// }
+		// };
+		tableViewer.setFilters(viewerFilters);
 		// interprets the input and transforms it into rows
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		// on double click: opens the corresponding file in the proper editor, jumps to
@@ -136,6 +144,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewer.getTable().addMouseListener(this);
 
 		addContextMenu();
+		addToolBarButtons();
 
 		// Layout the viewer
 		GridData gridData = new GridData();
@@ -152,6 +161,14 @@ public class PmdViolationsView extends ViewPart
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
 		updateView();
+	}
+
+	private void addToolBarButtons() {
+		// IActionBars actionBars = getViewSite().getActionBars();
+		// IToolBarManager toolBar = actionBars.getToolBarManager();
+		//
+		// // IAction action = new
+		// toolBar.add(action);
 	}
 
 	private int loadSavedSortDirection() {
@@ -474,6 +491,14 @@ public class PmdViolationsView extends ViewPart
 		} catch (Exception e) {
 			// we do not want to hinder Eclipse to quit.
 			// So, we catch all exceptions here.
+		}
+	}
+
+	public void filterByPriority(Integer lowestPriority) {
+		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
+		if (priorityFilter.getLowestPriority() < lowestPriority) {
+			priorityFilter.setLowestPriority(lowestPriority);
+			tableViewer.refresh(false);
 		}
 	}
 
