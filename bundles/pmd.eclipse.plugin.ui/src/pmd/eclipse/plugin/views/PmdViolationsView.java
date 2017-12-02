@@ -92,11 +92,14 @@ public class PmdViolationsView extends ViewPart
 
 	@Override
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new GridLayout(1, false));
+		Composite composite = parent;
+		// composite = new Composite(parent, SWT.None);
+		// composite.setLayout(new GridLayout(1, false));
+		composite.setLayout(new GridLayout(1, false));
 
-		label = new Label(parent, SWT.NONE);
+		label = new Label(composite, SWT.NONE);
 
-		tableViewer = new TableViewer(parent, SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+		tableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		tableViewer.setUseHashlookup(true);
 		// activate the tooltip support for the viewer
 		ColumnViewerToolTipSupport.enableFor(tableViewer, ToolTip.NO_RECREATE);
@@ -423,6 +426,7 @@ public class PmdViolationsView extends ViewPart
 
 				PmdViolationsView.this.setPartName(newPartName);
 				label.setText(NUMBER_OF_PMD_VIOLATIONS + numViolations);
+				label.getParent().layout(); // fixed bug: the label was not displayed upon reopening the view
 				tableViewer.setInput(pmdViolationMarkers);
 			}
 		});
