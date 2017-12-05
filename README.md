@@ -14,7 +14,9 @@ The plugin provides for each qa tool:
 The plugin expectes a dedicated properties file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically upon the first execution of one of the run commands. Afterwards, you can change the default settings, such as the path to the tool's xml configuration file and the path(s) to the jar file(s) containing your custom rules/checks.
 
 ## Install
-- via Eclipse Updatesite: https://build.se.informatik.uni-kiel.de/eus/qa/
+- via Eclipse Updatesite:
+  - Snapshot version: https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/
+  - Releas eversion: not yet available
 
 ## Build
 - via Maven 3.3 or above (necessary for pom-less building):
