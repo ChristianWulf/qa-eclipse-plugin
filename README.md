@@ -16,7 +16,7 @@ The plugin expectes a dedicated properties file in the directory ".settings" of 
 ## Install
 - via Eclipse Updatesite:
   - Snapshot version: https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/
-  - Releas eversion: not yet available
+  - Release version: not yet available
 
 ## Build
 - via Maven 3.3 or above (necessary for pom-less building):
