@@ -93,28 +93,6 @@
              style="push">
        </command>
     </menuContribution>
-    <menuContribution
-          allPopups="false"
-          locationURI="toolbar:pmd.eclipse.plugin.views.PmdViolationsView">
-       <command
-             commandId="pmd.eclipse.plugin.ui.command.filter.priority"
-             icon="icons/pmd1-annotation.png"
-             style="toggle">
-          <parameter
-                name="pmd.eclipse.plugin.ui.command.filter.priority.parameter"
-                value="1">
-          </parameter>
-       </command>
-       <command
-             commandId="pmd.eclipse.plugin.ui.command.filter.priority"
-             icon="icons/pmd2-annotation.png"
-             style="toggle">
-          <parameter
-                name="pmd.eclipse.plugin.ui.command.filter.priority.parameter"
-                value="2">
-          </parameter>
-       </command>
-    </menuContribution>
 
    </extension>
    <extension
@@ -164,16 +142,6 @@
             defaultHandler="pmd.eclipse.plugin.ui.CompilationUnitEditorHandler"
             id="pmd.eclipse.plugin.ui.command.compilationuniteditor"
             name="Run PMD">
-      </command>
-      <command
-            defaultHandler="pmd.eclipse.plugin.ui.PriorityFilterCommand"
-            id="pmd.eclipse.plugin.ui.command.filter.priority"
-            name="Show PMD priority">
-         <commandParameter
-               id="pmd.eclipse.plugin.ui.command.filter.priority.parameter"
-               name="Priority"
-               optional="false">
-         </commandParameter>
       </command>
    </extension>
    <extension

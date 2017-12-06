@@ -82,6 +82,10 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		final IResource someEclipseFile = eclipseFiles.get(0);
 		final IProject eclipseProject = someEclipseFile.getProject();
 
+		// IScopeContext projectScope = new ProjectScope(eclipseProject);
+		// IEclipsePreferences preferences =
+		// projectScope.getNode(PreferenceInitializer.PREFERENCE_NODE);
+
 		// load custom rules from settings file
 		// but only if the settings file has changed since last loading
 		if (!settingsFileCache.isUpToDate(eclipseProject)) {

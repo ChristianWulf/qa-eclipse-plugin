@@ -16,15 +16,9 @@ import java.util.Properties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.framework.Bundle;
-import org.osgi.service.prefs.BackingStoreException;
-
-import pmd.eclipse.plugin.experimental.PreferenceInitializer;
 
 public class SettingsFileCache {
 
@@ -122,14 +116,15 @@ public class SettingsFileCache {
 			// the bundle
 			URL defaultSettingsFileUrl = bundle.getEntry(PMD_DEFAULT_SETTINGS_FILE_NAME);
 
-			IScopeContext projectScope = new ProjectScope(eclipseProject);
-			IEclipsePreferences preferences = projectScope.getNode(PreferenceInitializer.PREFERENCE_NODE);
-			preferences.putBoolean("works", true);
-			try {
-				preferences.flush();
-			} catch (BackingStoreException e) {
-				throw new IllegalStateException(e);
-			}
+			// IScopeContext projectScope = new ProjectScope(eclipseProject);
+			// IEclipsePreferences preferences =
+			// projectScope.getNode(PreferenceInitializer.PREFERENCE_NODE);
+			// preferences.putBoolean("works", true);
+			// try {
+			// preferences.flush();
+			// } catch (BackingStoreException e) {
+			// throw new IllegalStateException(e);
+			// }
 
 			try (InputStream is = defaultSettingsFileUrl.openStream()) {
 				settingsFileHandle.create(is, false, null);

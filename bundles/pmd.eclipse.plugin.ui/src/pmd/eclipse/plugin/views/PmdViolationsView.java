@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.nebula.widgets.tablecombo.TableCombo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -45,6 +46,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
@@ -65,8 +67,9 @@ public class PmdViolationsView extends ViewPart
 	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
 	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
 
-	private static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
-	private static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
+	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
+	static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
+	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
@@ -101,11 +104,36 @@ public class PmdViolationsView extends ViewPart
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = parent;
-		// composite = new Composite(parent, SWT.None);
-		// composite.setLayout(new GridLayout(1, false));
 		composite.setLayout(new GridLayout(1, false));
 
-		label = new Label(composite, SWT.NONE);
+		Composite firstLine = new Composite(composite, SWT.NONE);
+		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridLayout firstLineLayout = new GridLayout(3, false);
+		firstLineLayout.marginHeight = 0;
+		firstLineLayout.marginWidth = 0;
+		firstLine.setLayout(firstLineLayout);
+
+		label = new Label(firstLine, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+
+		Label filterLabel = new Label(firstLine, SWT.NONE);
+		filterLabel.setText("Filters:");
+		filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+
+		TableCombo tableCombo = new TableCombo(firstLine, SWT.READ_ONLY | SWT.BORDER);
+		tableCombo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+		tableCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TableCombo source = (TableCombo) e.getSource();
+				int lowestPriority = source.getSelectionIndex() + 1;
+				filterByPriority(lowestPriority);
+				tableViewer.refresh(false);
+				viewPreferences.putInt(PREF_FILTER_PRIORITY, lowestPriority); // save filter setting
+				return;
+			}
+		});
+		createTableComboItems(tableCombo);
 
 		tableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
 		tableViewer.setUseHashlookup(true);
@@ -126,15 +154,13 @@ public class PmdViolationsView extends ViewPart
 		tableViewer.setComparator(comparator);
 
 		tableViewer.addSelectionChangedListener(this);
-		// arrow down symbol: opens a menu with five priority-based filters
-		// ViewerFilter viewerFilter = new ViewerFilter() {
-		// @Override
-		// public boolean select(Viewer viewer, Object parentElement, Object element) {
-		// PmdViolationMarker marker = (PmdViolationMarker) element;
-		// return filter.canPass(marker);
-		// }
-		// };
+
 		tableViewer.setFilters(viewerFilters);
+		// load filter settings
+		int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
+		tableCombo.select(loadSavedFilterPriority - 1);
+		filterByPriority(loadSavedFilterPriority);
+
 		// interprets the input and transforms it into rows
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		// on double click: opens the corresponding file in the proper editor, jumps to
@@ -163,12 +189,36 @@ public class PmdViolationsView extends ViewPart
 		updateView();
 	}
 
+	private void createTableComboItems(TableCombo tableCombo) {
+		String imageRegistryKey;
+		Image image;
+		TableItem ti;
+
+		for (RulePriority rulePriority : RulePriority.values()) {
+			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(rulePriority.getPriority());
+			image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
+			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
+			ti.setText("At least " + rulePriority.getName());
+			ti.setImage(image);
+			ti.setData(rulePriority);
+		}
+	}
+
 	private void addToolBarButtons() {
 		// IActionBars actionBars = getViewSite().getActionBars();
 		// IToolBarManager toolBar = actionBars.getToolBarManager();
 		//
 		// // IAction action = new
 		// toolBar.add(action);
+	}
+
+	private int loadSavedFilterPriority(TableCombo tableCombo) {
+		final int DEFAULT_PRIORITY = RulePriority.LOW.getPriority();
+		int filterPriority = viewPreferences.getInt(PREF_FILTER_PRIORITY, DEFAULT_PRIORITY);
+		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
+			filterPriority = DEFAULT_PRIORITY;
+		}
+		return filterPriority;
 	}
 
 	private int loadSavedSortDirection() {
@@ -185,10 +235,6 @@ public class PmdViolationsView extends ViewPart
 			savedSortColumn = tableViewer.getTable().getColumn(0);
 		}
 		return savedSortColumn;
-	}
-
-	private Integer getSortColumnIndex() {
-		return (Integer) tableViewer.getTable().getSortColumn().getData();
 	}
 
 	private void addContextMenu() {
@@ -271,7 +317,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_PRIORITY));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PRIORITY));
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -287,7 +333,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULENAME));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULENAME));
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -318,7 +364,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_PROJECTNAME));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PROJECTNAME));
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -334,7 +380,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_LINENUMBER));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_LINENUMBER));
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -350,7 +396,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(tableViewer, SORT_PROP_RULESET));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULESET));
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -484,9 +530,6 @@ public class PmdViolationsView extends ViewPart
 
 	private void flushSettings() {
 		try {
-			viewPreferences.putInt(PREF_SORT_DIRECTION, tableViewer.getTable().getSortDirection());
-			viewPreferences.putInt(PREF_SORT_COLUMN_INDEX, getSortColumnIndex());
-
 			viewPreferences.flush();
 		} catch (Exception e) {
 			// we do not want to hinder Eclipse to quit.
@@ -494,12 +537,9 @@ public class PmdViolationsView extends ViewPart
 		}
 	}
 
-	public void filterByPriority(Integer lowestPriority) {
+	private void filterByPriority(int lowestPriority) {
 		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
-		if (priorityFilter.getLowestPriority() < lowestPriority) {
-			priorityFilter.setLowestPriority(lowestPriority);
-			tableViewer.refresh(false);
-		}
+		priorityFilter.setLowestPriority(lowestPriority);
 	}
 
 }
