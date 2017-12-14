@@ -1,72 +1,18 @@
 package pmd.eclipse.plugin.ui;
 
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.texteditor.SelectRulerAction;
+import java.util.ResourceBundle;
 
-import pmd.eclipse.plugin.views.PmdViolationsView;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.source.IVerticalRulerInfo;
+import org.eclipse.ui.texteditor.AbstractRulerActionDelegate;
+import org.eclipse.ui.texteditor.ITextEditor;
 
-public class LeftClickEditorActionDelegate extends SelectRulerAction /* AbstractRulerActionDelegate */ {
-
-	// @Override
-	// protected IAction createAction(ITextEditor editor, IVerticalRulerInfo
-	// rulerInfo) {
-	// // new
-	// SelectMarkerRulerAction(TextEditorMessages.getBundleForConstructedKeys(),
-	// // "LeftClickEditorActionDelegate",
-	// // editor, rulerInfo);
-	// // new SelectAnnotationRulerAction(bundle, prefix, editor);
-	// return super.createAction(editor, rulerInfo);
-	// }
+public class LeftClickEditorActionDelegate extends AbstractRulerActionDelegate {
 
 	@Override
-	public void mouseDown(MouseEvent e) {
-		super.mouseDown(e);
-
-		// if (e.button != 1) {
-		// return;
-		// }
-
-		// final IWorkbenchWindow activeWorkbenchWindow =
-		// PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		// IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-		// try {
-		// activePage.showView(PmdViolationsView.ID);
-		// } catch (PartInitException ex) {
-		// throw new IllegalStateException(ex);
-		// }
+	protected IAction createAction(ITextEditor editor, IVerticalRulerInfo rulerInfo) {
+		return new LeftClickEditorAction(ResourceBundle.getBundle(PmdMessages.getBundleName()),
+				"QAEditor.selectMarker.", editor, rulerInfo);
 	}
 
-	@Override
-	public void mouseUp(MouseEvent e) {
-		super.mouseUp(e);
-
-		if (e.button != 1) {
-			return;
-		}
-
-		// Object source = e.getSource();
-
-		IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-		// IEditorPart activeEditor = activePage.getActiveEditor();
-
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
-					PmdViolationsView violationView = (PmdViolationsView) viewPart;
-					// viewPart.selectRow();
-				} catch (PartInitException ex) {
-					throw new IllegalStateException(ex);
-				}
-			}
-		});
-	}
 }
