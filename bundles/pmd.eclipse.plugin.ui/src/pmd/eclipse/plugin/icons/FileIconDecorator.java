@@ -74,8 +74,14 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			}
 		}
 
-		String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
-		ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
+		// apply filter
+		ImageDescriptor imageDescriptor = null;
+		int lowestAllowedPriority = 5;
+		if (highestPriority <= lowestAllowedPriority) {
+			String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
+			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
+		}
+
 		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
 	}
 

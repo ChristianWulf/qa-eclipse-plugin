@@ -11,7 +11,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -29,23 +28,24 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
 
-	public LeftClickEditorAction(ResourceBundle bundle, String prefix, ITextEditor editor,
-			IVerticalRulerInfo ruler) {
+	public LeftClickEditorAction(ResourceBundle bundle, String prefix, ITextEditor editor, IVerticalRulerInfo ruler) {
 		super(bundle, prefix, editor, ruler);
 		this.ruler = ruler;
 	}
 
 	@Override
 	public void run() {
-		runWithEvent(null);
+		super.run();
+		runAction();
 	}
 
-	@Override
-	public void runWithEvent(Event event) {
-		if (event.button != 1) {
-			return;
-		}
+	// @Override
+	// public void runWithEvent(Event event) {
+	// super.run();
+	// runAction();
+	// }
 
+	private void runAction() {
 		IDocument document = getDocument();
 		if (document == null) {
 			return;
@@ -87,8 +87,6 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 			}
 
 		}
-
-		return;
 	}
 
 	private void openViolationView(IMarker marker) {

@@ -32,9 +32,19 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 			return null;
 		}
 
+		// MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
+		// IMarker marker = markerAnnotation.getMarker();
+		// PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
+
 		int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
-		String imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
+		// apply filter
+		String imageRegistryKey = null;
+		int lowestAllowedPriority = 5;
+		if (priority <= lowestAllowedPriority) {
+			imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
+		}
+
 		return imageRegistry.get(imageRegistryKey);
 	}
 
@@ -46,7 +56,14 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 		int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
-		return ImageRegistryKey.getAnnotationKeyByPriority(priority);
+		// apply filter
+		String imageRegistryKey = null;
+		int lowestAllowedPriority = 5;
+		if (priority <= lowestAllowedPriority) {
+			imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
+		}
+
+		return imageRegistryKey;
 	}
 
 	@Override
