@@ -1,8 +1,10 @@
 package pmd.eclipse.plugin.experimental.properties;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -11,17 +13,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.osgi.service.prefs.BackingStoreException;
+
+import pmd.eclipse.plugin.settings.PmdPreferences;
 
 public class SamplePropertyPage extends PropertyPage {
 
-	private static final String PATH_TITLE = "Path:";
-	private static final String OWNER_TITLE = "&Owner:";
-	private static final String OWNER_PROPERTY = "OWNER";
-	private static final String DEFAULT_OWNER = "John Doe";
-
-	private static final int TEXT_FIELD_WIDTH = 50;
-
-	private Text ownerText;
+	private Text ruleSetFilePathText;
+	private Text jarFilePathsText;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -33,13 +32,58 @@ public class SamplePropertyPage extends PropertyPage {
 	private void addFirstSection(Composite parent) {
 		Composite composite = createDefaultComposite(parent);
 
-		//Label for path field
+		IResource resource = getElement().getAdapter(IResource.class);
+		IProject project = resource.getProject();
+
+		// ensure that the properties displayed are in sync with the corresponding prefs
+		// file
+		try {
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// ignore
+		}
+
+		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
+
+		// Label for path field
 		Label pathLabel = new Label(composite, SWT.NONE);
-		pathLabel.setText(PATH_TITLE);
+		pathLabel.setText("&Ruleset file path:");
 
 		// Path text field
-		Text pathValueText = new Text(composite, SWT.WRAP | SWT.READ_ONLY);
-		pathValueText.setText(((IResource) getElement()).getFullPath().toString());
+		ruleSetFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		GridData gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		ruleSetFilePathText.setLayoutData(gd);
+		ruleSetFilePathText.setText(
+				preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, PmdPreferences.INVALID_RULESET_FILE_PATH));
+
+		Label exampleLabel = new Label(composite, SWT.NONE);
+		exampleLabel.setText("Example: conf/quality-config/pmd-ruleset.xml");
+		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
+
+		jarFilePathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		jarFilePathsText.setLayoutData(gd);
+		jarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
+
+		exampleLabel = new Label(composite, SWT.NONE);
+		exampleLabel.setText("Example: config/pmd/custom-ruleset-0.jar, config/pmd/custom-ruleset-1.jar");
+		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
+		Label emptyLabel = new Label(composite, SWT.NONE);
+
+		addSeparator(composite);
+
+		Label hintLabel = new Label(composite, SWT.NONE);
+		// Image infoImage =
+		// PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		// hintLabel.setImage(infoImage);
+		hintLabel.setText("Hint: Relative paths are resolved relative to the project's path.");
+		hintLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 	}
 
 	private void addSeparator(Composite parent) {
@@ -50,33 +94,10 @@ public class SamplePropertyPage extends PropertyPage {
 		separator.setLayoutData(gridData);
 	}
 
-	private void addSecondSection(Composite parent) {
-		Composite composite = createDefaultComposite(parent);
-
-		// Label for owner field
-		Label ownerLabel = new Label(composite, SWT.NONE);
-		ownerLabel.setText(OWNER_TITLE);
-
-		// Owner text field
-		ownerText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridData gd = new GridData();
-		gd.widthHint = convertWidthInCharsToPixels(TEXT_FIELD_WIDTH);
-		ownerText.setLayoutData(gd);
-
-		// Populate owner text field
-		try {
-			String owner =
-				((IResource) getElement()).getPersistentProperty(
-					new QualifiedName("", OWNER_PROPERTY));
-			ownerText.setText((owner != null) ? owner : DEFAULT_OWNER);
-		} catch (CoreException e) {
-			ownerText.setText(DEFAULT_OWNER);
-		}
-	}
-
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -86,15 +107,13 @@ public class SamplePropertyPage extends PropertyPage {
 		composite.setLayoutData(data);
 
 		addFirstSection(composite);
-		addSeparator(composite);
-		addSecondSection(composite);
 		return composite;
 	}
 
 	private Composite createDefaultComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		composite.setLayout(layout);
 
 		GridData data = new GridData();
@@ -105,21 +124,34 @@ public class SamplePropertyPage extends PropertyPage {
 		return composite;
 	}
 
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		// Populate the owner text field with the default value
-		ownerText.setText(DEFAULT_OWNER);
+		ruleSetFilePathText.setText(PmdPreferences.INVALID_RULESET_FILE_PATH);
+		jarFilePathsText.setText("");
 	}
-	
+
+	@Override
 	public boolean performOk() {
-		// store the value in the owner text field
+		IResource resource = getElement().getAdapter(IResource.class);
+		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(resource.getProject());
+
+		// try {
+		// preferences.sync();
+		// } catch (BackingStoreException e) {
+		// // ignore
+		// }
+
+		preferences.put(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, ruleSetFilePathText.getText());
+		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, jarFilePathsText.getText());
+
 		try {
-			((IResource) getElement()).setPersistentProperty(
-				new QualifiedName("", OWNER_PROPERTY),
-				ownerText.getText());
-		} catch (CoreException e) {
+			preferences.flush();
+		} catch (BackingStoreException e) {
 			return false;
 		}
+
 		return true;
 	}
 

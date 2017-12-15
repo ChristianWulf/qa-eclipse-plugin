@@ -221,15 +221,20 @@
       <initializer
             class="pmd.eclipse.plugin.experimental.PreferenceInitializer">
       </initializer>
+      <initializer
+            class="pmd.eclipse.plugin.experimental.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
+   <extension point="org.eclipse.ui.propertyPages">
       <page
             class="pmd.eclipse.plugin.experimental.properties.SamplePropertyPage"
             id="pmd.eclipse.plugin.experimental.properties.samplePropertyPage"
-            name="Sample Page"
-            nameFilter="*.*">
-
+            name="PMD Settings">
+            <enabledWhen>
+            <and>
+         	   <adapt type="org.eclipse.core.resources.IResource"></adapt>
+            </and>
+            </enabledWhen>
       </page>
    </extension>
    <extension
