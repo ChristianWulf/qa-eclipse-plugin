@@ -28,6 +28,7 @@ public class PmdPreferences {
 
 	public static final String PROP_KEY_CUSTOM_RULES_JARS = "customRulesJars";
 	public static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
+	public static final String PROP_KEY_ENABLED = "enabled";
 
 	private static final IScopeContext INSTANCE_SCOPE = InstanceScope.INSTANCE;
 

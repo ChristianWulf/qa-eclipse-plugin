@@ -8,6 +8,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -21,6 +22,7 @@ public class SamplePropertyPage extends PropertyPage {
 
 	private Text ruleSetFilePathText;
 	private Text jarFilePathsText;
+	private Button enabledButton;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -30,7 +32,7 @@ public class SamplePropertyPage extends PropertyPage {
 	}
 
 	private void addFirstSection(Composite parent) {
-		Composite composite = createDefaultComposite(parent);
+		Composite composite = createDefaultComposite(parent, 1);
 
 		IResource resource = getElement().getAdapter(IResource.class);
 		IProject project = resource.getProject();
@@ -44,6 +46,13 @@ public class SamplePropertyPage extends PropertyPage {
 		}
 
 		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
+
+		enabledButton = new Button(composite, SWT.CHECK);
+		enabledButton.setText("PMD &enabled");
+		boolean selected = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
+		enabledButton.setSelection(selected);
+
+		addSeparator(composite);
 
 		// Label for path field
 		Label pathLabel = new Label(composite, SWT.NONE);
@@ -74,7 +83,7 @@ public class SamplePropertyPage extends PropertyPage {
 		exampleLabel.setText("Example: config/pmd/custom-ruleset-0.jar, config/pmd/custom-ruleset-1.jar");
 		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
-		Label emptyLabel = new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE); // serves as newline
 
 		addSeparator(composite);
 
@@ -110,10 +119,10 @@ public class SamplePropertyPage extends PropertyPage {
 		return composite;
 	}
 
-	private Composite createDefaultComposite(Composite parent) {
+	private Composite createDefaultComposite(Composite parent, int numColumns) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
+		layout.numColumns = numColumns;
 		composite.setLayout(layout);
 
 		GridData data = new GridData();
@@ -130,6 +139,7 @@ public class SamplePropertyPage extends PropertyPage {
 		// Populate the owner text field with the default value
 		ruleSetFilePathText.setText(PmdPreferences.INVALID_RULESET_FILE_PATH);
 		jarFilePathsText.setText("");
+		enabledButton.setSelection(false);
 	}
 
 	@Override
@@ -145,6 +155,7 @@ public class SamplePropertyPage extends PropertyPage {
 
 		preferences.put(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, ruleSetFilePathText.getText());
 		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, jarFilePathsText.getText());
+		preferences.putBoolean(PmdPreferences.PROP_KEY_ENABLED, enabledButton.getSelection());
 
 		try {
 			preferences.flush();
