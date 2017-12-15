@@ -38,7 +38,7 @@ public class SamplePropertyPage extends PropertyPage {
 		// ensure that the properties displayed are in sync with the corresponding prefs
 		// file
 		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			project.getFolder(".settings").refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
 			// ignore
 		}
