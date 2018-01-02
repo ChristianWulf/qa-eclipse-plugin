@@ -1,5 +1,6 @@
 package pmd.eclipse.plugin.settings;
 
+import java.io.File;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RulePriority;
@@ -66,13 +67,18 @@ public class RuleSetFileLoader {
 			RuleSet ruleSet = factory.createRuleSet(ruleSetFilePath);
 			return new RuleSets(ruleSet);
 		} catch (RuleSetNotFoundException e) {
-			// RuleSetNotFoundException at this place means: file not found.
-			// Since PMD does not work without any ruleset file,
-			// we use as default all of the rule sets which PMD provides.
-			String message = String.format(
-					"Ruleset file not found on file path '%s'. Defaulting to all of the rule sets which PMD provides.",
-					ruleSetFilePath);
-			PmdUIPlugin.getDefault().logException(message, e);
+			if (!new File(ruleSetFilePath).exists()) {
+				// RuleSetNotFoundException at this place means: file not found.
+				// Since PMD does not work without any ruleset file,
+				// we use as default all of the rule sets which PMD provides.
+				String messageFormat = "Ruleset file not found on file path '%s'. Defaulting to all of the rule sets which PMD provides.";
+				String message = String.format(messageFormat, ruleSetFilePath);
+				PmdUIPlugin.getDefault().logException(message, e);
+			} else {
+				String messageFormat = "Ruleset file references rules which are not in the (custom rules) classpath: %s. Defaulting to all of the rule sets which PMD provides.";
+				String message = String.format(messageFormat, e.getLocalizedMessage());
+				PmdUIPlugin.getDefault().logException(message, e);
+			}
 			return defaultRuleSets;
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedContextClassLoader);

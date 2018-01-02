@@ -34,4 +34,14 @@ public final class FileUtil {
 		}
 		return urls;
 	}
+
+	public static void checkFilesExist(String messagePrefix, File parentFile, String[] filePaths) {
+		for (String filePath : filePaths) {
+			File file = FileUtil.makeAbsoluteFile(filePath, parentFile);
+			if (!file.exists()) {
+				String message = String.format("%s not found on file path '%s'.", messagePrefix, filePath);
+				PmdUIPlugin.getDefault().logWarning(message);
+			}
+		}
+	}
 }

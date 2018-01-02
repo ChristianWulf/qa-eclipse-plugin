@@ -69,9 +69,9 @@ public class PmdPreferences {
 			preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
 				@Override
 				public void preferenceChange(PreferenceChangeEvent event) {
-					if (event.getKey() == PmdPreferences.INVALID_RULESET_FILE_PATH) {
-						updateRulsetCache(project, preferences);
-					}
+					// event.getNewValue();
+					// event.getOldValue();
+					updateRulsetCache(project, preferences);
 				}
 			});
 			updateRulsetCache(project, preferences);
@@ -81,8 +81,8 @@ public class PmdPreferences {
 	}
 
 	private void updateRulsetCache(IProject project, IEclipsePreferences preferences) {
-		File eclipseProjectFilePath = project.getRawLocation().makeAbsolute().toFile();
-		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectFilePath);
+		File eclipseProjectPath = project.getRawLocation().makeAbsolute().toFile();
+		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
 
 		// set or replace ruleset
 		ruleSetCache.put(project, ruleSets);
@@ -92,7 +92,7 @@ public class PmdPreferences {
 		return ruleSetCache.get(eclipseProject);
 	}
 
-	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectFile) {
+	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath) {
 		URL[] urls;
 
 		// load custom rules into a new class loader
@@ -101,13 +101,14 @@ public class PmdPreferences {
 			urls = new URL[0];
 		} else {
 			String[] customRulesJars = customRulesJarsValue.split(",");
-			urls = FileUtil.filePathsToUrls(eclipseProjectFile, customRulesJars);
+			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
+			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}
 
 		URLClassLoader osgiClassLoaderWithCustomRules = new URLClassLoader(urls, getClass().getClassLoader());
 
 		String ruleSetFilePathValue = preferences.get(PROP_KEY_RULE_SET_FILE_PATH, INVALID_RULESET_FILE_PATH);
-		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectFile);
+		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
 		String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
 		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);

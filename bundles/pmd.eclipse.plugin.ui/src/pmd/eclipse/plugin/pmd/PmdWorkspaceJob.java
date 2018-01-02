@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -64,8 +65,15 @@ class PmdWorkspaceJob extends WorkspaceJob {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		final IResource someEclipseFile = eclipseFiles.get(0);
 		final IProject eclipseProject = someEclipseFile.getProject();
+		if (!eclipseProject.isAccessible()) { // if project has been closed
+			return Status.OK_STATUS;
+		}
 
-		PmdPreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
+		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
+		boolean pmdEnabled = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
+		if (!pmdEnabled) { // if PMD is disabled for this project
+			return Status.OK_STATUS;
+		}
 
 		// collect data sources
 		List<DataSource> dataSources = new ArrayList<>();
@@ -79,11 +87,15 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			String niceFileName = dataSource.getNiceFileName(false, "");
 			eclipseFilesMap.put(niceFileName, eclipseFile);
 
-			// also remove previous PMD markers
-			eclipseFile.deleteMarkers(PmdMarkers.PMD_VIOLATION_MARKER, false, IResource.DEPTH_ZERO);
+			try {
+				// also remove previous PMD markers on that file
+				eclipseFile.deleteMarkers(PmdMarkers.PMD_VIOLATION_MARKER, true, IResource.DEPTH_ZERO);
+			} catch (CoreException e) {
+				// ignore if resource does not exist anymore or has been closed
+			}
 		}
 
-		String taskName = "Analyzing " + eclipseFiles.size() + " files...";
+		String taskName = "Analyzing " + eclipseFiles.size() + " file(s)...";
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
 
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
