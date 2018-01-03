@@ -12,8 +12,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
@@ -30,8 +28,6 @@ public class PmdPreferences {
 	public static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
 	public static final String PROP_KEY_ENABLED = "enabled";
 
-	private static final IScopeContext INSTANCE_SCOPE = InstanceScope.INSTANCE;
-
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 	private final RuleSetFileLoader ruleSetFileLoader = new RuleSetFileLoader();
 	private final Map<IProject, RuleSets> ruleSetCache = new ConcurrentHashMap<>();
@@ -45,12 +41,11 @@ public class PmdPreferences {
 
 	public IEclipsePreferences getDefaultPreferences() {
 		IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(node);
-
 		return preferences;
 	}
 
 	public IEclipsePreferences getEclipseScopedPreferences() {
-		IEclipsePreferences preferences = INSTANCE_SCOPE.getNode(node);
+		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(node);
 		return preferences;
 	}
 
@@ -66,21 +61,14 @@ public class PmdPreferences {
 			projectScopeByProject.put(project, projectPref);
 
 			preferences = projectPref.getNode(node);
-			preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
-				@Override
-				public void preferenceChange(PreferenceChangeEvent event) {
-					// event.getNewValue();
-					// event.getOldValue();
-					updateRulsetCache(project, preferences);
-				}
-			});
+			preferences.addPreferenceChangeListener(new PmdPreferenceChangeListener(this, project, preferences));
 			updateRulsetCache(project, preferences);
 		}
 
 		return preferences;
 	}
 
-	private void updateRulsetCache(IProject project, IEclipsePreferences preferences) {
+	synchronized void updateRulsetCache(IProject project, IEclipsePreferences preferences) {
 		File eclipseProjectPath = project.getRawLocation().makeAbsolute().toFile();
 		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
 
@@ -113,4 +101,5 @@ public class PmdPreferences {
 		// (re)load the project-specific ruleset file
 		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
 	}
+
 }

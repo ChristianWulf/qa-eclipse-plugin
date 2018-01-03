@@ -102,7 +102,7 @@
             class="pmd.eclipse.plugin.icons.FileIconDecorator"
             icon="icons/sample_decorator.gif"
             id="pmd-eclipse-plugin.decorator"
-            label="Resource Decorator"
+            label="PMD Violation Decorator"
             lightweight="true"
             location="TOP_LEFT"
             state="true">

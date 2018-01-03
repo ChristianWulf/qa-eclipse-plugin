@@ -30,6 +30,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import pmd.eclipse.plugin.eclipse.ProjectUtil;
+import pmd.eclipse.plugin.icons.FileIconDecorator;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.settings.PmdPreferences;
 
@@ -95,6 +96,9 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			}
 		}
 
+		// update explorer view so that the violation flag are not displayed anymore
+		FileIconDecorator.refresh();
+
 		String taskName = "Analyzing " + eclipseFiles.size() + " file(s)...";
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
 
@@ -120,6 +124,9 @@ class PmdWorkspaceJob extends WorkspaceJob {
 				IFile eclipseFile = eclipseFilesMap.get(violationFilename);
 				PmdMarkers.appendViolationMarker(eclipseFile, violation);
 			}
+
+			// update explorer view so that the new violation flags are displayed
+			FileIconDecorator.refresh();
 		}
 
 		return Status.OK_STATUS;
