@@ -9,6 +9,7 @@ import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RU
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
@@ -42,7 +43,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableColumn;
@@ -70,6 +73,7 @@ public class PmdViolationsView extends ViewPart
 	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
 	static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
+	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
@@ -149,6 +153,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewer.getTable().setLinesVisible(true);
 		tableViewer.getTable().setSortDirection(loadSavedSortDirection());
 		tableViewer.getTable().setSortColumn(loadSavedSortColumn());
+		tableViewer.getTable().setColumnOrder(loadSavedColumnOrder());
 
 		// we use the comparator when sorting by column
 		tableViewer.setComparator(comparator);
@@ -237,6 +242,31 @@ public class PmdViolationsView extends ViewPart
 		return savedSortColumn;
 	}
 
+	private int[] loadSavedColumnOrder() {
+		final int numColumns = tableViewer.getTable().getColumnCount();
+		int[] columnOrderIndices = new int[numColumns];
+
+		String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
+		String[] columnOrdersEncoded = columnOrderPreference.split(",");
+
+		try {
+			for (int i = 0; i < columnOrdersEncoded.length; i++) {
+				String columnOrderEncoded = columnOrdersEncoded[i];
+				columnOrderEncoded = columnOrderEncoded.trim();
+				int columnOrderIndex = Integer.parseInt(columnOrderEncoded);
+				columnOrderIndices[i] = columnOrderIndex;
+			}
+		} catch (NumberFormatException e) {
+			// if one of the encoded indices is an invalid number,
+			// use the default order 0,1,2,...
+			for (int i = 0; i < numColumns; i++) {
+				columnOrderIndices[i] = i;
+			}
+		}
+
+		return columnOrderIndices;
+	}
+
 	private void addContextMenu() {
 		// MenuManager menuManager = new MenuManager();
 		// Menu contextMenu = menuManager.createContextMenu(tableViewer.getTable());
@@ -279,6 +309,17 @@ public class PmdViolationsView extends ViewPart
 	}
 
 	private void createColumns() {
+		Listener columnMovedListener = new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Move) {
+					int[] columnOrder = tableViewer.getTable().getColumnOrder();
+					String columnOrderEncoded = StringUtils.join(columnOrder, ',');
+					viewPreferences.put(PREF_COLUMN_ORDER, columnOrderEncoded);
+				}
+			}
+		};
+
 		TableViewerColumn tableViewerColumn;
 		TableColumn column;
 
@@ -318,6 +359,7 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PRIORITY));
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -334,6 +376,7 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULENAME));
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -349,6 +392,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(400);
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -365,6 +409,7 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PROJECTNAME));
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -381,6 +426,7 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_LINENUMBER));
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -397,6 +443,7 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULESET));
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -412,6 +459,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
+		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -427,6 +475,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
+		column.addListener(SWT.Move, columnMovedListener);
 	}
 
 	private IMarker[] getPmdMarkers() {
