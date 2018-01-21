@@ -65,26 +65,6 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
 	private void addFileIfApplicable(IResourceDelta delta) throws JavaModelException {
 		IFile file = (IFile) delta.getResource();
-
-		// ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
-		// filter.setWorkingSet(workingSet);
-		// fileInWorkingSet = filter.select(null, null, file);
-
-		IProject project = file.getProject();
-		int flags = delta.getFlags();
-
-		// String fileMessageFormat = "file: %s, rel path = %s, flags = %d";
-		// String fileMessage = String.format(fileMessageFormat, file,
-		// file.getProjectRelativePath(), flags);
-		// System.out.println(fileMessage);
-		//
-		// for (IMarkerDelta markerDelta : delta.getMarkerDeltas()) {
-		// String message = String.format("%s: %s, kind=%s", markerDelta,
-		// markerDelta.getMarker(),
-		// markerDelta.getKind());
-		// System.out.println(message);
-		// }
-
 		// TODO make configurable
 		boolean isHidden = file.isHidden();
 		if (isHidden) {
@@ -94,6 +74,11 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		// TODO make configurable
 		boolean isDerived = file.isDerived();
 		if (isDerived) {
+			return;
+		}
+
+		IProject project = file.getProject();
+		if (!project.isAccessible()) {
 			return;
 		}
 
@@ -116,7 +101,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		// }
 		case IResourceDelta.CHANGED: {
 			// Skip PMD analysis if only markers have been changed
-			if (flags == IResourceDelta.MARKERS) {
+			if (delta.getFlags() == IResourceDelta.MARKERS) {
 				// if ((flags & IResourceDelta.MARKERS) == IResourceDelta.MARKERS) {
 				break;
 			}
