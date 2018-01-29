@@ -133,14 +133,17 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		return Status.OK_STATUS;
 	}
 
-	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap, PmdProblemRenderer problemRenderer)
-			throws CoreException {
+	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap, PmdProblemRenderer problemRenderer) {
 		Report report = problemRenderer.getProblemReport();
 		if (report.size() > 0) {
 			for (RuleViolation violation : report.getViolationTree()) {
 				String violationFilename = violation.getFilename();
 				IFile eclipseFile = eclipseFilesMap.get(violationFilename);
-				PmdMarkers.appendViolationMarker(eclipseFile, violation);
+				try {
+					PmdMarkers.appendViolationMarker(eclipseFile, violation);
+				} catch (CoreException e) {
+					// ignore if marker could not be created
+				}
 			}
 
 			// update explorer view so that the new violation flags are displayed
