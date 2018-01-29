@@ -1,7 +1,6 @@
 package pmd.eclipse.plugin.pmd;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
@@ -77,17 +75,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 
 		// collect data sources
-		List<DataSource> dataSources = new ArrayList<>();
 		final Map<String, IFile> eclipseFilesMap = new HashMap<>();
 		for (IFile eclipseFile : eclipseFiles) {
-			final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
-			final DataSource dataSource = new FileDataSource(sourceCodeFile);
-			dataSources.add(dataSource);
-
-			// map file name to eclipse file: necessary for adding markers at the end
-			String niceFileName = dataSource.getNiceFileName(false, "");
-			eclipseFilesMap.put(niceFileName, eclipseFile);
-
 			try {
 				// also remove previous PMD markers on that file
 				eclipseFile.deleteMarkers(PmdMarkers.PMD_VIOLATION_MARKER, true, IResource.DEPTH_ZERO);
@@ -104,19 +93,48 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
-		final MonoThreadProcessor pmdProcessor = new MonoThreadProcessor(configuration);
 
 		RuleSets ruleSets = PmdPreferences.INSTANCE.getRuleSets(eclipseProject);
 		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
-
-		final RuleContext context = new RuleContext();
 
 		Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
 		PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
 		final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
 
-		pmdProcessor.processFiles(ruleSetFactory, dataSources, context, collectingRenderers);
+		CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
+				collectingRenderers);
 
+		final RuleContext context = new RuleContext();
+
+		pmdProcessor.onStarted();
+		for (IFile eclipseFile : eclipseFiles) {
+			if (monitor.isCanceled()) {
+				// only stop the loop, not the whole method to finish reporting
+				break;
+			}
+
+			if (!eclipseFile.isAccessible()) {
+				continue;
+			}
+
+			final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+			final DataSource dataSource = new FileDataSource(sourceCodeFile);
+
+			// map file name to eclipse file: necessary for adding markers at the end
+			String niceFileName = dataSource.getNiceFileName(false, "");
+			eclipseFilesMap.put(niceFileName, eclipseFile);
+
+			pmdProcessor.processFile(dataSource, context);
+		}
+		pmdProcessor.onFinished();
+
+		displayViolationMarkers(eclipseFilesMap, problemRenderer);
+
+		return Status.OK_STATUS;
+	}
+
+	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap, PmdProblemRenderer problemRenderer)
+			throws CoreException {
 		Report report = problemRenderer.getProblemReport();
 		if (report.size() > 0) {
 			for (RuleViolation violation : report.getViolationTree()) {
@@ -128,8 +146,6 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			// update explorer view so that the new violation flags are displayed
 			FileIconDecorator.refresh();
 		}
-
-		return Status.OK_STATUS;
 	}
 
 }
