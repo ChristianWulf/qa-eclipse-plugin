@@ -61,6 +61,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	}
 
 	@Override
+	// represents: analyze on save
 	public void resourceChanged(IResourceChangeEvent event) {
 		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
@@ -78,7 +79,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 			pmdTool.startAsyncAnalysis(changedFiles.getValue());
 		}
 
-		// your view listens to marker changes and thus is indirectly notified about
+		// our view listens to marker changes and thus is indirectly notified about
 		// removed resource
 
 		return;
