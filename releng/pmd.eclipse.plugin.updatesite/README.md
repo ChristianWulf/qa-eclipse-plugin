@@ -1,0 +1,2 @@
+- category-xml is necessary to build the updatesite with tycho.
+- site.xml is not used by us, but it is the current way to build the updatesite with Eclipse.

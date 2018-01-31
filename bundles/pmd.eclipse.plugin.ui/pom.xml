@@ -5,6 +5,8 @@
 	<artifactId>pmd.eclipse.plugin.ui</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
+	
+	<name>Eclipse Plugins for QA Tools - PMD Feature</name>
 
 	<!-- Link to the parent pom -->
 	<parent>

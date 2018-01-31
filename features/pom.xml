@@ -3,8 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>pmd.eclipse.plugin.features</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Eclipse Plugins for QA Tools - Features</name>
 
 	<!-- Link to the parent pom -->
 	<parent>
@@ -14,7 +16,8 @@
 		<relativePath>../releng/pmd.eclipse.plugin.configuration</relativePath>
 	</parent>
 
-    <modules>
-        <module>pmd.eclipse.plugin.singlefeature</module>
-    </modules>
+	<modules>
+		<module>qa.eclipse.plugin.pmd</module>
+		<module>qa.eclipse.plugin.checkstyle</module>
+	</modules>
 </project>

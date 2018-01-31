@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="pmd.eclipse.plugin.singlefeature"
-      label="The only feature of this plugin"
-      version="1.0.0.qualifier">
+      id="qa.eclipse.plugin.pmd"
+      label="PMD support for Eclipse"
+      version="1.0.0.qualifier"
+      provider-name="Christian Wulf">
 
    <description>
-      Eclipse plugin for quality assurance toools, such as PMD, Checkstyle, and Findbugs.
+      Eclipse plugin for PMD.
    </description>
 
    <copyright>
