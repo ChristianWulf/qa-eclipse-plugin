@@ -52,6 +52,10 @@ public class SamplePropertyPage extends PropertyPage {
 		boolean selected = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
 		enabledButton.setSelection(selected);
 
+		Label hintLabel = new Label(composite, SWT.NONE);
+		hintLabel.setText("Hint: Disabling PMD clears all violations.");
+		hintLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
 		addSeparator(composite);
 
 		// Label for path field
@@ -94,7 +98,7 @@ public class SamplePropertyPage extends PropertyPage {
 
 		addSeparator(composite);
 
-		Label hintLabel = new Label(composite, SWT.NONE);
+		hintLabel = new Label(composite, SWT.NONE);
 		// Image infoImage =
 		// PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
 		// hintLabel.setImage(infoImage);
