@@ -85,6 +85,13 @@ public class SamplePropertyPage extends PropertyPage {
 
 		new Label(composite, SWT.NONE); // serves as newline
 
+		exampleLabel = new Label(composite, SWT.NONE);
+		exampleLabel.setText("To hide the violation flags in the (Package/Project) Explorer, " + System.lineSeparator()
+				+ "open Eclipse's global preferences and search for 'Label Decorations'.");
+		// exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
+		new Label(composite, SWT.NONE); // serves as newline
+
 		addSeparator(composite);
 
 		Label hintLabel = new Label(composite, SWT.NONE);
