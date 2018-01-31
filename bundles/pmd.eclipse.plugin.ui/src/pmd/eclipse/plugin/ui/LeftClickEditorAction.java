@@ -10,6 +10,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -22,6 +24,7 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
 import pmd.eclipse.plugin.markers.PmdMarkers;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 import pmd.eclipse.plugin.views.PmdViolationsView;
 
 public class LeftClickEditorAction extends SelectMarkerRulerAction {
@@ -97,9 +100,13 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 				IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
 
 				try {
+					// VIEW_ACTIVATE: focus view; VIEW_VISIBLE: do not focus view
 					IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
 					PmdViolationsView violationView = (PmdViolationsView) viewPart;
-					// viewPart.selectRow();
+
+					Object input = new PmdViolationMarker(marker);
+					ISelection selection = new StructuredSelection(input);
+					violationView.getTableViewer().setSelection(selection, true);
 				} catch (PartInitException ex) {
 					throw new IllegalStateException(ex);
 				}

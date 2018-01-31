@@ -167,7 +167,7 @@ public class PmdViolationsView extends ViewPart
 		filterByPriority(loadSavedFilterPriority);
 
 		// interprets the input and transforms it into rows
-		tableViewer.setContentProvider(new ArrayContentProvider());
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		// on double click: opens the corresponding file in the proper editor, jumps to
 		// the line, and selects it
 		tableViewer.addDoubleClickListener(this);
@@ -522,9 +522,10 @@ public class PmdViolationsView extends ViewPart
 	}
 
 	private void updateView() {
+		final IMarker[] updatedMarkers = getPmdMarkers();
+
 		final List<PmdViolationMarker> pmdViolationMarkers = new ArrayList<>();
 
-		final IMarker[] updatedMarkers = getPmdMarkers();
 		for (IMarker marker : updatedMarkers) {
 			PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
 			pmdViolationMarkers.add(pmdViolationMarker);
@@ -542,6 +543,13 @@ public class PmdViolationsView extends ViewPart
 				tableViewer.setInput(pmdViolationMarkers);
 			}
 		});
+	}
+
+	public TableViewer getTableViewer() {
+		// tableViewer.getTable().getItem(index)
+		// tableViewer.getTable().showItem(item);
+		// tableViewer.reveal(element);
+		return tableViewer;
 	}
 
 	@Override

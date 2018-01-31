@@ -14,6 +14,9 @@ public class JumpToViolationsView extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+		if (window == null) {
+			return null;
+		}
 		IWorkbenchPage activePage = window.getActivePage();
 		if (activePage == null) {
 			return null;
@@ -25,7 +28,7 @@ public class JumpToViolationsView extends AbstractHandler {
 
 		final IVerticalRulerInfo verticalRulerInfo = activeEditor.getAdapter(IVerticalRulerInfo.class);
 		if (verticalRulerInfo != null) {
-
+			// verticalRulerInfo.getControl().get
 		}
 
 		// TODO Auto-generated method stub

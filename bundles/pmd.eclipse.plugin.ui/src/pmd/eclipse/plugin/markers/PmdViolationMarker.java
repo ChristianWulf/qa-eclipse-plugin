@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 
 public class PmdViolationMarker {
 
-	private IMarker marker;
+	private final IMarker marker;
 
 	public PmdViolationMarker(IMarker marker) {
 		this.marker = marker;
@@ -67,6 +67,31 @@ public class PmdViolationMarker {
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((marker == null) ? 0 : marker.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PmdViolationMarker other = (PmdViolationMarker) obj;
+		if (marker == null) {
+			if (other.marker != null)
+				return false;
+		} else if (!marker.equals(other.marker))
+			return false;
+		return true;
 	}
 
 	// public Comparable<?> getAttributeValueByIndex(int creationColumnIndex) {
