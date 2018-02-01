@@ -58,7 +58,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		IMarker[] markers;
 		try {
-			markers = resource.findMarkers(PmdMarkers.PMD_VIOLATION_MARKER, false, depth);
+			markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}

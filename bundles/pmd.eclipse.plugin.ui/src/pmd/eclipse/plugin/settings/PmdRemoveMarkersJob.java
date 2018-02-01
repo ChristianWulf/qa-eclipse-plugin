@@ -24,7 +24,7 @@ class PmdRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			project.deleteMarkers(PmdMarkers.PMD_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
+			project.deleteMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
 			String message = String.format("Could not delete all markers for project '%s'", project);
 			PmdUIPlugin.getDefault().logException(message, e);

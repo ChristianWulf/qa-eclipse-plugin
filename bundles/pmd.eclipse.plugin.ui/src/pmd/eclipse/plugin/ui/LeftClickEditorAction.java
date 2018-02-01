@@ -83,7 +83,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 					break;
 				}
 
-				if (markerType.equals(PmdMarkers.PMD_VIOLATION_MARKER)) {
+				if (markerType.startsWith(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER)) {
 					// TODO select marker line in violation view
 					openViolationView(marker);
 				}

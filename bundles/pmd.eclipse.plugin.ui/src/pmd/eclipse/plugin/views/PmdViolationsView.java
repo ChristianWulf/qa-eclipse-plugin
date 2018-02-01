@@ -483,7 +483,8 @@ public class PmdViolationsView extends ViewPart
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IMarker[] markers;
 		try {
-			markers = workspaceRoot.findMarkers(PmdMarkers.PMD_VIOLATION_MARKER, false, IResource.DEPTH_INFINITE);
+			markers = workspaceRoot.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true,
+					IResource.DEPTH_INFINITE);
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}
@@ -512,7 +513,7 @@ public class PmdViolationsView extends ViewPart
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkers.PMD_VIOLATION_MARKER, false);
+		IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true);
 		// do not unnecessarily collect all PMD markers again if no marker of this
 		// resource was changed
 		if (markerDeltas.length == 0) {
@@ -599,8 +600,10 @@ public class PmdViolationsView extends ViewPart
 		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
 
+		String priorityName = RulePriority.HIGH.name().toLowerCase();
+
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
-		preferences.putBoolean("clvertical", false);
+		preferences.putBoolean("pmd." + priorityName + ".clvertical", false);
 	}
 
 }

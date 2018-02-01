@@ -145,7 +145,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation"
-         name="PMD Violation Marker"
+         name="Abstract PMD Violation Marker"
          point="org.eclipse.core.resources.markers">
       <attribute
             name="pmd.rulesetname">
@@ -163,26 +163,23 @@
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
-            annotationImageProvider="pmd.eclipse.plugin.icons.AnnotationImageProvider"
-            annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
-            colorPreferenceKey="clcolor"
+            annotationType="qa.eclipse.plugin.pmd.annotationtype.high"
+            colorPreferenceKey="pmd.high.clcolor"
             colorPreferenceValue="255,0,0"
             icon="icons/pmd1-annotation.png"
-            includeOnPreferencePage="true"
             label="QA: PMD &apos;High&apos; Violation"
-            overviewRulerPreferenceKey="clruler"
+            overviewRulerPreferenceKey="pmd.high.clruler"
             overviewRulerPreferenceValue="false"
-            textPreferenceKey="cltext"
+            textPreferenceKey="pmd.high.cltext"
             textPreferenceValue="true"
-            verticalRulerPreferenceKey="clvertical"
+            verticalRulerPreferenceKey="pmd.high.clvertical"
             verticalRulerPreferenceValue="true">
       </specification>
       <specification
-            annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
+            annotationType="qa.eclipse.plugin.pmd.annotationtype.mediumhigh"
             colorPreferenceKey="pmd.mediumhigh.clcolor"
             colorPreferenceValue="255,0,0"
             icon="icons/pmd2-annotation.png"
-            includeOnPreferencePage="true"
             label="QA: PMD &apos;Medium High&apos; Violation"
             overviewRulerPreferenceKey="pmd.mediumhigh.clruler"
             overviewRulerPreferenceValue="false"
@@ -191,12 +188,67 @@
             verticalRulerPreferenceKey="pmd.mediumhigh.clvertical"
             verticalRulerPreferenceValue="true">
       </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.pmd.annotationtype.mediumlow"
+            colorPreferenceKey="pmd.mediumlow.clcolor"
+            colorPreferenceValue="255,0,0"
+            icon="icons/pmd4-annotation.png"
+            label="QA: PMD &apos;Medium Low&apos; Violation"
+            overviewRulerPreferenceKey="pmd.mediumlow.clruler"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="pmd.mediumlow.cltext"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="pmd.mediumlow.clvertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.pmd.annotationtype.low"
+            colorPreferenceKey="pmd.low.clcolor"
+            colorPreferenceValue="255,0,0"
+            icon="icons/pmd5-annotation.png"
+            label="QA: PMD &apos;Low&apos; Violation"
+            overviewRulerPreferenceKey="pmd.low.clruler"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="pmd.low.cltext"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="pmd.low.clvertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.pmd.annotationtype.medium"
+            colorPreferenceKey="pmd.medium.clcolor"
+            colorPreferenceValue="255,0,0"
+            icon="icons/pmd3-annotation.png"
+            label="QA: PMD &apos;Medium&apos; Violation"
+            overviewRulerPreferenceKey="pmd.medium.clruler"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="pmd.medium.cltext"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="pmd.medium.clvertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
-            markerType="pmd.eclipse.plugin.markers.violation"
-            name="pmd.eclipse.plugin.ui.specification.priority.high">
+            markerType="pmd.eclipse.plugin.markers.violation.high"
+            name="qa.eclipse.plugin.pmd.annotationtype.high">
+      </type>
+      <type
+            markerType="pmd.eclipse.plugin.markers.violation.medium"
+            name="qa.eclipse.plugin.pmd.annotationtype.medium">
+      </type>
+      <type
+            markerType="pmd.eclipse.plugin.markers.violation.mediumlow"
+            name="qa.eclipse.plugin.pmd.annotationtype.mediumlow">
+      </type>
+      <type
+            markerType="pmd.eclipse.plugin.markers.violation.low"
+            name="qa.eclipse.plugin.pmd.annotationtype.low">
+      </type>
+      <type
+            markerType="pmd.eclipse.plugin.markers.violation.mediumhigh"
+            name="qa.eclipse.plugin.pmd.annotationtype.mediumhigh">
       </type>
    </extension>
    <extension
@@ -256,6 +308,46 @@
       <factory
             class="pmd.eclipse.plugin.experimental.PmdAnnotationModelFactory">
       </factory>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.high"
+         name="High PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.violation">
+      </super>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.mediumhigh"
+         name="Medium High PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.violation">
+      </super>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.medium"
+         name="Medium PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.violation">
+      </super>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.mediumlow"
+         name="Medium Low PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.violation">
+      </super>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.low"
+         name="Low PMD Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.violation">
+      </super>
    </extension>
 
 </plugin>
