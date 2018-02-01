@@ -57,6 +57,12 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		this.context = context;
 		this.pmdTool = new PmdTool();
 
+		// IDocumentProvider provider = ((ITextEditor)
+		// PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getDocumentProvider();
+		// AnnotationModel am =
+		// (AnnotationModel)provider.getAnnotationModel((PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput()));
+		// DocumentProviderRegistry.getDefault().getDocumentProvider(null);
+
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 

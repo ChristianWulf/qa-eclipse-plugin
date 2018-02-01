@@ -167,13 +167,28 @@
             annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
             colorPreferenceKey="clcolor"
             colorPreferenceValue="255,0,0"
+            icon="icons/pmd1-annotation.png"
             includeOnPreferencePage="true"
-            label="PMD Violation"
+            label="QA: PMD &apos;High&apos; Violation"
             overviewRulerPreferenceKey="clruler"
             overviewRulerPreferenceValue="false"
             textPreferenceKey="cltext"
             textPreferenceValue="true"
             verticalRulerPreferenceKey="clvertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="pmd.eclipse.plugin.ui.specification.priority.high"
+            colorPreferenceKey="pmd.mediumhigh.clcolor"
+            colorPreferenceValue="255,0,0"
+            icon="icons/pmd2-annotation.png"
+            includeOnPreferencePage="true"
+            label="QA: PMD &apos;Medium High&apos; Violation"
+            overviewRulerPreferenceKey="pmd.mediumhigh.clruler"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="pmd.mediumhigh.cltext"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="pmd.mediumhigh.clvertical"
             verticalRulerPreferenceValue="true">
       </specification>
    </extension>

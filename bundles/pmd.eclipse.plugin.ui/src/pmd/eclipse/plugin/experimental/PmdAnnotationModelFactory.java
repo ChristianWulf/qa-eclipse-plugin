@@ -1,6 +1,9 @@
 package pmd.eclipse.plugin.experimental;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModelFactory;
 
@@ -9,7 +12,10 @@ public class PmdAnnotationModelFactory extends ResourceMarkerAnnotationModelFact
 
 	@Override
 	public IAnnotationModel createAnnotationModel(IPath location) {
-		// TODO Auto-generated method stub
-		return super.createAnnotationModel(location);
+		IFile file = FileBuffers.getWorkspaceFileAtLocation(location);
+		if (file != null) {
+			return new PmdResourceMarkerAnnotationModel(file);
+		}
+		return new AnnotationModel();
 	}
 }

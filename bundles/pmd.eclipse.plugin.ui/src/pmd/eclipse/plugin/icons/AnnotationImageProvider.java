@@ -46,7 +46,12 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 		}
 
 		return imageRegistry.get(imageRegistryKey);
+		// return null;
 	}
+
+	// letting getManagedImage() and getImageDescriptorId() return null
+	// only hides the editor annotation icon,
+	// but text hovering and left-click still work
 
 	@Override
 	public String getImageDescriptorId(Annotation annotation) {
@@ -64,6 +69,7 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 		}
 
 		return imageRegistryKey;
+		// return null;
 	}
 
 	@Override

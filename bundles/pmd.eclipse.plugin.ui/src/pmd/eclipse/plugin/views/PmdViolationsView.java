@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -597,6 +598,9 @@ public class PmdViolationsView extends ViewPart
 	private void filterByPriority(int lowestPriority) {
 		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
+
+		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
+		preferences.putBoolean("clvertical", false);
 	}
 
 }
