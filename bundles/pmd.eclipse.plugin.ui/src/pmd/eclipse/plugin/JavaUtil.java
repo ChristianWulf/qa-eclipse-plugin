@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -26,9 +27,17 @@ public class JavaUtil {
 		if (!project.isAccessible()) {
 			return Collections.emptySet();
 		}
-		// "External Plug-In Libraries" are represented as an accessible project,
-		// but do not exits on the file system.
-		if (project.getRawLocation() == null) {
+		// filter projects which are not located on the file system
+		if (project.getLocation() == null) {
+			return Collections.emptySet();
+		}
+		// Return if the passed project is not a Java project,
+		// because then getRawClasspath() and getOutputLocation() is not available.
+		try {
+			if (!project.hasNature(JavaCore.NATURE_ID)) {
+				return Collections.emptySet();
+			}
+		} catch (CoreException e) {
 			return Collections.emptySet();
 		}
 

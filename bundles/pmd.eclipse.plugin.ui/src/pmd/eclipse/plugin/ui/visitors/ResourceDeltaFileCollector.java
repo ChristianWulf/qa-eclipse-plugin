@@ -53,11 +53,8 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		if (!resource.isAccessible()) {
 			return false;
 		}
-		// "External Plug-In Libraries" is a read-only project,
-		// which we do not want to analyze with PMD.
-		// Although it is represented as an accessible project,
-		// it does, however, not exit on the file system.
-		if (resource.getRawLocation() == null) {
+		// filter resources which are not located on the file system
+		if (resource.getLocation() == null) {
 			return false;
 		}
 		return true;
