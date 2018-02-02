@@ -7,7 +7,9 @@ import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RU
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RULESET;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IMarker;
@@ -91,6 +93,8 @@ public class PmdViolationsView extends ViewPart
 	// private final Map<String, PmdViewFilter> filterByAttribute = new HashMap<>();
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
 
+	private final Map<Integer, String> keyByPriority = new HashMap<>();
+
 	public PmdViolationsView() {
 		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(PREF_SORT_DIRECTION, SWT.DOWN);
@@ -104,6 +108,12 @@ public class PmdViolationsView extends ViewPart
 		// filterByAttribute.put("priority", ));
 		viewerFilters[FILTER_INDEX_PRIORITY] = new PmdPriorityViewerFilter();
 		viewerFilters[FILTER_INDEX_PROJECT] = new PmdProjectNameViewerFilter();
+
+		keyByPriority.put(RulePriority.HIGH.getPriority(), "pmd.high.clvertical");
+		keyByPriority.put(RulePriority.MEDIUM_HIGH.getPriority(), "pmd.mediumhigh.clvertical");
+		keyByPriority.put(3, "pmd.medium.clvertical");
+		keyByPriority.put(4, "pmd.mediumlow.clvertical");
+		keyByPriority.put(5, "pmd.low.clvertical");
 	}
 
 	@Override
@@ -600,10 +610,15 @@ public class PmdViolationsView extends ViewPart
 		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
 
-		String priorityName = RulePriority.HIGH.name().toLowerCase();
-
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
-		preferences.putBoolean("pmd." + priorityName + ".clvertical", false);
+		for (int i = 1; i < lowestPriority + 1; i++) {
+			String key = keyByPriority.get(i);
+			preferences.putBoolean(key, true);
+		}
+		for (int i = lowestPriority + 1; i < 5 + 1; i++) {
+			String key = keyByPriority.get(i);
+			preferences.putBoolean(key, false);
+		}
 	}
 
 }
