@@ -6,7 +6,14 @@
       provider-name="Christian Wulf">
 
    <description>
-      Eclipse plugin for PMD.
+      This plugin integrates PMD into your Eclipse IDE.
+-Enable/Disable PMD on a per-project basis.
+-Use custom PMD rules on a per-project basis.
+-In general, configure PMD on a per-project basis.
+-List and filter PMD issues according to their priorities.
+-No Eclipse-specific rule management: this plugin exclusively
+uses PMD&apos;s XML-based rule files to stay synchronous with the settings of your
+build tool and your continuous integration server.
    </description>
 
    <copyright>
