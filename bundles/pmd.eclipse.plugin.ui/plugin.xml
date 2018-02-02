@@ -316,6 +316,9 @@
       <super
             type="pmd.eclipse.plugin.markers.violation">
       </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.mediumhigh"
@@ -324,6 +327,9 @@
       <super
             type="pmd.eclipse.plugin.markers.violation">
       </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.medium"
@@ -332,6 +338,9 @@
       <super
             type="pmd.eclipse.plugin.markers.violation">
       </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.mediumlow"
@@ -340,6 +349,9 @@
       <super
             type="pmd.eclipse.plugin.markers.violation">
       </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.low"
@@ -348,6 +360,9 @@
       <super
             type="pmd.eclipse.plugin.markers.violation">
       </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
 
 </plugin>
