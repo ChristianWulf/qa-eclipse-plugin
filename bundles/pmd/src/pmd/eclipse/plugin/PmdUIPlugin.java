@@ -28,7 +28,7 @@ import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "pmd-eclipse-plugin"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.pmd"; //$NON-NLS-1$
 
 	// The shared instance
 	private static PmdUIPlugin plugin;

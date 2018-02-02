@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>qa.eclipse.plugin.features.pmd</name>
+	<name>qa.eclipse.plugin.features.checkstyle</name>
 	<comment></comment>
 	<projects>
 	</projects>
