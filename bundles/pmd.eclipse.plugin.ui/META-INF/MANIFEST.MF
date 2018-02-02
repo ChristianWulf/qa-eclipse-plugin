@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: pmd-eclipse-plugin
-Bundle-SymbolicName: pmd.eclipse.plugin.ui;singleton:=true
+Bundle-SymbolicName: qa.eclipse.plugin.bundles.pmd;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
