@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
+         <command
+               commandId="qa.eclipse.plugin.bundles.checkstyle.command.packageexplorer"
+               icon="icons/checkstyle-favicon.ico"
+               label="Run in package explorer"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="qa.eclipse.plugin.bundles.checkstyle.handler.ExplorerHandler"
+            id="qa.eclipse.plugin.bundles.checkstyle.command.packageexplorer"
+            name="Run Checkstyle">
+      </command>
+   </extension>
+
+</plugin>
