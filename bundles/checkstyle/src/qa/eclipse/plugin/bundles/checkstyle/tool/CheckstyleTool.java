@@ -27,10 +27,9 @@ public class CheckstyleTool implements AuditListener {
 		
 		List<File> files = null;
 		try {
-			int result = checker.process(files);
+			int numViolations = checker.process(files);
 		} catch (CheckstyleException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IllegalStateException(e);		// log to error view somewhere
 		}
 	}
 

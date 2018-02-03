@@ -12,9 +12,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 
 class PmdPreferenceChangeListener implements IPreferenceChangeListener {
 
+	private final PmdPreferences pmdPreferences;
 	private final IProject project;
 	private final IEclipsePreferences preferences;
-	private final PmdPreferences pmdPreferences;
 
 	public PmdPreferenceChangeListener(PmdPreferences pmdPreferences, IProject project,
 			IEclipsePreferences preferences) {

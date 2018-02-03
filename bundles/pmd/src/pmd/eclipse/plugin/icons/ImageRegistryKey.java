@@ -7,6 +7,8 @@ import pmd.eclipse.plugin.PmdUIPlugin;
 
 public final class ImageRegistryKey {
 
+	private final static Class<?> ACTIVATOR_CLASS = PmdUIPlugin.class;
+
 	private ImageRegistryKey() {
 		// utility class
 	}
@@ -37,7 +39,7 @@ public final class ImageRegistryKey {
 			String imageRegistryKey = getFileDecoratorKeyByPriority(priority);
 			String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
+			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ACTIVATOR_CLASS, imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 
@@ -45,7 +47,7 @@ public final class ImageRegistryKey {
 			String imageRegistryKey = getAnnotationKeyByPriority(priority);
 			String imageFilePath = "/icons/pmd" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(PmdUIPlugin.class, imageFilePath);
+			ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ACTIVATOR_CLASS, imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 	}
