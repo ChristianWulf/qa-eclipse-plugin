@@ -15,7 +15,9 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
+	private CheckstyleTool checkstyleTool;
+
 	/**
 	 * The constructor
 	 */
@@ -24,17 +26,22 @@ public class Activator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+	 * BundleContext)
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		checkstyleTool = new CheckstyleTool();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
@@ -52,8 +59,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public CheckstyleTool getCheckstyleTool() {
-		// TODO Auto-generated method stub
-		return null;
+		return checkstyleTool;
 	}
 
 }
