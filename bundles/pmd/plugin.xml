@@ -287,9 +287,6 @@
       <initializer
             class="pmd.eclipse.plugin.experimental.PreferenceInitializer">
       </initializer>
-      <initializer
-            class="pmd.eclipse.plugin.experimental.preferences.PreferenceInitializer">
-      </initializer>
    </extension>
    <extension point="org.eclipse.ui.propertyPages">
       <page
