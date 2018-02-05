@@ -1,5 +1,7 @@
 package qa.eclipse.plugin.bundles.checkstyle;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -62,4 +64,13 @@ public class Activator extends AbstractUIPlugin {
 		return checkstyleTool;
 	}
 
+	public void logThrowable(String message, Throwable throwable) {
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
+		getLog().log(status);
+	}
+
+	public void logWarning(String message) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
+		getLog().log(status);
+	}
 }

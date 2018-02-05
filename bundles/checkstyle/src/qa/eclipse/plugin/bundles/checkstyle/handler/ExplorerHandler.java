@@ -21,8 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
-import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleTool;
+import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 public class ExplorerHandler extends AbstractHandler {
 
@@ -54,9 +53,8 @@ public class ExplorerHandler extends AbstractHandler {
 
 			Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();
 
-			CheckstyleTool checkstyleTool = Activator.getDefault().getCheckstyleTool();
 			for (Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
-				checkstyleTool.startAsyncAnalysis(entry.getValue());
+				CheckstyleJob.startAsyncAnalysis(entry.getValue());
 			}
 		}
 

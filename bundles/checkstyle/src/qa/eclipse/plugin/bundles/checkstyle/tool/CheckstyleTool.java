@@ -1,90 +1,127 @@
 package qa.eclipse.plugin.bundles.checkstyle.tool;
+// may not contain anything from the Eclipse API
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.OperationCanceledException;
 
 import com.puppycrawl.tools.checkstyle.Checker;
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
-import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
+import com.puppycrawl.tools.checkstyle.PackageObjectFactory;
+import com.puppycrawl.tools.checkstyle.PackageObjectFactory.ModuleLoadOption;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-public class CheckstyleTool implements AuditListener {
+import qa.eclipse.plugin.bundles.checkstyle.PlatformLocale;
 
-	private Checker checker;
+public class CheckstyleTool {
+
+	private final Checker checker;
 
 	public CheckstyleTool() {
-		checker = new Checker();
+		this.checker = new Checker();
 	}
 
-	public void startAsyncAnalysis(List<IFile> eclipseFiles) {
-		// checker.setBasedir(basedir);
+	// FIXME remove Eclipse API
+	public void startAsyncAnalysis(List<IFile> eclipseFiles, CheckstyleListener checkstyleListener) {
+		IFile file = eclipseFiles.get(0);
+		IProject project = file.getProject();
+
+		checker.setBasedir(null);
 		// checker.setCacheFile(fileName);
-		// checker.setCharset(arg0);
+
+		try {
+			checker.setCharset(project.getDefaultCharset());
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
 		// checker.setClassLoader(classLoader);
-		checker.addListener(this);
 
-		for (IFile eclipseFile : eclipseFiles) {
-			// if (monitor.isCanceled()) {
-			// // only stop the loop, not the whole method to finish reporting
-			// break;
-			// }
+		ClassLoader checkstyleClassLoader = null;
+		Set<String> packageNames;
+		try {
+			packageNames = PackageNamesLoader.getPackageNames(checkstyleClassLoader);
+		} catch (CheckstyleException e) {
+			throw new IllegalStateException(e);
+		}
 
-			if (!eclipseFile.isAccessible()) {
-				continue;
+		ClassLoader moduleClassLoader = null;
+		PackageObjectFactory moduleFactory = new PackageObjectFactory(packageNames, moduleClassLoader,
+				ModuleLoadOption.TRY_IN_ALL_REGISTERED_PACKAGES);
+		checker.setModuleFactory(moduleFactory);
+
+		Locale platformLocale = PlatformLocale.getPlatformLocale();
+		checker.setLocaleLanguage(platformLocale.getLanguage());
+		checker.setLocaleCountry(platformLocale.getCountry());
+
+		Configuration configuration = null;
+		try {
+			checker.configure(configuration);
+		} catch (CheckstyleException e) {
+			throw new IllegalStateException(e);
+		}
+
+		checker.addListener(checkstyleListener);
+
+		// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java
+
+		try {
+
+			for (IFile eclipseFile : eclipseFiles) {
+				if (!eclipseFile.isAccessible()) {
+					continue;
+				}
+
+				final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+
+				List<File> files = Arrays.asList(sourceCodeFile);
+				int numViolations;
+
+				try {
+					numViolations = checker.process(files);
+					System.out.println("numViolations: " + numViolations);
+				} catch (CheckstyleException e) {
+					if (e.getCause() instanceof OperationCanceledException) {
+						// user requested cancellation, keep silent
+					} else {
+						throw new IllegalStateException(e); // log to error view somewhere
+					}
+				}
+
 			}
 
-			final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
-
-			List<File> files = Arrays.asList(sourceCodeFile);
-			int numViolations;
-
-			try {
-				numViolations = checker.process(files);
-			} catch (CheckstyleException e) {
-				throw new IllegalStateException(e); // log to error view somewhere
-			}
-
-			System.out.println("numViolations: " + numViolations);
+		} finally {
+			checker.removeListener(checkstyleListener);
 		}
 	}
 
-	@Override
-	public void addError(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addException(AuditEvent arg0, Throwable arg1) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void auditFinished(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void auditStarted(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void fileFinished(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void fileStarted(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	// private void displayViolationMarkers(final Map<String, IFile>
+	// eclipseFilesMap, PmdProblemRenderer problemRenderer) {
+	// Report report = problemRenderer.getProblemReport();
+	// if (report.size() > 0) {
+	// for (RuleViolation violation : report.getViolationTree()) {
+	// String violationFilename = violation.getFilename();
+	// IFile eclipseFile = eclipseFilesMap.get(violationFilename);
+	// try {
+	// PmdMarkers.appendViolationMarker(eclipseFile, violation);
+	// } catch (CoreException e) {
+	// // ignore if marker could not be created
+	// }
+	// }
+	//
+	// // update explorer view so that the new violation flags are displayed
+	// FileIconDecorator.refresh();
+	// }
+	// }
 
 }

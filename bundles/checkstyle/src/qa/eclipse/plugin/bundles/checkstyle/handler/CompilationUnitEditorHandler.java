@@ -14,18 +14,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
-import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleTool;
+import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 // used by, for example, 
 //	popup:#CompilationUnitEditorContext
 public class CompilationUnitEditorHandler extends AbstractHandler {
-
-	private final CheckstyleTool checkstyleTool;
-
-	public CompilationUnitEditorHandler() {
-		checkstyleTool = Activator.getDefault().getCheckstyleTool();
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -42,7 +35,7 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 			IFile file = fileEditorInput.getFile();
 
 			List<IFile> files = Arrays.asList(file);
-			checkstyleTool.startAsyncAnalysis(files);
+			CheckstyleJob.startAsyncAnalysis(files);
 		}
 
 		return null;

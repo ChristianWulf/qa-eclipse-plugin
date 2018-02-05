@@ -73,11 +73,11 @@ public class RuleSetFileLoader {
 				// we use as default all of the rule sets which PMD provides.
 				String messageFormat = "Ruleset file not found on file path '%s'. Defaulting to all of the rule sets which PMD provides.";
 				String message = String.format(messageFormat, ruleSetFilePath);
-				PmdUIPlugin.getDefault().logException(message, e);
+				PmdUIPlugin.getDefault().logThrowable(message, e);
 			} else {
 				String messageFormat = "Ruleset file references rules which are not in the (custom rules) classpath: %s. Defaulting to all of the rule sets which PMD provides.";
 				String message = String.format(messageFormat, e.getLocalizedMessage());
-				PmdUIPlugin.getDefault().logException(message, e);
+				PmdUIPlugin.getDefault().logThrowable(message, e);
 			}
 			return defaultRuleSets;
 		} finally {

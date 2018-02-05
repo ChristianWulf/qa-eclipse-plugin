@@ -160,8 +160,8 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		return pmdTool;
 	}
 
-	public void logException(String message, Exception exception) {
-		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, exception);
+	public void logThrowable(String message, Throwable throwable) {
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
 		getLog().log(status);
 	}
 

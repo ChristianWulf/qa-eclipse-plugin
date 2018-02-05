@@ -23,5 +23,13 @@
             name="Run Checkstyle">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePropertyPage"
+            id="qa.eclipse.plugin.bundles.checkstyle.propertypage"
+            name="Checkstyle Settings">
+      </page>
+   </extension>
 
 </plugin>

@@ -29,7 +29,7 @@ public final class FileUtil {
 				urls[i] = jarFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				// jarFile is filled by the user, so continue loop upon exception
-				PmdUIPlugin.getDefault().logException("Cannot convert file to URL: " + jarFile, e);
+				PmdUIPlugin.getDefault().logThrowable("Cannot convert file to URL: " + jarFile, e);
 			}
 		}
 		return urls;
