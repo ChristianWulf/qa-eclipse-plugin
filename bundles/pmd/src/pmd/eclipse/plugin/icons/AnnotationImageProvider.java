@@ -9,7 +9,7 @@ import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.markers.PmdViolationMarker;
+import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
 
 /**
  * @author Christian Wulf
@@ -79,7 +79,7 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 	private int getPriorityFromAnnotation(MarkerAnnotation markerAnnotation) {
 		IMarker marker = markerAnnotation.getMarker();
-		PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
+		CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
 		return violationMarker.getPriority();
 	}
 

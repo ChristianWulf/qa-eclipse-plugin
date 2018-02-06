@@ -4,7 +4,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
-import pmd.eclipse.plugin.markers.PmdViolationMarker;
+import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
 
 class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
@@ -21,7 +21,7 @@ class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 			return false;
 		}
 
-		PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
+		CheckstyleViolationMarker pmdViolationMarker = new CheckstyleViolationMarker(marker);
 		int priority = pmdViolationMarker.getPriority();
 		return (maxPriority >= priority);
 	}

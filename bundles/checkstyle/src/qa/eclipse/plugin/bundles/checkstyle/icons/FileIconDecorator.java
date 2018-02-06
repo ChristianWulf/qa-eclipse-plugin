@@ -73,7 +73,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		int highestPriority = SeverityLevel.IGNORE.ordinal();
 		for (IMarker marker : markers) {
 			CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
-			int priority = violationMarker.getPriority();
+			int priority = violationMarker.getSeverityLevelIndex();
 			// 3 is the highest priority, so compare with '<'
 			if (priority > highestPriority) {
 				highestPriority = priority;

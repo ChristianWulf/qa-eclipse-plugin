@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.views;
+package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -6,15 +6,15 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 
-import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.Activator;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
-class PmdViolationMarkerComparator extends ViewerComparator {
+class CheckstyleViolationMarkerComparator extends ViewerComparator {
 
 	public static final int SORT_PROP_PRIORITY = 0;
 	public static final int SORT_PROP_RULENAME = 1;
 	public static final int SORT_PROP_LINENUMBER = 2;
-	public static final int SORT_PROP_RULESET = 3;
+//	public static final int SORT_PROP_RULESET = 3;
 	public static final int SORT_PROP_PROJECTNAME = 4;
 
 	private int selectedSortProperty;
@@ -45,10 +45,10 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 			compareResult = compareLineNumber(marker1, marker2);
 			break;
 		}
-		case SORT_PROP_RULESET: {
-			compareResult = compareRuleSet(marker1, marker2);
-			break;
-		}
+//		case SORT_PROP_RULESET: {
+//			compareResult = compareRuleSet(marker1, marker2);
+//			break;
+//		}
 		case SORT_PROP_PROJECTNAME: {
 			compareResult = compareProjectName(marker1, marker2);
 			break;
@@ -57,7 +57,7 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 			compareResult = 0;
 			String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
 			String message = String.format(messageFormatString, selectedSortProperty);
-			PmdUIPlugin.getDefault().logWarning(message);
+			Activator.getDefault().logWarning(message);
 		}
 		}
 
@@ -78,14 +78,14 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	 * Assumed sort order is SWT.UP.
 	 */
 	private int comparePriority(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
-		return -1 * Integer.compare(marker1.getPriority(), marker2.getPriority());
+		return -1 * Integer.compare(marker1.getSeverityLevelIndex(), marker2.getSeverityLevelIndex());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
 	private int compareRuleName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
-		return marker1.getRuleName().compareToIgnoreCase(marker2.getRuleName());
+		return marker1.getModuleName().compareToIgnoreCase(marker2.getModuleName());
 	}
 
 	/**
@@ -93,13 +93,6 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	 */
 	private int compareLineNumber(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
 		return Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareRuleSet(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
-		return marker1.getRuleSetName().compareToIgnoreCase(marker2.getRuleSetName());
 	}
 
 	/**

@@ -18,7 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmd.eclipse.plugin.markers.PmdViolationMarker;
+import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
 
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
@@ -70,7 +70,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		int highestPriority = RulePriority.LOW.getPriority();
 		for (IMarker marker : markers) {
-			PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
+			CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
 			int priority = violationMarker.getPriority();
 			// 1 is the highest priority, so compare with '<'
 			if (priority < highestPriority) {

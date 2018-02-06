@@ -1,11 +1,11 @@
-package pmd.eclipse.plugin.views;
+package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
-public class PmdProjectNameViewerFilter extends ViewerFilter {
+class CheckstyleProjectNameViewerFilter extends ViewerFilter {
 
 	private String projectName;
 

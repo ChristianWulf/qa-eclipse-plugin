@@ -1,19 +1,20 @@
-package pmd.eclipse.plugin.views;
+package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import net.sourceforge.pmd.RulePriority;
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-class PmdPriorityViewerFilter extends ViewerFilter {
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
-	private int lowestPriority = RulePriority.LOW.getPriority();
+class CheckstylePriorityViewerFilter extends ViewerFilter {
+
+	private int lowestPriority = SeverityLevel.IGNORE.ordinal();
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-		return marker.getPriority() <= lowestPriority;
+		return marker.getSeverityLevelIndex() >= lowestPriority;
 	}
 
 	public void setLowestPriority(int lowestPriority) {

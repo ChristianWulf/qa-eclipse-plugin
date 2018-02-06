@@ -24,7 +24,7 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmd.eclipse.plugin.markers.PmdViolationMarker;
+import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
 import pmd.eclipse.plugin.views.PmdViolationsView;
 
 public class LeftClickEditorAction extends SelectMarkerRulerAction {
@@ -104,7 +104,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 					IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
 					PmdViolationsView violationView = (PmdViolationsView) viewPart;
 
-					Object input = new PmdViolationMarker(marker);
+					Object input = new CheckstyleViolationMarker(marker);
 					ISelection selection = new StructuredSelection(input);
 					violationView.getTableViewer().setSelection(selection, true);
 				} catch (PartInitException ex) {
