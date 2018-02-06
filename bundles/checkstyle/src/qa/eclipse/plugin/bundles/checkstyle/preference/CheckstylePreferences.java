@@ -12,6 +12,9 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class CheckstylePreferences {
 
+	/** split pattern */
+	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
+
 	public static final CheckstylePreferences INSTANCE = new CheckstylePreferences("qa.eclipse.plugin.checkstyle");
 
 	public static final String PROP_KEY_ENABLED = "enabled";
@@ -55,18 +58,18 @@ public class CheckstylePreferences {
 		return preferences;
 	}
 
-//	public String[] loadCustomModuleJarPaths(IEclipsePreferences preferences) {
-//		String[] customModuleJarPaths;
-//
-//		final String customModulesJarsValue = preferences.get(PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
-//		if (customModulesJarsValue.trim().isEmpty()) {
-//			customModuleJarPaths = new String[0];
-//		} else {
-//			String[] customRulesJars = customModulesJarsValue.split(",");
-//			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
-//			customModuleJarPaths = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
-//		}
-//
-//		return customModuleJarPaths;
-//	}
+	/**
+	 * @return a new array containing zero or more jar paths
+	 */
+	public String[] loadCustomModuleJarPaths(IEclipsePreferences preferences) {
+		final String customModulesJarPathsValue = preferences.get(PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
+		String[] customRulesJarPaths = customModulesJarPathsValue.split(BY_COMMA_AND_TRIM);
+
+		// FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath,
+		// customRulesJars);
+		// customModuleJarPaths = FileUtil.filePathsToUrls(eclipseProjectPath,
+		// customRulesJars);
+
+		return customRulesJarPaths;
+	}
 }
