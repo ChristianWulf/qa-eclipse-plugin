@@ -4,18 +4,18 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.Platform;
 
-public final class PlatformLocale {
+public final class EclipsePlatform {
 
-	private PlatformLocale() {
+	private EclipsePlatform() {
 		// utility class
 	}
 
 	/**
-	 * Helper method to get the current plattform locale.
+	 * Helper method to get the current platform locale.
 	 *
 	 * @return the platform locale
 	 */
-	public static Locale getPlatformLocale() {
+	public static Locale getLocale() {
 		String nl = Platform.getNL();
 		String[] parts = nl.split("_"); //$NON-NLS-1$
 

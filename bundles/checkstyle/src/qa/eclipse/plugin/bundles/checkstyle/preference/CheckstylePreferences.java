@@ -15,6 +15,7 @@ public class CheckstylePreferences {
 	public static final CheckstylePreferences INSTANCE = new CheckstylePreferences("qa.eclipse.plugin.checkstyle");
 
 	public static final String PROP_KEY_ENABLED = "enabled";
+	private static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 
@@ -48,9 +49,24 @@ public class CheckstylePreferences {
 
 			preferences = projectPref.getNode(node);
 			preferences.addPreferenceChangeListener(new CheckstylePreferenceChangeListener(this, project, preferences));
-//			updateRulsetCache(project, preferences);
+			// updateRulsetCache(project, preferences);
 		}
 
 		return preferences;
 	}
+
+//	public String[] loadCustomModuleJarPaths(IEclipsePreferences preferences) {
+//		String[] customModuleJarPaths;
+//
+//		final String customModulesJarsValue = preferences.get(PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
+//		if (customModulesJarsValue.trim().isEmpty()) {
+//			customModuleJarPaths = new String[0];
+//		} else {
+//			String[] customRulesJars = customModulesJarsValue.split(",");
+//			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
+//			customModuleJarPaths = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
+//		}
+//
+//		return customModuleJarPaths;
+//	}
 }

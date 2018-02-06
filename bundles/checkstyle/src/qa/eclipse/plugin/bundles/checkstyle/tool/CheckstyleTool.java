@@ -3,10 +3,11 @@ package qa.eclipse.plugin.bundles.checkstyle.tool;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -14,13 +15,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 
 import com.puppycrawl.tools.checkstyle.Checker;
-import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
-import com.puppycrawl.tools.checkstyle.PackageObjectFactory;
-import com.puppycrawl.tools.checkstyle.PackageObjectFactory.ModuleLoadOption;
+import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.ThreadModeSettings;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-import qa.eclipse.plugin.bundles.checkstyle.PlatformLocale;
+import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatform;
 
 public class CheckstyleTool {
 
@@ -45,26 +45,31 @@ public class CheckstyleTool {
 		} catch (CoreException e) {
 			throw new IllegalStateException(e);
 		}
-		// checker.setClassLoader(classLoader);
+		
+		//		 checker.setClassLoader(classLoader);
+		
+		URL[] urls = null;
+		ClassLoader moduleClassLoader=new URLClassLoader(urls, getClass().getClassLoader());
+		checker.setModuleClassLoader(moduleClassLoader);
 
-		ClassLoader checkstyleClassLoader = null;
-		Set<String> packageNames;
-		try {
-			packageNames = PackageNamesLoader.getPackageNames(checkstyleClassLoader);
-		} catch (CheckstyleException e) {
-			throw new IllegalStateException(e);
-		}
+//		ClassLoader checkstyleClassLoader = getClass().getClassLoader();
+//		Set<String> packageNames;
+//		try {
+//			packageNames = PackageNamesLoader.getPackageNames(checkstyleClassLoader);
+//		} catch (CheckstyleException e) {
+//			throw new IllegalStateException(e);
+//		}
+//
+//		ClassLoader moduleClassLoader = null;
+//		PackageObjectFactory moduleFactory = new PackageObjectFactory(packageNames, moduleClassLoader,
+//				ModuleLoadOption.TRY_IN_ALL_REGISTERED_PACKAGES);
+//		checker.setModuleFactory(moduleFactory);
 
-		ClassLoader moduleClassLoader = null;
-		PackageObjectFactory moduleFactory = new PackageObjectFactory(packageNames, moduleClassLoader,
-				ModuleLoadOption.TRY_IN_ALL_REGISTERED_PACKAGES);
-		checker.setModuleFactory(moduleFactory);
-
-		Locale platformLocale = PlatformLocale.getPlatformLocale();
+		Locale platformLocale = EclipsePlatform.getLocale();
 		checker.setLocaleLanguage(platformLocale.getLanguage());
 		checker.setLocaleCountry(platformLocale.getCountry());
 
-		Configuration configuration = null;
+		Configuration configuration = new DefaultConfiguration("Eclipse Checkstyle Config", ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE);
 		try {
 			checker.configure(configuration);
 		} catch (CheckstyleException e) {
