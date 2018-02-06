@@ -117,7 +117,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 				continue;
 			}
 
-			final File sourceCodeFile = eclipseFile.getRawLocation().makeAbsolute().toFile();
+			final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
 			final DataSource dataSource = new FileDataSource(sourceCodeFile);
 
 			// map file name to eclipse file: necessary for adding markers at the end

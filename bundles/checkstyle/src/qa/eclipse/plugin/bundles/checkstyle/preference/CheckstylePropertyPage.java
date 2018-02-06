@@ -18,8 +18,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class CheckstylePropertyPage extends PropertyPage {
 
-	private Text ruleSetFilePathText;
-	private Text jarFilePathsText;
+	private Text configFilePathText;
+	private Text customModulesJarPathsText;
 	private Button enabledButton;
 
 	/**
@@ -59,33 +59,32 @@ public class CheckstylePropertyPage extends PropertyPage {
 		Label exampleLabel;
 
 		// Label for path field
-//		Label pathLabel = new Label(composite, SWT.NONE);
-//		pathLabel.setText("&Ruleset file path:");
-//
-//		// Path text field
-//		ruleSetFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-//		GridData gd = new GridData();
-//		gd.widthHint = convertWidthInCharsToPixels(60);
-//		ruleSetFilePathText.setLayoutData(gd);
-//		ruleSetFilePathText.setText(
-//				preferences.get(CheckstylePreferences.PROP_KEY_RULE_SET_FILE_PATH, CheckstylePreferences.INVALID_RULESET_FILE_PATH));
-//
-//		Label exampleLabel = new Label(composite, SWT.NONE);
-//		exampleLabel.setText("Example: conf/quality-config/pmd-ruleset.xml");
-//		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		Label pathLabel = new Label(composite, SWT.NONE);
+		pathLabel.setText("&Ruleset file path:");
 
-//		Label label = new Label(composite, SWT.NONE);
-//		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
-//
-//		jarFilePathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-//		gd = new GridData();
-//		gd.widthHint = convertWidthInCharsToPixels(60);
-//		jarFilePathsText.setLayoutData(gd);
-//		jarFilePathsText.setText(preferences.get(CheckstylePreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
-//
-//		exampleLabel = new Label(composite, SWT.NONE);
-//		exampleLabel.setText("Example: config/pmd/custom-ruleset-0.jar, config/pmd/custom-ruleset-1.jar");
-//		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		// Path text field
+		configFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		GridData gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		configFilePathText.setLayoutData(gd);
+		configFilePathText.setText(CheckstylePreferences.INSTANCE.loadConfigFilePath(preferences));
+
+		exampleLabel = new Label(composite, SWT.NONE);
+		exampleLabel.setText("Example: conf/quality-config/cs-conf.xml");
+		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("Zero or more jar file paths with custom modules (comma separated):");
+
+		customModulesJarPathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		customModulesJarPathsText.setLayoutData(gd);
+		customModulesJarPathsText.setText(preferences.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, ""));
+
+		exampleLabel = new Label(composite, SWT.NONE);
+		exampleLabel.setText("Example: config/checkstyle/custom-modules-0.jar, config/checkstyle/custom-modules-1.jar");
+		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
@@ -148,19 +147,20 @@ public class CheckstylePropertyPage extends PropertyPage {
 	protected void performDefaults() {
 		super.performDefaults();
 		// Populate the owner text field with the default value
-//		ruleSetFilePathText.setText(CheckstylePreferences.INVALID_RULESET_FILE_PATH);
-		jarFilePathsText.setText("");
+		configFilePathText.setText(CheckstylePreferences.INVALID_CONFIG_FILE_PATH);
+		customModulesJarPathsText.setText("");
 		enabledButton.setSelection(false);
 	}
 
 	@Override
 	public boolean performOk() {
 		IResource resource = getElement().getAdapter(IResource.class);
-		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(resource.getProject());
+		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE
+				.getProjectScopedPreferences(resource.getProject());
 
-
-//		preferences.put(CheckstylePreferences.PROP_KEY_RULE_SET_FILE_PATH, ruleSetFilePathText.getText());
-//		preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_RULES_JARS, jarFilePathsText.getText());
+		preferences.put(CheckstylePreferences.PROP_KEY_CONFIG_FILE_PATH, configFilePathText.getText());
+		// preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_RULES_JARS,
+		// jarFilePathsText.getText());
 		preferences.putBoolean(CheckstylePreferences.PROP_KEY_ENABLED, enabledButton.getSelection());
 
 		try {

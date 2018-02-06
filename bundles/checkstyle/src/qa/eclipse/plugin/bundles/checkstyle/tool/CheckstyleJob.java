@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
@@ -51,7 +50,7 @@ public class CheckstyleJob extends WorkspaceJob {
 		final Map<String, IFile> eclipseFileByFilePath = new HashMap<>();
 		// collect data sources
 		for (IFile eclipseFile : eclipseFiles) {
-			String key = eclipseFile.getLocation().makeAbsolute().toString();
+			String key = eclipseFile.getLocation().toFile().getAbsolutePath();
 			eclipseFileByFilePath.put(key, eclipseFile);
 
 			try {
@@ -68,7 +67,8 @@ public class CheckstyleJob extends WorkspaceJob {
 
 		CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
 
-		CheckstyleTool checkstyleTool = Activator.getDefault().getCheckstyleTool();
+//		CheckstyleTool checkstyleTool = Activator.getDefault().getCheckstyleTool();
+		CheckstyleTool checkstyleTool = new CheckstyleTool();
 		checkstyleTool.startAsyncAnalysis(eclipseFiles, checkstyleListener);
 		// TODO
 

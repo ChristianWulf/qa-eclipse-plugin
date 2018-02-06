@@ -18,7 +18,9 @@ public class CheckstylePreferences {
 	public static final CheckstylePreferences INSTANCE = new CheckstylePreferences("qa.eclipse.plugin.checkstyle");
 
 	public static final String PROP_KEY_ENABLED = "enabled";
-	private static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
+	public static final String PROP_KEY_CONFIG_FILE_PATH = "configFilePath";
+	public static final String INVALID_CONFIG_FILE_PATH = "invalid/config/file/path";
+	public static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 
@@ -71,5 +73,13 @@ public class CheckstylePreferences {
 		// customRulesJars);
 
 		return customRulesJarPaths;
+	}
+
+	/**
+	 * @return the file path of the Checkstyle configuration file, or an empty
+	 *         string.
+	 */
+	public String loadConfigFilePath(IEclipsePreferences preferences) {
+		return preferences.get(PROP_KEY_CONFIG_FILE_PATH, INVALID_CONFIG_FILE_PATH);
 	}
 }

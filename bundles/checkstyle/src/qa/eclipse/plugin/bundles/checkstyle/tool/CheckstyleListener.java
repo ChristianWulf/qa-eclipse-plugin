@@ -4,16 +4,16 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
 
-class CheckstyleListener implements AuditListener {
+class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 
 	private final Map<String, IFile> eclipseFileByFilePath;
 	private final SubMonitor monitor;
@@ -27,41 +27,37 @@ class CheckstyleListener implements AuditListener {
 
 	@Override
 	public void auditStarted(AuditEvent arg0) {
-		// TODO Auto-generated method stub
+		// do nothing
+	}
+
+	@Override
+	public boolean accept(String absoluteFilePath) {
+		monitor.split(1);
+
+		IFile eclipseFile = eclipseFileByFilePath.get(absoluteFilePath);
+		return eclipseFile.isAccessible();
 	}
 
 	@Override
 	public void fileStarted(AuditEvent event) {
-		if (monitor.isCanceled()) {
-			throw new OperationCanceledException();
-		}
-
-//		String filePath = event.getFileName();
-//		IFile eclipseFile = eclipseFileByFilePath.get(filePath);
-//		
-//		if (!eclipseFile.isAccessible()) {
-//			return;
-//		}
-
-		monitor.split(1);
+		// do nothing
 	}
 
 	@Override
 	public void fileFinished(AuditEvent arg0) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void auditFinished(AuditEvent arg0) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	@Override
 	public void addError(AuditEvent violation) {
 		SeverityLevel severityLevel = violation.getSeverityLevel();
 
-		System.out.println("violation: " + violation);
+		System.out.println("violation: " + violation.getLocalizedMessage().getMessage());
 
 		// TODO Auto-generated method stub
 
@@ -71,4 +67,5 @@ class CheckstyleListener implements AuditListener {
 	public void addException(AuditEvent event, Throwable throwable) {
 		Activator.getDefault().logThrowable(event.getMessage(), throwable);
 	}
+
 }
