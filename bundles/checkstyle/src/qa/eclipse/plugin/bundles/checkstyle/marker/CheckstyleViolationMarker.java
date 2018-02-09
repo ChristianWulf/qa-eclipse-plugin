@@ -1,5 +1,7 @@
 package qa.eclipse.plugin.bundles.checkstyle.marker;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IMarker;
 
 public class CheckstyleViolationMarker {
@@ -15,39 +17,43 @@ public class CheckstyleViolationMarker {
 		return marker;
 	}
 
+	/**
+	 * @return the priority (3 highest to 0 lowest) or -1 otherwise.
+	 */
 	public int getSeverityLevelIndex() {
-		// TODO Auto-generated method stub
-		return 0;
+		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_PRIORITY, -1);
 	}
 
+	/**
+	 * @return the line number or 0 otherwise.
+	 */
 	public int getLineNumer() {
-		// TODO Auto-generated method stub
-		return 0;
+		return marker.getAttribute(IMarker.LINE_NUMBER, 0);
+	}
+
+	/**
+	 * @return the violation message or the empty string otherwise.
+	 */
+	public String getMessage() {
+		return marker.getAttribute(IMarker.MESSAGE, "");
 	}
 
 	public String getModuleName() {
-		// TODO Auto-generated method stub
-		return null;
+		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_MODULENAME, "");
 	}
 
 	public String getProjectName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getFileName() {
-		// TODO Auto-generated method stub
-		return null;
+		return marker.getResource().getProject().getName();
 	}
 
 	public String getDirectoryPath() {
-		// TODO Auto-generated method stub
-		return null;
+		File file = marker.getResource().getRawLocation().toFile();
+		return file.getParent();
 	}
 
-	public String getMessage() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getFileName() {
+		File file = marker.getResource().getRawLocation().toFile();
+		return file.getName();
 	}
 
 }

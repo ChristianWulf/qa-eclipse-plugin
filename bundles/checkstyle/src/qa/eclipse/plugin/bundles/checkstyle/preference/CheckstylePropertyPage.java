@@ -60,7 +60,7 @@ public class CheckstylePropertyPage extends PropertyPage {
 
 		// Label for path field
 		Label pathLabel = new Label(composite, SWT.NONE);
-		pathLabel.setText("&Ruleset file path:");
+		pathLabel.setText("&Configuration file path:");
 
 		// Path text field
 		configFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);

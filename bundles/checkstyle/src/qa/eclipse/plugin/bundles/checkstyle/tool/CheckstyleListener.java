@@ -3,6 +3,7 @@ package qa.eclipse.plugin.bundles.checkstyle.tool;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 
@@ -12,6 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 
 class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 
@@ -59,6 +61,15 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 
 		System.out.println("violation: " + violation.getLocalizedMessage().getMessage());
 
+		
+		String violationFilename = violation.getFileName();
+		IFile eclipseFile = eclipseFileByFilePath.get(violationFilename);
+		try {
+			CheckstyleMarkers.appendViolationMarker(eclipseFile, violation);
+		} catch (CoreException e) {
+			// ignore if marker could not be created
+		}
+		
 		// TODO Auto-generated method stub
 
 	}

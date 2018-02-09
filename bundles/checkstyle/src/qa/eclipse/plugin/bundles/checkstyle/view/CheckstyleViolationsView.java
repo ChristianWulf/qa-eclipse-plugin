@@ -1,9 +1,9 @@
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_LINENUMBER;
+import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_MODULENAME;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PRIORITY;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PROJECTNAME;
-import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_RULENAME;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,14 +12,10 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -66,18 +62,20 @@ import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 public class CheckstyleViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {
 
-	public static final String ID = "qa.eclipse.plugin.bundles.checkstyle.view";
-
-	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
-	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
+	public static final String TOOL_NAME = "Checkstyle";
+	public static final String ID = "qa.eclipse.plugin.checkstyle.view";
 
 	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
 	static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
+	private static final String PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d)";
+	private static final String NUMBER_OF_CHECKSTYLE_VIOLATIONS = "Number of " + TOOL_NAME + " Violations: ";
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
+
+	private static final String KEY_PREFIX = "vertical.checkstyle.";
 
 	// tutorial used from
 	// http://www.vogella.com/tutorials/EclipseJFaceTableAdvanced/article.html
@@ -88,10 +86,9 @@ public class CheckstyleViolationsView extends ViewPart
 	private Label label;
 	private TableViewer tableViewer;
 
-	// private final Map<String, PmdViewFilter> filterByAttribute = new HashMap<>();
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
 
-	private final Map<Integer, String> keyByPriority = new HashMap<>();
+	private final Map<Integer, String> verticalKeyByPriority = new HashMap<>();
 
 	public CheckstyleViolationsView() {
 		IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
@@ -100,17 +97,13 @@ public class CheckstyleViolationsView extends ViewPart
 
 		viewPreferences = CheckstylePreferences.INSTANCE.getEclipseScopedPreferences();
 
-		// PmdViewFilter underlyingFilter = new PmdPassAllFilter();
-		// filter = new PmdPriorityFilter(underlyingFilter,
-		// RulePriority.LOW.getPriority();
-		// filterByAttribute.put("priority", ));
 		viewerFilters[FILTER_INDEX_PRIORITY] = new CheckstylePriorityViewerFilter();
 		viewerFilters[FILTER_INDEX_PROJECT] = new CheckstyleProjectNameViewerFilter();
 
-		keyByPriority.put(SeverityLevel.ERROR.ordinal(), "pmd.high.clvertical"); // FIXME string values
-		keyByPriority.put(SeverityLevel.WARNING.ordinal(), "pmd.mediumhigh.clvertical");
-		keyByPriority.put(SeverityLevel.INFO.ordinal(), "pmd.medium.clvertical");
-		keyByPriority.put(SeverityLevel.IGNORE.ordinal(), "pmd.mediumlow.clvertical");
+		verticalKeyByPriority.put(SeverityLevel.ERROR.ordinal(), KEY_PREFIX + "error");
+		verticalKeyByPriority.put(SeverityLevel.WARNING.ordinal(), KEY_PREFIX + "warning");
+		verticalKeyByPriority.put(SeverityLevel.INFO.ordinal(), KEY_PREFIX + "info");
+		verticalKeyByPriority.put(SeverityLevel.IGNORE.ordinal(), KEY_PREFIX + "ignore");
 	}
 
 	@Override
@@ -171,7 +164,7 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewer.setFilters(viewerFilters);
 		// load filter settings
 		int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
-		tableCombo.select(loadSavedFilterPriority - 1);
+		tableCombo.select(loadSavedFilterPriority);
 		filterByPriority(loadSavedFilterPriority);
 
 		// interprets the input and transforms it into rows
@@ -334,8 +327,8 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public Image getImage(Object element) {
 				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
-				int pmdPriority = violationMarker.getSeverityLevelIndex();
-				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
+				int priority = violationMarker.getSeverityLevelIndex();
+				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(priority);
 				Image image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
@@ -355,7 +348,7 @@ public class CheckstyleViolationsView extends ViewPart
 				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
 				int severityLevelIndex = violationMarker.getSeverityLevelIndex();
 				SeverityLevel severityLevel = SeverityLevel.values()[severityLevelIndex];
-				return severityLevel.toString();
+				return severityLevel.name();
 			}
 		});
 		column = tableViewerColumn.getColumn();
@@ -376,12 +369,12 @@ public class CheckstyleViolationsView extends ViewPart
 			}
 		});
 		column = tableViewerColumn.getColumn();
-		column.setText("Rule name");
+		column.setText("Module name");
 		column.setResizable(true);
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULENAME));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_MODULENAME));
 		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
@@ -434,25 +427,6 @@ public class CheckstyleViolationsView extends ViewPart
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_LINENUMBER));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		// tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
-		// tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-		// @Override
-		// public String getText(Object element) {
-		// CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-		// return marker.getRuleSetName();
-		// }
-		// });
-		// column = tableViewerColumn.getColumn();
-		// column.setText("Rule set");
-		// column.setResizable(true);
-		// column.setMoveable(true);
-		// column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for
-		// save/load
-		// column.setWidth(100);
-		// column.addSelectionListener(new CompareOnSelectListener(viewPreferences,
-		// tableViewer, SORT_PROP_RULESET));
-		// column.addListener(SWT.Move, columnMovedListener);
-
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -484,18 +458,6 @@ public class CheckstyleViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addListener(SWT.Move, columnMovedListener);
-	}
-
-	private IMarker[] getPmdMarkers() {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers;
-		try {
-			markers = workspaceRoot.findMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
-					IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return markers;
 	}
 
 	@Override
@@ -532,25 +494,25 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void updateView() {
-		final IMarker[] updatedMarkers = getPmdMarkers();
+		final IMarker[] updatedMarkers = CheckstyleMarkers.findAllInWorkspace();
 
-		final List<CheckstyleViolationMarker> pmdViolationMarkers = new ArrayList<>();
+		final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
 		for (IMarker marker : updatedMarkers) {
-			CheckstyleViolationMarker pmdViolationMarker = new CheckstyleViolationMarker(marker);
-			pmdViolationMarkers.add(pmdViolationMarker);
+			CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
+			violationMarkers.add(violationMarker);
 		}
 
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				int numViolations = pmdViolationMarkers.size();
+				int numViolations = violationMarkers.size();
 				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
 
 				CheckstyleViolationsView.this.setPartName(newPartName);
-				label.setText(NUMBER_OF_PMD_VIOLATIONS + numViolations);
+				label.setText(NUMBER_OF_CHECKSTYLE_VIOLATIONS + numViolations);
 				label.getParent().layout(); // fixed bug: the label was not displayed upon reopening the view
-				tableViewer.setInput(pmdViolationMarkers);
+				tableViewer.setInput(violationMarkers);
 			}
 		});
 	}
@@ -590,13 +552,14 @@ public class CheckstyleViolationsView extends ViewPart
 		CheckstylePriorityViewerFilter priorityFilter = (CheckstylePriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
 
-		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
-		for (int i = 1; i < lowestPriority + 1; i++) {		// FIXME
-			String key = keyByPriority.get(i);
+		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getEclipseEditorPreferences();
+		// highest priority (here: 3) should always be displayed
+		for (int i = SeverityLevel.ERROR.ordinal(); i >= lowestPriority; i--) {
+			String key = verticalKeyByPriority.get(i);
 			preferences.putBoolean(key, true);
 		}
-		for (int i = lowestPriority + 1; i < 5 + 1; i++) {
-			String key = keyByPriority.get(i);
+		for (int i = lowestPriority - 1; i >= 0; i--) {
+			String key = verticalKeyByPriority.get(i);
 			preferences.putBoolean(key, false);
 		}
 	}

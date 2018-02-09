@@ -5,11 +5,11 @@ import java.io.File;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 
-public class CheckstyleViolationMarker {
+public class PmdViolationMarker {
 
 	private final IMarker marker;
 
-	public CheckstyleViolationMarker(IMarker marker) {
+	public PmdViolationMarker(IMarker marker) {
 		this.marker = marker;
 	}
 
@@ -85,7 +85,7 @@ public class CheckstyleViolationMarker {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CheckstyleViolationMarker other = (CheckstyleViolationMarker) obj;
+		PmdViolationMarker other = (PmdViolationMarker) obj;
 		if (marker == null) {
 			if (other.marker != null)
 				return false;

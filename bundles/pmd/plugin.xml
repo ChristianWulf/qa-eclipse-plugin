@@ -291,6 +291,7 @@
    <extension point="org.eclipse.ui.propertyPages">
       <page
             class="pmd.eclipse.plugin.experimental.properties.SamplePropertyPage"
+            icon="icons/pmd-icon-16.gif"
             id="pmd.eclipse.plugin.experimental.properties.samplePropertyPage"
             name="PMD Settings">
             <enabledWhen>
@@ -308,7 +309,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.high"
-         name="High PMD Violation Marker"
+         name="PMD High Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
             type="pmd.eclipse.plugin.markers.violation">
@@ -319,7 +320,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.mediumhigh"
-         name="Medium High PMD Violation Marker"
+         name="PMD Medium High Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
             type="pmd.eclipse.plugin.markers.violation">
@@ -330,7 +331,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.medium"
-         name="Medium PMD Violation Marker"
+         name="PMD Medium Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
             type="pmd.eclipse.plugin.markers.violation">
@@ -341,7 +342,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.mediumlow"
-         name="Medium Low PMD Violation Marker"
+         name="PMD Medium Low Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
             type="pmd.eclipse.plugin.markers.violation">
@@ -352,7 +353,7 @@
    </extension>
    <extension
          id="pmd.eclipse.plugin.markers.violation.low"
-         name="Low PMD Violation Marker"
+         name="PMD Low Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
             type="pmd.eclipse.plugin.markers.violation">

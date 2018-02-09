@@ -50,6 +50,10 @@ public class PmdPreferences {
 		return preferences;
 	}
 
+	public IEclipsePreferences getEclipseEditorPreferences() {
+		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
+	}
+
 	public synchronized IEclipsePreferences getProjectScopedPreferences(IProject project) {
 		IEclipsePreferences preferences;
 

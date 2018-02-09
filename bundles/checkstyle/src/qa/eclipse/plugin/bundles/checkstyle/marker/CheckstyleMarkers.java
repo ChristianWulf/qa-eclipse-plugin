@@ -3,15 +3,23 @@ package qa.eclipse.plugin.bundles.checkstyle.marker;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+
+import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 public final class CheckstyleMarkers {
 
-	public static final String ABSTRACT_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.markers.violation";
-	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.markers.violation.error";
-	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.markers.violation.warning";
-	public static final String INFO_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.markers.violation.info";
-	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.markers.violation.ignore";
+	public static final String ABSTRACT_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.checkstyle.markers.violation";
+	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".error";
+	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".warning";
+	public static final String INFO_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".info";
+	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".ignore";
 
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
@@ -25,4 +33,41 @@ public final class CheckstyleMarkers {
 	private CheckstyleMarkers() {
 		// utility class
 	}
+
+	/**
+	 * @see {@link com.puppycrawl.tools.checkstyle.api.SeverityLevel}
+	 */
+	public static final String ATTR_KEY_PRIORITY = "checkstyle.priority";
+	public static final String ATTR_KEY_MODULENAME = "checkstyle.modulename";
+
+	public static void appendViolationMarker(IFile eclipseFile, AuditEvent violation) throws CoreException {
+		int priority = violation.getSeverityLevel().ordinal();
+		String markerType = MARKER_TYPE_BY_PRIORITY.get(priority);
+
+		IMarker marker = eclipseFile.createMarker(markerType);
+		marker.setAttribute(IMarker.MESSAGE, violation.getMessage());
+		marker.setAttribute(IMarker.LINE_NUMBER, violation.getLine());
+		// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+
+		marker.setAttribute(ATTR_KEY_PRIORITY, priority);
+		marker.setAttribute(ATTR_KEY_MODULENAME, violation.getModuleId());
+
+		// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
+		// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
+
+		// whether it is displayed as error, warning, info or other in the Problems View
+		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+	}
+
+	public static IMarker[] findAllInWorkspace() {
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IMarker[] markers;
+		try {
+			markers = workspaceRoot.findMarkers(ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) {
+			throw new IllegalStateException(e);
+		}
+		return markers;
+	}
+
 }

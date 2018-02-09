@@ -14,14 +14,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -59,8 +55,8 @@ import org.osgi.service.prefs.Preferences;
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.icons.ImageRegistryKey;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
 import pmd.eclipse.plugin.settings.PmdPreferences;
 
 public class PmdViolationsView extends ViewPart
@@ -68,14 +64,13 @@ public class PmdViolationsView extends ViewPart
 
 	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
 
-	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
-	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
-
 	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
 	static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
+	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
+	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
 
@@ -88,7 +83,6 @@ public class PmdViolationsView extends ViewPart
 	private Label label;
 	private TableViewer tableViewer;
 
-	// private final Map<String, PmdViewFilter> filterByAttribute = new HashMap<>();
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
 
 	private final Map<Integer, String> keyByPriority = new HashMap<>();
@@ -100,10 +94,6 @@ public class PmdViolationsView extends ViewPart
 
 		viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
 
-		// PmdViewFilter underlyingFilter = new PmdPassAllFilter();
-		// filter = new PmdPriorityFilter(underlyingFilter,
-		// RulePriority.LOW.getPriority();
-		// filterByAttribute.put("priority", ));
 		viewerFilters[FILTER_INDEX_PRIORITY] = new PmdPriorityViewerFilter();
 		viewerFilters[FILTER_INDEX_PROJECT] = new PmdProjectNameViewerFilter();
 
@@ -334,7 +324,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public Image getImage(Object element) {
-				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker violationMarker = (PmdViolationMarker) element;
 				int pmdPriority = violationMarker.getPriority();
 				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
 				Image image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
@@ -353,7 +343,7 @@ public class PmdViolationsView extends ViewPart
 
 			@Override
 			public String getToolTipText(Object element) {
-				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker violationMarker = (PmdViolationMarker) element;
 				int pmdPriority = violationMarker.getPriority();
 				RulePriority pmdRulePriority = RulePriority.valueOf(pmdPriority);
 				return pmdRulePriority.toString();
@@ -372,7 +362,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getRuleName();
 			}
 		});
@@ -389,7 +379,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getMessage();
 			}
 		});
@@ -405,7 +395,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return String.valueOf(marker.getProjectName());
 			}
 		});
@@ -422,7 +412,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return String.valueOf(marker.getLineNumer());
 			}
 		});
@@ -439,7 +429,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getRuleSetName();
 			}
 		});
@@ -456,7 +446,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getDirectoryPath();
 			}
 		});
@@ -472,7 +462,7 @@ public class PmdViolationsView extends ViewPart
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getFileName();
 			}
 		});
@@ -483,18 +473,6 @@ public class PmdViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addListener(SWT.Move, columnMovedListener);
-	}
-
-	private IMarker[] getPmdMarkers() {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers;
-		try {
-			markers = workspaceRoot.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true,
-					IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return markers;
 	}
 
 	@Override
@@ -530,12 +508,12 @@ public class PmdViolationsView extends ViewPart
 	}
 
 	private void updateView() {
-		final IMarker[] updatedMarkers = getPmdMarkers();
+		final IMarker[] updatedMarkers = PmdMarkers.findAllInWorkspace();
 
-		final List<CheckstyleViolationMarker> pmdViolationMarkers = new ArrayList<>();
+		final List<PmdViolationMarker> pmdViolationMarkers = new ArrayList<>();
 
 		for (IMarker marker : updatedMarkers) {
-			CheckstyleViolationMarker pmdViolationMarker = new CheckstyleViolationMarker(marker);
+			PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
 			pmdViolationMarkers.add(pmdViolationMarker);
 		}
 
@@ -563,7 +541,7 @@ public class PmdViolationsView extends ViewPart
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		CheckstyleViolationMarker pmdViolationMarker = (CheckstyleViolationMarker) selection.getFirstElement();
+		PmdViolationMarker pmdViolationMarker = (PmdViolationMarker) selection.getFirstElement();
 		if (pmdViolationMarker == null) {
 			return;
 		}
@@ -588,7 +566,8 @@ public class PmdViolationsView extends ViewPart
 		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
 
-		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
+		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getEclipseEditorPreferences();
+		// highest priority (here: 1) should always be displayed
 		for (int i = 1; i < lowestPriority + 1; i++) {
 			String key = keyByPriority.get(i);
 			preferences.putBoolean(key, true);

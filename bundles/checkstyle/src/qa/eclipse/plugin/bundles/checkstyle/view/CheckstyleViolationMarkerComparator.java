@@ -12,10 +12,9 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 class CheckstyleViolationMarkerComparator extends ViewerComparator {
 
 	public static final int SORT_PROP_PRIORITY = 0;
-	public static final int SORT_PROP_RULENAME = 1;
+	public static final int SORT_PROP_MODULENAME = 1;
 	public static final int SORT_PROP_LINENUMBER = 2;
-//	public static final int SORT_PROP_RULESET = 3;
-	public static final int SORT_PROP_PROJECTNAME = 4;
+	public static final int SORT_PROP_PROJECTNAME = 3;
 
 	private int selectedSortProperty;
 
@@ -37,7 +36,7 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			compareResult = comparePriority(marker1, marker2);
 			break;
 		}
-		case SORT_PROP_RULENAME: {
+		case SORT_PROP_MODULENAME: {
 			compareResult = compareRuleName(marker1, marker2);
 			break;
 		}
@@ -45,10 +44,6 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			compareResult = compareLineNumber(marker1, marker2);
 			break;
 		}
-//		case SORT_PROP_RULESET: {
-//			compareResult = compareRuleSet(marker1, marker2);
-//			break;
-//		}
 		case SORT_PROP_PROJECTNAME: {
 			compareResult = compareProjectName(marker1, marker2);
 			break;

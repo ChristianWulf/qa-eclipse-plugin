@@ -9,7 +9,33 @@
          <command
                commandId="qa.eclipse.plugin.bundles.checkstyle.command.packageexplorer"
                icon="icons/checkstyle-favicon.ico"
-               label="Run in package explorer"
+               label="Run Checkstyle"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
+         <command
+               commandId="qa.eclipse.plugin.bundles.checkstyle.command.projectexplorer"
+               icon="icons/checkstyle-favicon.ico"
+               label="Run Checkstyle"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#AbstractTextEditorContext">
+         <command
+               commandId="qa.eclipse.plugin.bundles.checkstyle.command.compilationuniteditor"
+               icon="icons/checkstyle-favicon.ico"
+               label="Run Checkstyle"
                style="push">
          </command>
       </menuContribution>
@@ -22,14 +48,170 @@
             id="qa.eclipse.plugin.bundles.checkstyle.command.packageexplorer"
             name="Run Checkstyle">
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="qa.eclipse.plugin.bundles.checkstyle.handler.ExplorerHandler"
+            id="qa.eclipse.plugin.bundles.checkstyle.command.projectexplorer"
+            name="Run Checkstyle">
+      </command>
+     <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="qa.eclipse.plugin.bundles.checkstyle.handler.CompilationUnitEditorHandler"
+            id="qa.eclipse.plugin.bundles.checkstyle.command.compilationuniteditor"
+            name="Run Checkstyle">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
             class="qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePropertyPage"
+            icon="icons/checkstyle-favicon.ico"
             id="qa.eclipse.plugin.bundles.checkstyle.propertypage"
             name="Checkstyle Settings">
       </page>
    </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation"
+         name="Abstract Checkstyle Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="checkstyle.modulename">
+      </attribute>
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation.error"
+         name="Checkstyle Error Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="qa.eclipse.plugin.checkstyle.markers.violation">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation.warning"
+         name="Checkstyle Warning Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="qa.eclipse.plugin.checkstyle.markers.violation">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation.info"
+         name="Checkstyle Info Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="qa.eclipse.plugin.checkstyle.markers.violation">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation.ignore"
+         name="Checkstyle Ignore Violation Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="qa.eclipse.plugin.checkstyle.markers.violation">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+      <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="qa.eclipse.plugin.checkstyle.markers.violation.error"
+            name="qa.eclipse.plugin.checkstyle.annotationtype.error">
+      </type>
+      <type
+            markerType="qa.eclipse.plugin.checkstyle.markers.violation.warning"
+            name="qa.eclipse.plugin.checkstyle.annotationtype.warning">
+      </type>
+      <type
+            markerType="qa.eclipse.plugin.checkstyle.markers.violation.info"
+            name="qa.eclipse.plugin.checkstyle.annotationtype.info">
+      </type>
+      <type
+            markerType="qa.eclipse.plugin.checkstyle.markers.violation.ignore"
+            name="qa.eclipse.plugin.checkstyle.annotationtype.ignore">
+      </type>
+   </extension>
+   
+      <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="qa.eclipse.plugin.checkstyle.annotationtype.error"
+            colorPreferenceKey="color.checkstyle.error"
+            colorPreferenceValue="255,0,0"
+            icon="icons/checkstyle3-annotation.png"
+            label="QA: Checkstyle &apos;Error&apos; Violation"
+            overviewRulerPreferenceKey="overview.checkstyle.error"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="text.checkstyle.error"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="vertical.checkstyle.error"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.checkstyle.annotationtype.warning"
+            colorPreferenceKey="color.checkstyle.warning"
+            colorPreferenceValue="255,0,0"
+            icon="icons/checkstyle2-annotation.png"
+            label="QA: Checkstyle &apos;Warning&apos; Violation"
+            overviewRulerPreferenceKey="overview.checkstyle.warning"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="text.checkstyle.warning"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="vertical.checkstyle.warning"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.checkstyle.annotationtype.info"
+            colorPreferenceKey="color.checkstyle.info"
+            colorPreferenceValue="255,0,0"
+            icon="icons/checkstyle1-annotation.png"
+            label="QA: Checkstyle &apos;Info&apos; Violation"
+            overviewRulerPreferenceKey="overview.checkstyle.info"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="text.checkstyle.info"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="vertical.checkstyle.info"
+            verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="qa.eclipse.plugin.checkstyle.annotationtype.ignore"
+            colorPreferenceKey="color.checkstyle.ignore"
+            colorPreferenceValue="255,0,0"
+            icon="icons/checkstyle0-annotation.png"
+            label="QA: Checkstyle &apos;Ignore&apos; Violation"
+            overviewRulerPreferenceKey="overview.checkstyle.ignore"
+            overviewRulerPreferenceValue="false"
+            textPreferenceKey="text.checkstyle.ignore"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="vertical.checkstyle.ignore"
+            verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
+      <extension
+            point="org.eclipse.ui.views">
+         <view
+               class="qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView"
+               icon="icons/checkstyle-favicon.ico"
+               id="qa.eclipse.plugin.checkstyle.view"
+               name="Checkstyle Violations"
+               restorable="true">
+         </view>
+      </extension>
 
 </plugin>

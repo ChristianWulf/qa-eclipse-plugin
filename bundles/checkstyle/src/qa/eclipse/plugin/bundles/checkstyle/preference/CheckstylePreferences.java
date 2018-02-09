@@ -41,6 +41,10 @@ public class CheckstylePreferences {
 		return preferences;
 	}
 
+	public IEclipsePreferences getEclipseEditorPreferences() {
+		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
+	}
+
 	public synchronized IEclipsePreferences getProjectScopedPreferences(IProject project) {
 		IEclipsePreferences preferences;
 
@@ -82,4 +86,5 @@ public class CheckstylePreferences {
 	public String loadConfigFilePath(IEclipsePreferences preferences) {
 		return preferences.get(PROP_KEY_CONFIG_FILE_PATH, INVALID_CONFIG_FILE_PATH);
 	}
+
 }

@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import net.sourceforge.pmd.RulePriority;
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
 class PmdPriorityViewerFilter extends ViewerFilter {
 
@@ -12,7 +12,7 @@ class PmdPriorityViewerFilter extends ViewerFilter {
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+		PmdViolationMarker marker = (PmdViolationMarker) element;
 		return marker.getPriority() <= lowestPriority;
 	}
 

@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.markers.CheckstyleViolationMarker;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 
 class PmdViolationMarkerComparator extends ViewerComparator {
 
@@ -28,8 +28,8 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 			return 0;
 		}
 
-		CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) e1;
-		CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) e2;
+		PmdViolationMarker marker1 = (PmdViolationMarker) e1;
+		PmdViolationMarker marker2 = (PmdViolationMarker) e2;
 
 		int compareResult;
 		switch (selectedSortProperty) {
@@ -77,35 +77,35 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int comparePriority(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+	private int comparePriority(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return -1 * Integer.compare(marker1.getPriority(), marker2.getPriority());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareRuleName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+	private int compareRuleName(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return marker1.getRuleName().compareToIgnoreCase(marker2.getRuleName());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareLineNumber(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+	private int compareLineNumber(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareRuleSet(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+	private int compareRuleSet(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return marker1.getRuleSetName().compareToIgnoreCase(marker2.getRuleSetName());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareProjectName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+	private int compareProjectName(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
 	}
 }
