@@ -159,8 +159,7 @@ public class CheckstylePropertyPage extends PropertyPage {
 				.getProjectScopedPreferences(resource.getProject());
 
 		preferences.put(CheckstylePreferences.PROP_KEY_CONFIG_FILE_PATH, configFilePathText.getText());
-		// preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_RULES_JARS,
-		// jarFilePathsText.getText());
+		preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, customModulesJarPathsText.getText());
 		preferences.putBoolean(CheckstylePreferences.PROP_KEY_ENABLED, enabledButton.getSelection());
 
 		try {
