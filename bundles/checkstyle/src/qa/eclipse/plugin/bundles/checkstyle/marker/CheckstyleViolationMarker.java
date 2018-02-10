@@ -38,8 +38,12 @@ public class CheckstyleViolationMarker {
 		return marker.getAttribute(IMarker.MESSAGE, "");
 	}
 
-	public String getModuleName() {
-		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_MODULENAME, "");
+	public String getCheckName() {
+		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_NAME, "");
+	}
+
+	public String getCheckPackageName() {
+		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_PACKAGE, "");
 	}
 
 	public String getProjectName() {

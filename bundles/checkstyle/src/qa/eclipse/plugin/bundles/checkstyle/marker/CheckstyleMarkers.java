@@ -1,6 +1,9 @@
 package qa.eclipse.plugin.bundles.checkstyle.marker;
 
+import static qa.eclipse.plugin.bundles.checkstyle.SplitUtils.split;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -38,7 +41,8 @@ public final class CheckstyleMarkers {
 	 * @see {@link com.puppycrawl.tools.checkstyle.api.SeverityLevel}
 	 */
 	public static final String ATTR_KEY_PRIORITY = "checkstyle.priority";
-	public static final String ATTR_KEY_MODULENAME = "checkstyle.modulename";
+	public static final String ATTR_KEY_CHECK_PACKAGE = "checkstyle.check_package";
+	public static final String ATTR_KEY_CHECK_NAME = "checkstyle.check_name";
 
 	public static void appendViolationMarker(IFile eclipseFile, AuditEvent violation) throws CoreException {
 		int priority = violation.getSeverityLevel().ordinal();
@@ -50,7 +54,11 @@ public final class CheckstyleMarkers {
 		// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 
 		marker.setAttribute(ATTR_KEY_PRIORITY, priority);
-		marker.setAttribute(ATTR_KEY_MODULENAME, violation.getModuleId());
+		// getModuleId() always returns null
+		String checkClassName = violation.getSourceName();
+		List<String> checkClassNameParts = split(checkClassName).once().at('.').fromTheRight();
+		marker.setAttribute(ATTR_KEY_CHECK_PACKAGE, checkClassNameParts.get(0));
+		marker.setAttribute(ATTR_KEY_CHECK_NAME, checkClassNameParts.get(1));
 
 		// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
 		// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());

@@ -55,8 +55,8 @@ import org.osgi.service.prefs.Preferences;
 import net.sourceforge.pmd.RulePriority;
 import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.icons.ImageRegistryKey;
-import pmd.eclipse.plugin.markers.PmdViolationMarker;
 import pmd.eclipse.plugin.markers.PmdMarkers;
+import pmd.eclipse.plugin.markers.PmdViolationMarker;
 import pmd.eclipse.plugin.settings.PmdPreferences;
 
 public class PmdViolationsView extends ViewPart
@@ -246,6 +246,8 @@ public class PmdViolationsView extends ViewPart
 		String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
 		String[] columnOrdersEncoded = columnOrderPreference.split(",");
 
+		boolean reset = false;
+
 		try {
 			for (int i = 0; i < columnOrdersEncoded.length; i++) {
 				String columnOrderEncoded = columnOrdersEncoded[i];
@@ -256,6 +258,16 @@ public class PmdViolationsView extends ViewPart
 		} catch (NumberFormatException e) {
 			// if one of the encoded indices is an invalid number,
 			// use the default order 0,1,2,...
+			reset = true;
+		}
+
+		if (columnOrderIndices.length != columnOrdersEncoded.length) {
+			// if the viewPreferences are out-of-date due to an plugin version update,
+			// use the default order 0,1,2,...
+			reset = true;
+		}
+
+		if (reset) {
 			for (int i = 0; i < numColumns; i++) {
 				columnOrderIndices[i] = i;
 			}

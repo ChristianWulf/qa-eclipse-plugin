@@ -12,9 +12,10 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 class CheckstyleViolationMarkerComparator extends ViewerComparator {
 
 	public static final int SORT_PROP_PRIORITY = 0;
-	public static final int SORT_PROP_MODULENAME = 1;
+	public static final int SORT_PROP_CHECK_NAME = 1;
 	public static final int SORT_PROP_LINENUMBER = 2;
 	public static final int SORT_PROP_PROJECTNAME = 3;
+	public static final int SORT_PROP_CHECK_PACKAGE_NAME = 4;
 
 	private int selectedSortProperty;
 
@@ -36,8 +37,8 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			compareResult = comparePriority(marker1, marker2);
 			break;
 		}
-		case SORT_PROP_MODULENAME: {
-			compareResult = compareRuleName(marker1, marker2);
+		case SORT_PROP_CHECK_NAME: {
+			compareResult = compareCheckName(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_LINENUMBER: {
@@ -46,6 +47,10 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 		}
 		case SORT_PROP_PROJECTNAME: {
 			compareResult = compareProjectName(marker1, marker2);
+			break;
+		}
+		case SORT_PROP_CHECK_PACKAGE_NAME: {
+			compareResult = compareCheckPackageName(marker1, marker2);
 			break;
 		}
 		default: {
@@ -79,8 +84,8 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareRuleName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
-		return marker1.getModuleName().compareToIgnoreCase(marker2.getModuleName());
+	private int compareCheckName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+		return marker1.getCheckName().compareToIgnoreCase(marker2.getCheckName());
 	}
 
 	/**
@@ -95,5 +100,12 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	 */
 	private int compareProjectName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
 		return marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
+	}
+
+	/**
+	 * Assumed sort order is SWT.UP.
+	 */
+	private int compareCheckPackageName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+		return marker1.getCheckPackageName().compareToIgnoreCase(marker2.getCheckPackageName());
 	}
 }

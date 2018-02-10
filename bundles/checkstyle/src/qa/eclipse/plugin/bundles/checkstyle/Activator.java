@@ -2,8 +2,11 @@ package qa.eclipse.plugin.bundles.checkstyle;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -53,6 +56,13 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+
+		ImageRegistryKey.initialize(reg);
 	}
 
 	public void logThrowable(String message, Throwable throwable) {

@@ -1,11 +1,14 @@
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
+import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_NAME;
+import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_PACKAGE_NAME;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_LINENUMBER;
-import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_MODULENAME;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PRIORITY;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PROJECTNAME;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +134,7 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				TableCombo source = (TableCombo) e.getSource();
-				int lowestPriority = source.getSelectionIndex() + 1;
+				int lowestPriority = source.getSelectionIndex();
 				filterByPriority(lowestPriority);
 				tableViewer.refresh(false);
 				viewPreferences.putInt(PREF_FILTER_PRIORITY, lowestPriority); // save filter setting
@@ -198,11 +201,22 @@ public class CheckstyleViolationsView extends ViewPart
 		Image image;
 		TableItem ti;
 
-		for (SeverityLevel severityLevel : SeverityLevel.values()) {
+		SeverityLevel[] severityLevels = SeverityLevel.values().clone();
+
+		// highest priority (here: SeverityLevel.ERROR = 3) should be displayed as the
+		// top-most item
+		Arrays.sort(severityLevels, new Comparator<SeverityLevel>() {
+			@Override
+			public int compare(SeverityLevel o1, SeverityLevel o2) {
+				return -1 * o1.compareTo(o2);
+			}
+		});
+
+		for (SeverityLevel severityLevel : severityLevels) {
 			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(severityLevel.ordinal());
 			image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
-			ti.setText("At least " + severityLevel.getName());
+			ti.setText("At least " + severityLevel.name());
 			ti.setImage(image);
 			ti.setData(severityLevel);
 		}
@@ -248,6 +262,8 @@ public class CheckstyleViolationsView extends ViewPart
 		String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
 		String[] columnOrdersEncoded = columnOrderPreference.split(",");
 
+		boolean reset = false;
+
 		try {
 			for (int i = 0; i < columnOrdersEncoded.length; i++) {
 				String columnOrderEncoded = columnOrdersEncoded[i];
@@ -258,6 +274,16 @@ public class CheckstyleViolationsView extends ViewPart
 		} catch (NumberFormatException e) {
 			// if one of the encoded indices is an invalid number,
 			// use the default order 0,1,2,...
+			reset = true;
+		}
+
+		if (columnOrderIndices.length != columnOrdersEncoded.length) {
+			// if the viewPreferences are out-of-date due to an plugin version update,
+			// use the default order 0,1,2,...
+			reset = true;
+		}
+
+		if (reset) {
 			for (int i = 0; i < numColumns; i++) {
 				columnOrderIndices[i] = i;
 			}
@@ -365,16 +391,16 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public String getText(Object element) {
 				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-				return marker.getModuleName();
+				return marker.getCheckName();
 			}
 		});
 		column = tableViewerColumn.getColumn();
-		column.setText("Module name");
+		column.setText("Check name");
 		column.setResizable(true);
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_MODULENAME));
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_CHECK_NAME));
 		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
@@ -408,6 +434,24 @@ public class CheckstyleViolationsView extends ViewPart
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
 		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PROJECTNAME));
+		column.addListener(SWT.Move, columnMovedListener);
+
+		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+				return marker.getCheckPackageName();
+			}
+		});
+		column = tableViewerColumn.getColumn();
+		column.setText("Check package");
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setWidth(200);
+		column.addSelectionListener(
+				new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_CHECK_PACKAGE_NAME));
 		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);

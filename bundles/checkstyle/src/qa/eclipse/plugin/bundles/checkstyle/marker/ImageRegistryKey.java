@@ -16,21 +16,21 @@ public final class ImageRegistryKey {
 	}
 
 	/**
-	 * @return "priority"-decorator
+	 * @return decorator-"priority"
 	 */
 	public static String getFileDecoratorKeyByPriority(int priority) {
 		return "decorator-" + String.valueOf(priority);
 	}
 
 	/**
-	 * @return "priority"-annotation
+	 * @return annotation-"priority"
 	 */
 	public static String getAnnotationKeyByPriority(int priority) {
 		return "annotation-" + String.valueOf(priority);
 	}
 
 	/**
-	 * @return "priority"-annotation (yes, same as for annotations)
+	 * @return annotation-"priority" (yes, same as for annotations)
 	 */
 	public static String getPriorityColumnKeyByPriority(int priority) {
 		return "annotation-" + String.valueOf(priority);
