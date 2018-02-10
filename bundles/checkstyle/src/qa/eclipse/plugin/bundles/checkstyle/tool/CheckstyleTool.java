@@ -54,12 +54,12 @@ public class CheckstyleTool {
 			throw new IllegalStateException(e);
 		}
 
-		// checker.setClassLoader(classLoader);
-
 		IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(project);
 		String[] customModuleJarPaths = CheckstylePreferences.INSTANCE.loadCustomModuleJarPaths(projectPreferences);
 		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 		URL[] urls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
+
+		// Checker requires moduleClassLoader
 
 		ClassLoader moduleClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
 		checker.setModuleClassLoader(moduleClassLoader);
