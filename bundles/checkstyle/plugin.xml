@@ -213,5 +213,18 @@
                restorable="true">
          </view>
       </extension>
-
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="qa.eclipse.plugin.checkstyle.editorContribution"
+            targetID="org.eclipse.jdt.ui.CompilationUnitEditor">
+         <action
+               actionID="RulerClick"
+               class="qa.eclipse.plugin.bundles.checkstyle.handler.LeftClickEditorActionDelegate"
+               id="qa.eclipse.plugin.checkstyle.rulerClick"
+               label="label"
+               style="push">
+         </action>
+      </editorContribution>
+   </extension>
 </plugin>
