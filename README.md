@@ -20,6 +20,10 @@ The plugin provides for each qa tool:
 ## Configuration
 The plugin expects a dedicated "prefs" file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically if you press the "apply" button on the corresponding property page. The property page allows to define the path to the tool's xml configuration file and the path(s) to the jar file(s) containing your custom rules/checks. The "prefs" file is intended to be uploaded to your repository to share your configuration with your team.
 
+**IMPORTANT** The version of the API used for your custom rules/checks must be compatible with the version of the tool included in this Eclipse plugin.
+- PMD: [](bundles/pmd/lib)
+- Checkstyle: [](bundles/checkstyle/lib)
+
 ## Install
 - via Eclipse Updatesite:
   - Snapshot version: https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/
