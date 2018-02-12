@@ -4,9 +4,9 @@
 # Lightweight Eclipse Plugin for Quality Assurance Tools
 The offical Eclipse plugins for PMD and Checkstyle work great...as long as you do not want to add custom rules or checks, respectively. For this purpose, you need to implement an Eclipse Plugin Fragment including the new rules/checks. This causes an unnecessarily high implementation effort. Hence, I implemented a new plugin, which covers all matured qa tools, and allows an easy integration of custom rules/checks via a config file. Eclipse Plugin Fragments are not necessary. You can keep your qa config files and use them for your build tool, your continuous integration infrastructure, and within Eclipse.
 
-- Done: PMD
-- In progress: Checkstyle
-- Planned: Findbugs
+- Done: PMD, Checkstyle
+- In progress: Findbugs
+- Planned: nothing else, so far.
 
  See our [associated milestones](https://github.com/ChristianWulf/qa-eclipse-plugin/milestones).
 
