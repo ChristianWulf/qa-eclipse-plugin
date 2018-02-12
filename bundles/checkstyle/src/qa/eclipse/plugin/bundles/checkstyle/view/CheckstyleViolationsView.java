@@ -134,10 +134,10 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				TableCombo source = (TableCombo) e.getSource();
-				int lowestPriority = source.getSelectionIndex();
-				filterByPriority(lowestPriority);
+				int selectionIndex = source.getSelectionIndex();
+				filterBySelectionIndex(selectionIndex);
 				tableViewer.refresh(false);
-				viewPreferences.putInt(PREF_FILTER_PRIORITY, lowestPriority); // save filter setting
+				viewPreferences.putInt(PREF_FILTER_PRIORITY, selectionIndex); // save filter setting
 				return;
 			}
 		});
@@ -168,7 +168,7 @@ public class CheckstyleViolationsView extends ViewPart
 		// load filter settings
 		int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
 		tableCombo.select(loadSavedFilterPriority);
-		filterByPriority(loadSavedFilterPriority);
+		filterBySelectionIndex(loadSavedFilterPriority);
 
 		// interprets the input and transforms it into rows
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -592,17 +592,17 @@ public class CheckstyleViolationsView extends ViewPart
 		}
 	}
 
-	private void filterByPriority(int lowestPriority) {
+	private void filterBySelectionIndex(int selectionIndex) {
 		CheckstylePriorityViewerFilter priorityFilter = (CheckstylePriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
-		priorityFilter.setLowestPriority(lowestPriority);
+		priorityFilter.setSelectionIndex(selectionIndex);
 
 		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getEclipseEditorPreferences();
 		// highest priority (here: 3) should always be displayed
-		for (int i = SeverityLevel.ERROR.ordinal(); i >= lowestPriority; i--) {
+		for (int i = SeverityLevel.ERROR.ordinal(); i >= selectionIndex; i--) {
 			String key = verticalKeyByPriority.get(i);
 			preferences.putBoolean(key, true);
 		}
-		for (int i = lowestPriority - 1; i >= 0; i--) {
+		for (int i = selectionIndex - 1; i >= 0; i--) {
 			String key = verticalKeyByPriority.get(i);
 			preferences.putBoolean(key, false);
 		}

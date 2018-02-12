@@ -9,20 +9,27 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
 class CheckstylePriorityViewerFilter extends ViewerFilter {
 
-	private int lowestPriority = SeverityLevel.IGNORE.ordinal();
+	/** default value is 3 from 0..3 */
+	private int selectionIndex = SeverityLevel.ERROR.ordinal() - SeverityLevel.IGNORE.ordinal();
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-		return marker.getSeverityLevelIndex() >= lowestPriority;
+		int severityLevelIndex = marker.getSeverityLevelIndex();
+
+		int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - severityLevelIndex;
+
+		// example: 3 means "at least IGNORE",
+		// so transformed severity must be less or equal selectionIndex
+		return transformedSeverityLevelIndex <= selectionIndex;
 	}
 
-	public void setLowestPriority(int lowestPriority) {
-		this.lowestPriority = lowestPriority;
+	public void setSelectionIndex(int selectionIndex) {
+		this.selectionIndex = selectionIndex;
 	}
 
 	public int getLowestPriority() {
-		return lowestPriority;
+		return selectionIndex;
 	}
 
 }
