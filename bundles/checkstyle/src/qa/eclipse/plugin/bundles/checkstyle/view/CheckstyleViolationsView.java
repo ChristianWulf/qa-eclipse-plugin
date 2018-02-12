@@ -598,12 +598,14 @@ public class CheckstyleViolationsView extends ViewPart
 
 		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getEclipseEditorPreferences();
 		// highest priority (here: 3) should always be displayed
-		for (int i = SeverityLevel.ERROR.ordinal(); i >= selectionIndex; i--) {
-			String key = verticalKeyByPriority.get(i);
+		for (int i = 0; i <= selectionIndex; i++) {
+			int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
+			String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
 			preferences.putBoolean(key, true);
 		}
-		for (int i = selectionIndex - 1; i >= 0; i--) {
-			String key = verticalKeyByPriority.get(i);
+		for (int i = selectionIndex + 1; i <= SeverityLevel.ERROR.ordinal(); i++) {
+			int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
+			String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
 			preferences.putBoolean(key, false);
 		}
 	}

@@ -24,7 +24,7 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
-	public static final String ID = "qa.eclipse.plugin.checkstyle.decorator";
+	public static final String ID = "qa.eclipse.plugin.bundles.checkstyle.decorator";
 
 	private final ImageRegistry imageRegistry;
 
@@ -35,7 +35,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		// update if property "xx" of element has been updated
-		// update if pmd has run for the file represented by the element
+		// update if the tool has run for the file represented by the element
 		return true;
 	}
 

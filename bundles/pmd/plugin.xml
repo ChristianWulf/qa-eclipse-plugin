@@ -282,12 +282,6 @@
          </action>
       </editorContribution>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="pmd.eclipse.plugin.experimental.PreferenceInitializer">
-      </initializer>
-   </extension>
    <extension point="org.eclipse.ui.propertyPages">
       <page
             class="pmd.eclipse.plugin.experimental.properties.SamplePropertyPage"

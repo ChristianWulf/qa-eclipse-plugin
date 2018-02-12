@@ -13,9 +13,6 @@
                style="push">
          </command>
       </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
@@ -26,9 +23,6 @@
                style="push">
          </command>
       </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="popup:#AbstractTextEditorContext">
@@ -226,5 +220,31 @@
                style="push">
          </action>
       </editorContribution>
+   </extension>
+   <extension point="org.eclipse.ui.decorators">
+	<decorator
+            adaptable="true"
+            class="qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator"
+			id="qa.eclipse.plugin.bundles.checkstyle.decorator"
+            label="Checkstyle Violation Decorator"
+            lightweight="true"
+            location="TOP_LEFT"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass
+                     name="org.eclipse.core.resources.IResource">
+               </objectClass>
+               <or>
+                  <objectClass
+                        name="org.eclipse.core.resources.IProject">
+                  </objectClass>
+                  <objectClass
+                        name="org.eclipse.core.resources.IFile">
+                  </objectClass>
+               </or>
+            </and>
+         </enablement>
+      </decorator>
    </extension>
 </plugin>
