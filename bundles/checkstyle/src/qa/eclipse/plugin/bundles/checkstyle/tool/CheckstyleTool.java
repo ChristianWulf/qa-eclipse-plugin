@@ -64,20 +64,6 @@ public class CheckstyleTool {
 		ClassLoader moduleClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
 		checker.setModuleClassLoader(moduleClassLoader);
 
-		// ClassLoader checkstyleClassLoader = getClass().getClassLoader();
-		// Set<String> packageNames;
-		// try {
-		// packageNames = PackageNamesLoader.getPackageNames(checkstyleClassLoader);
-		// } catch (CheckstyleException e) {
-		// throw new IllegalStateException(e);
-		// }
-		//
-		// ClassLoader moduleClassLoader = null;
-		// PackageObjectFactory moduleFactory = new PackageObjectFactory(packageNames,
-		// moduleClassLoader,
-		// ModuleLoadOption.TRY_IN_ALL_REGISTERED_PACKAGES);
-		// checker.setModuleFactory(moduleFactory);
-
 		Locale platformLocale = EclipsePlatform.getLocale();
 		checker.setLocaleLanguage(platformLocale.getLanguage());
 		checker.setLocaleCountry(platformLocale.getCountry());
@@ -118,39 +104,15 @@ public class CheckstyleTool {
 			files.add(sourceCodeFile);
 		}
 
-		int numViolations = -1;
-
 		try {
-			numViolations = checker.process(files);
+			checker.process(files);
 		} catch (CheckstyleException e) {
 			if (e.getCause() instanceof OperationCanceledException) {
 				// user requested cancellation, keep silent
-				System.out.println("User abort");
 			} else {
 				throw new IllegalStateException(e); // log to error view somewhere
 			}
 		}
-
-		System.out.println("numViolations: " + numViolations);
 	}
-
-	// private void displayViolationMarkers(final Map<String, IFile>
-	// eclipseFilesMap, PmdProblemRenderer problemRenderer) {
-	// Report report = problemRenderer.getProblemReport();
-	// if (report.size() > 0) {
-	// for (RuleViolation violation : report.getViolationTree()) {
-	// String violationFilename = violation.getFilename();
-	// IFile eclipseFile = eclipseFilesMap.get(violationFilename);
-	// try {
-	// PmdMarkers.appendViolationMarker(eclipseFile, violation);
-	// } catch (CoreException e) {
-	// // ignore if marker could not be created
-	// }
-	// }
-	//
-	// // update explorer view so that the new violation flags are displayed
-	// FileIconDecorator.refresh();
-	// }
-	// }
 
 }

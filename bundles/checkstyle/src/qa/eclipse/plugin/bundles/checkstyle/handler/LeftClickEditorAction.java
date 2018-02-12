@@ -27,8 +27,7 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView;
 
-
-class LeftClickEditorAction extends SelectMarkerRulerAction {
+public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
 
@@ -42,12 +41,6 @@ class LeftClickEditorAction extends SelectMarkerRulerAction {
 		super.run();
 		runAction();
 	}
-
-	// @Override
-	// public void runWithEvent(Event event) {
-	// super.run();
-	// runAction();
-	// }
 
 	private void runAction() {
 		IDocument document = getDocument();
@@ -85,7 +78,6 @@ class LeftClickEditorAction extends SelectMarkerRulerAction {
 				}
 
 				if (markerType.startsWith(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER)) {
-					// TODO select marker line in violation view
 					openViolationView(marker);
 				}
 			}

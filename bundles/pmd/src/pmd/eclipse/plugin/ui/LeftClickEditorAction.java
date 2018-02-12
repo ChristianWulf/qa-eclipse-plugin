@@ -42,12 +42,6 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 		runAction();
 	}
 
-	// @Override
-	// public void runWithEvent(Event event) {
-	// super.run();
-	// runAction();
-	// }
-
 	private void runAction() {
 		IDocument document = getDocument();
 		if (document == null) {
@@ -84,7 +78,6 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 				}
 
 				if (markerType.startsWith(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER)) {
-					// TODO select marker line in violation view
 					openViolationView(marker);
 				}
 			}

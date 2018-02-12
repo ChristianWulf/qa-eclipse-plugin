@@ -28,7 +28,7 @@ public class CheckstyleJob extends WorkspaceJob {
 
 	private final List<IFile> eclipseFiles;
 
-	public CheckstyleJob(String name, List<IFile> eclipseFiles) {
+	private CheckstyleJob(String name, List<IFile> eclipseFiles) {
 		super(name);
 		this.eclipseFiles = eclipseFiles;
 	}
@@ -62,15 +62,13 @@ public class CheckstyleJob extends WorkspaceJob {
 			}
 		}
 
-		// update explorer view so that the violation flag are not displayed anymore
+		// update explorer view so that the violation flags are not displayed anymore
 		FileIconDecorator.refresh();
 
 		CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
 
-//		CheckstyleTool checkstyleTool = Activator.getDefault().getCheckstyleTool();
 		CheckstyleTool checkstyleTool = new CheckstyleTool();
 		checkstyleTool.startAsyncAnalysis(eclipseFiles, checkstyleListener);
-		// TODO
 
 		return Status.OK_STATUS;
 	}

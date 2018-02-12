@@ -16,6 +16,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
+	 * 8x8 image
+	 * 
 	 * @return decorator-"priority"
 	 */
 	public static String getFileDecoratorKeyByPriority(int priority) {
@@ -23,6 +25,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
+	 * 16x16 image
+	 * 
 	 * @return annotation-"priority"
 	 */
 	public static String getAnnotationKeyByPriority(int priority) {
@@ -30,6 +34,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
+	 * 16x16 image
+	 * 
 	 * @return annotation-"priority" (yes, same as for annotations)
 	 */
 	public static String getPriorityColumnKeyByPriority(int priority) {

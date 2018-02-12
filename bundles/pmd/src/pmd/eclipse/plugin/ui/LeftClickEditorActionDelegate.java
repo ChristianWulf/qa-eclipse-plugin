@@ -11,8 +11,8 @@ public class LeftClickEditorActionDelegate extends AbstractRulerActionDelegate {
 
 	@Override
 	protected IAction createAction(ITextEditor editor, IVerticalRulerInfo rulerInfo) {
-		return new LeftClickEditorAction(ResourceBundle.getBundle(PmdMessages.getBundleName()),
-				"QAEditor.selectMarker.", editor, rulerInfo);
+		ResourceBundle bundle = ResourceBundle.getBundle(PmdMessages.getBundleName());
+		return new LeftClickEditorAction(bundle, "QAEditor.pmd.selectMarker.", editor, rulerInfo);
 	}
 
 }

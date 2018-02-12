@@ -276,8 +276,8 @@
          <action
                actionID="RulerClick"
                class="pmd.eclipse.plugin.ui.LeftClickEditorActionDelegate"
-               id="pmd.eclipse.plugin.ui.action1"
-               label="label"
+               id="qa.eclipse.plugin.pmd.rulerClick"
+               label="PMD Left Click"
                style="push">
          </action>
       </editorContribution>

@@ -94,36 +94,4 @@ public class PmdViolationMarker {
 		return true;
 	}
 
-	// public Comparable<?> getAttributeValueByIndex(int creationColumnIndex) {
-	// switch (creationColumnIndex) {
-	// case 0: {
-	// return getPriority();
-	// }
-	// case 1: {
-	// return getRuleName();
-	// }
-	// case 2: {
-	// return getDirectoryPath();
-	// }
-	// case 3: {
-	// return getFileName();
-	// }
-	// case 4: {
-	// return getLineNumer();
-	// }
-	// case 5: {
-	// return getMessage();
-	// }
-	// case 6: {
-	// return getRuleSetName();
-	// }
-	// case 7: {
-	// return getProjectName();
-	// }
-	// default: {
-	// return 0;
-	// }
-	// }
-	// }
-
 }

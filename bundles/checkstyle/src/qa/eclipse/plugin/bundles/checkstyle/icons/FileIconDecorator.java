@@ -33,13 +33,6 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	}
 
 	@Override
-	public boolean isLabelProperty(Object element, String property) {
-		// update if property "xx" of element has been updated
-		// update if the tool has run for the file represented by the element
-		return true;
-	}
-
-	@Override
 	public void decorate(Object element, IDecoration decoration) {
 		if (!(element instanceof IResource)) {
 			return;
@@ -86,8 +79,8 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		// apply filter
 		ImageDescriptor imageDescriptor = null;
-		int lowestAllowedPriority = 5;
-		if (highestPriority <= lowestAllowedPriority) {
+		int lowestAllowedPriority = 0;
+		if (highestPriority >= lowestAllowedPriority) {
 			String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
 			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		}

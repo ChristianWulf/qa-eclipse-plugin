@@ -72,11 +72,14 @@
             value="true">
       </persistent>
       <attribute
-            name="checkstyle.modulename">
+            name="checkstyle.check_name">
       </attribute>
       <super
             type="org.eclipse.core.resources.textmarker">
       </super>
+      <attribute
+            name="checkstyle.check_package">
+      </attribute>
    </extension>
    <extension
          id="qa.eclipse.plugin.checkstyle.markers.violation.error"
@@ -216,7 +219,7 @@
                actionID="RulerClick"
                class="qa.eclipse.plugin.bundles.checkstyle.handler.LeftClickEditorActionDelegate"
                id="qa.eclipse.plugin.checkstyle.rulerClick"
-               label="label"
+               label="Checkstyle Left Click"
                style="push">
          </action>
       </editorContribution>
