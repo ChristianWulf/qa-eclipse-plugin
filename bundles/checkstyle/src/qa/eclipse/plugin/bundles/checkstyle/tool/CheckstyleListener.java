@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
-import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
@@ -57,11 +56,6 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 
 	@Override
 	public void addError(AuditEvent violation) {
-		SeverityLevel severityLevel = violation.getSeverityLevel();
-
-		System.out.println("violation: " + violation.getLocalizedMessage().getMessage());
-
-		
 		String violationFilename = violation.getFileName();
 		IFile eclipseFile = eclipseFileByFilePath.get(violationFilename);
 		try {
@@ -69,8 +63,6 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		} catch (CoreException e) {
 			// ignore if marker could not be created
 		}
-		
-		// TODO Auto-generated method stub
 
 	}
 
