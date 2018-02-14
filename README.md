@@ -16,6 +16,8 @@ The plugin provides for each qa tool:
 - a view to display the issues detected by the tool. This view needs to be opened manually via 
   > ``"Window -> Show View -> Other..."``
 - a property page for each project (example: "PMD Settings"). This page allows to configure the tool.
+  
+  ![Image of the PMD's property page](bundles/pmd/screenshots/pmd_property_page.PNG)
 
 ## Configuration
 The plugin expects a dedicated "prefs" file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically if you press the "apply" button on the corresponding property page. The property page allows to define the path to the tool's xml configuration file and the path(s) to the jar file(s) containing your custom rules/checks. The "prefs" file is intended to be uploaded to your repository to share your configuration with your team.
