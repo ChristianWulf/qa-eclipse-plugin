@@ -11,6 +11,32 @@
                icon="icons/checkstyle-favicon.ico"
                label="Run Checkstyle"
                style="push">
+               <visibleWhen checkEnabled="false">
+               <with variable="activeMenuSelection">
+                  <iterate ifEmpty="false">
+                  <!--	does not work
+                		<adapt type="org.eclipse.core.resources.IFile">
+	                		<test 	property="org.eclipse.core.resources.contentTypeId"
+	            					value="org.eclipse.jdt.core.javaSource"/>
+                        </adapt>
+                  -->
+                     <or>
+                        <adapt type="org.eclipse.core.resources.IFile"></adapt>
+                        <adapt type="org.eclipse.core.resources.IFolder"></adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+		                    <test
+		                          property="org.eclipse.core.resources.open">
+		                    </test>
+                        </adapt>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragmentRoot"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragment"></adapt>
+                        <!-- a closed java project is simply an IProject, since its nature and type is not known -->
+                        <adapt type="org.eclipse.jdt.core.IJavaProject"></adapt>
+                     </or>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -21,6 +47,26 @@
                icon="icons/checkstyle-favicon.ico"
                label="Run Checkstyle"
                style="push">
+               <visibleWhen checkEnabled="false">
+               <with variable="selection">
+                  <iterate ifEmpty="false">
+                     <or>
+                        <adapt type="org.eclipse.core.resources.IFile"></adapt>
+                        <adapt type="org.eclipse.core.resources.IFolder"></adapt>
+                        <adapt type="org.eclipse.core.resources.IProject">
+		                    <test
+		                          property="org.eclipse.core.resources.open">
+		                    </test>
+                        </adapt>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragmentRoot"></adapt>
+                        <adapt type="org.eclipse.jdt.core.IPackageFragment"></adapt>
+                        <!-- a closed java project is simply an IProject, since its nature and type is not known -->
+                        <adapt type="org.eclipse.jdt.core.IJavaProject"></adapt>
+                     </or>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -62,6 +108,11 @@
             icon="icons/checkstyle-favicon.ico"
             id="qa.eclipse.plugin.bundles.checkstyle.propertypage"
             name="Checkstyle Settings">
+			<enabledWhen>
+	            <and>
+	         	   <adapt type="org.eclipse.core.resources.IResource"></adapt>
+	            </and>
+            </enabledWhen>
       </page>
    </extension>
    <extension
