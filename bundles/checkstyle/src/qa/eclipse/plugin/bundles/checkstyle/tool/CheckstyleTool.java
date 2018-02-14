@@ -32,6 +32,9 @@ import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 
 public class CheckstyleTool {
 
+	private static final String SUPPRESS_FILTER_MODULE_NAME = "SuppressFilter";
+	private static final String CONFIG_PROP_FILE = "file";
+
 	private final Checker checker;
 
 	public CheckstyleTool() {
@@ -57,20 +60,30 @@ public class CheckstyleTool {
 		IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(project);
 		String[] customModuleJarPaths = CheckstylePreferences.INSTANCE.loadCustomModuleJarPaths(projectPreferences);
 		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
-		URL[] urls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
-
-		// Checker requires moduleClassLoader
-
-		ClassLoader moduleClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
-		checker.setModuleClassLoader(moduleClassLoader);
 
 		Locale platformLocale = EclipsePlatform.getLocale();
 		checker.setLocaleLanguage(platformLocale.getLanguage());
 		checker.setLocaleCountry(platformLocale.getCountry());
 
-		Configuration configuration;
-		// configuration = new DefaultConfiguration("Eclipse Checkstyle Config",
-		// ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE);
+//		ClassLoader classLoader2 = CommonUtils.class.getClassLoader();
+//		URL emptyResourceName = CommonUtils.class.getResource("");
+//		URL slashResourceName = CommonUtils.class.getResource("/");
+//		URL relResourceName = CommonUtils.class.getResource("config/cs-suppressions.xml");
+//		URL absResourceName = CommonUtils.class.getResource("/config/cs-suppressions.xml");
+		// adds the Eclipse project's path to Checkstyle's class loader to find the file
+		// of the SuppressFilter module
+		// DOES NOT WORK since the class loader is not used to resolve the file path
+		
+		// Possibilities: pass URL, absolute file path, or class path file path
+		
+//		URL[] classLoaderUrls;
+//		try {
+//			classLoaderUrls = new URL[] { eclipseProjectPath.toURI().toURL() };
+//		} catch (MalformedURLException e) {
+//			throw new IllegalStateException(e);
+//		}
+//		ClassLoader classLoader = new URLClassLoader(classLoaderUrls, Thread.currentThread().getContextClassLoader());
+//		checker.setClassLoader(classLoader);
 
 		String configFilePath = CheckstylePreferences.INSTANCE.loadConfigFilePath(projectPreferences);
 		File configFile = FileUtil.makeAbsoluteFile(configFilePath, eclipseProjectPath);
@@ -79,12 +92,28 @@ public class CheckstyleTool {
 		PropertyResolver propertyResolver = new PropertiesExpander(new Properties());
 		IgnoredModulesOptions ignoredModulesOptions = IgnoredModulesOptions.OMIT;
 		ThreadModeSettings threadModeSettings = ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
+		Configuration configuration;
 		try {
 			configuration = ConfigurationLoader.loadConfiguration(absoluteConfigFilePath, propertyResolver,
 					ignoredModulesOptions, threadModeSettings);
 		} catch (CheckstyleException e) {
 			throw new IllegalStateException(e);
 		}
+
+		// Configuration suppressFilterConfiguration =
+		// resolveSuppressFilterConfiguration(configuration);
+		// if (suppressFilterConfiguration != null) {
+		// try {
+		// String filePath = suppressFilterConfiguration.getAttribute(CONFIG_PROP_FILE);
+		//
+		// } catch (CheckstyleException e) {
+		// throw new IllegalStateException(e);
+		// }
+		// }
+
+		URL[] moduleClassLoaderUrls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
+		ClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls, getClass().getClassLoader());
+		checker.setModuleClassLoader(moduleClassLoader);
 
 		try {
 			checker.configure(configuration);
@@ -113,6 +142,22 @@ public class CheckstyleTool {
 				throw new IllegalStateException(e); // log to error view somewhere
 			}
 		}
+	}
+
+	private Configuration resolveSuppressFilterConfiguration(Configuration configuration) {
+		String nameAttribute = configuration.getName();
+		if (nameAttribute.equals(SUPPRESS_FILTER_MODULE_NAME)) {
+			return configuration;
+		}
+
+		for (Configuration childConfiguration : configuration.getChildren()) {
+			Configuration returnedConfiguration = resolveSuppressFilterConfiguration(childConfiguration);
+			if (returnedConfiguration != null) {
+				return returnedConfiguration;
+			}
+		}
+
+		return null;
 	}
 
 }
