@@ -24,7 +24,14 @@ The plugin provides for each qa tool:
   ![Image of the PMD's property page](bundles/pmd/screenshots/pmd_property_page.PNG)
 
 ## Configuration
-The plugin expects a dedicated "prefs" file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically if you press the "apply" button on the corresponding property page. The property page allows to define the path to the tool's xml configuration file and the path(s) to the jar file(s) containing your custom rules/checks. The "prefs" file is intended to be uploaded to your repository to share your configuration with your team.
+The plugin expects a dedicated "prefs" file in the directory ".settings" of the Eclipse project, you like to check for issues. This file is created automatically if you press the "apply" button on the corresponding property page.
+
+The property page allows
+- to enable/disable the tool for the project, 
+- to define the path to the tool's xml configuration file, and
+- to define the path(s) to the jar file(s) containing your custom rules/checks. 
+
+The "prefs" file is intended to be uploaded to your repository to share your configuration with your team.
 
 **IMPORTANT** The version of the API used for your custom rules/checks must be compatible with the version of the tool included in this Eclipse plugin.
 - The version of PMD included in this plugin can be found [here](bundles/pmd/lib).
