@@ -15,6 +15,8 @@ The plugin provides for each qa tool:
 - a command entry in the context menu (a.k.a. right-click menu) to execute the tool (example: "Run PMD")
 - a view to display the issues detected by the tool. This view needs to be opened manually via 
   > ``"Window -> Show View -> Other..."``
+  
+  ![Image of the PMD's property page](bundles/pmd/screenshots/pmd_violations_view.png)
 - a property page for each project (example: "PMD Settings"). This page allows to configure the tool.
   
   ![Image of the PMD's property page](bundles/pmd/screenshots/pmd_property_page.PNG)
