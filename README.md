@@ -14,7 +14,7 @@ The offical Eclipse plugins for PMD and Checkstyle work great...as long as you d
 The plugin provides for each qa tool:
 - a command entry in the context menu (a.k.a. right-click menu) to execute the tool (example: "Run PMD")
 - a view to display the issues detected by the tool. This view needs to be opened manually via 
-  > ``"Settings -> Open View -> ..."``
+  > ``"Window -> Show View -> Other..."``
 - a property page for each project (example: "PMD Settings"). This page allows to configure the tool.
 
 ## Configuration
