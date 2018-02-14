@@ -18,6 +18,8 @@ The plugin provides for each qa tool:
 - a view to display the issues detected by the tool. This view needs to be opened manually via 
   > ``"Window -> Show View -> Other..."``
   
+  A double-click on a violation in this view opens the corresponding file in the editor and jumps to the associated line of code.
+  
   ![Image of the PMD's violations view](bundles/pmd/screenshots/pmd_violations_view.png)
 - a property page for each project (example: "PMD Settings"). This page allows to configure the tool.
   
