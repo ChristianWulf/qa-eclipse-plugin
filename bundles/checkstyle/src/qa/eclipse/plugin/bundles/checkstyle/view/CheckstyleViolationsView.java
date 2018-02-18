@@ -6,6 +6,8 @@ import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarke
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PRIORITY;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PROJECTNAME;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,6 +21,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -39,6 +42,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -86,7 +90,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private final ViewerComparator comparator = new CheckstyleViolationMarkerComparator();
 	private final Preferences viewPreferences;
 
-	private Label label;
+	private Label numViolationsLabel;
 	private TableViewer tableViewer;
 
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
@@ -116,13 +120,43 @@ public class CheckstyleViolationsView extends ViewPart
 
 		Composite firstLine = new Composite(composite, SWT.NONE);
 		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		GridLayout firstLineLayout = new GridLayout(3, false);
+		GridLayout firstLineLayout = new GridLayout(5, false);
 		firstLineLayout.marginHeight = 0;
 		firstLineLayout.marginWidth = 0;
 		firstLine.setLayout(firstLineLayout);
 
-		label = new Label(firstLine, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		numViolationsLabel = new Label(firstLine, SWT.NONE);
+		numViolationsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+
+		Button clearButton = new Button(firstLine, SWT.PUSH);
+		clearButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+		String symbolicName = "platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/clear.png";
+		// PlatformUI.getWorkbench().getSharedImages().getImage(symbolicName)
+		// AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
+		// "/icons/settings.png").createImage();
+		ImageDescriptor clearButtonImageDescriptor;
+		try {
+			clearButtonImageDescriptor = ImageDescriptor.createFromURL(new URL(symbolicName));
+		} catch (MalformedURLException e) {
+			throw new IllegalStateException(e);
+		}
+		Image clearButtonImage = clearButtonImageDescriptor.createImage();
+		clearButton.setImage(clearButtonImage);
+		clearButton.setBackground(firstLine.getBackground());
+		clearButton.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				@SuppressWarnings("unchecked")
+				List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) tableViewer
+						.getInput();
+				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
+			}
+		});
+//		clearButton.setText("Clear");
+		clearButton.setToolTipText("Clears all Checkstyle violations");
+
+		Label separatorLabel = new Label(firstLine, SWT.BORDER);
+		separatorLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
 		Label filterLabel = new Label(firstLine, SWT.NONE);
 		filterLabel.setText("Filters:");
@@ -554,8 +588,9 @@ public class CheckstyleViolationsView extends ViewPart
 				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
 
 				CheckstyleViolationsView.this.setPartName(newPartName);
-				label.setText(NUMBER_OF_CHECKSTYLE_VIOLATIONS + numViolations);
-				label.getParent().layout(); // fixed bug: the label was not displayed upon reopening the view
+				numViolationsLabel.setText(NUMBER_OF_CHECKSTYLE_VIOLATIONS + numViolations);
+				numViolationsLabel.getParent().layout(); // fixed bug: the label was not displayed upon reopening the
+															// view
 				tableViewer.setInput(violationMarkers);
 			}
 		});

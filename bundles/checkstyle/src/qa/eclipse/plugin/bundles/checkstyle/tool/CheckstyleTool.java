@@ -32,9 +32,6 @@ import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 
 public class CheckstyleTool {
 
-	private static final String SUPPRESS_FILTER_MODULE_NAME = "SuppressFilter";
-	private static final String CONFIG_PROP_FILE = "file";
-
 	private final Checker checker;
 
 	public CheckstyleTool() {
@@ -58,7 +55,6 @@ public class CheckstyleTool {
 		}
 
 		IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(project);
-		String[] customModuleJarPaths = CheckstylePreferences.INSTANCE.loadCustomModuleJarPaths(projectPreferences);
 		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 
 		Locale platformLocale = EclipsePlatform.getLocale();
@@ -111,6 +107,7 @@ public class CheckstyleTool {
 		// }
 		// }
 
+		String[] customModuleJarPaths = CheckstylePreferences.INSTANCE.loadCustomModuleJarPaths(projectPreferences);
 		URL[] moduleClassLoaderUrls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
 		ClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls, getClass().getClassLoader());
 		checker.setModuleClassLoader(moduleClassLoader);
@@ -142,22 +139,6 @@ public class CheckstyleTool {
 				throw new IllegalStateException(e); // log to error view somewhere
 			}
 		}
-	}
-
-	private Configuration resolveSuppressFilterConfiguration(Configuration configuration) {
-		String nameAttribute = configuration.getName();
-		if (nameAttribute.equals(SUPPRESS_FILTER_MODULE_NAME)) {
-			return configuration;
-		}
-
-		for (Configuration childConfiguration : configuration.getChildren()) {
-			Configuration returnedConfiguration = resolveSuppressFilterConfiguration(childConfiguration);
-			if (returnedConfiguration != null) {
-				return returnedConfiguration;
-			}
-		}
-
-		return null;
 	}
 
 }
