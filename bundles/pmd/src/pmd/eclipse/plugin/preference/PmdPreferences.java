@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.settings;
+package pmd.eclipse.plugin.preference;
 
 import java.io.File;
 import java.net.URL;
@@ -20,6 +20,9 @@ import net.sourceforge.pmd.RuleSets;
 import pmd.eclipse.plugin.eclipse.FileUtil;
 
 public class PmdPreferences {
+
+	/** split pattern */
+	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	public static final String INVALID_RULESET_FILE_PATH = "invalid/ruleset/file/path";
 
@@ -94,7 +97,7 @@ public class PmdPreferences {
 		if (customRulesJarsValue.trim().isEmpty()) {
 			urls = new URL[0];
 		} else {
-			String[] customRulesJars = customRulesJarsValue.split(",");
+			String[] customRulesJars = customRulesJarsValue.split(BY_COMMA_AND_TRIM);
 			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
 			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}

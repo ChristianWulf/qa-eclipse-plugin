@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.datasource.FileDataSource;
 import pmd.eclipse.plugin.eclipse.ProjectUtil;
 import pmd.eclipse.plugin.icons.FileIconDecorator;
 import pmd.eclipse.plugin.markers.PmdMarkers;
-import pmd.eclipse.plugin.settings.PmdPreferences;
+import pmd.eclipse.plugin.preference.PmdPreferences;
 
 class PmdWorkspaceJob extends WorkspaceJob {
 

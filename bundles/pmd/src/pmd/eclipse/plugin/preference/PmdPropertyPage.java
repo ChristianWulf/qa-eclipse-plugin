@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.experimental.properties;
+package pmd.eclipse.plugin.preference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -16,18 +16,21 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.osgi.service.prefs.BackingStoreException;
 
-import pmd.eclipse.plugin.settings.PmdPreferences;
+public class PmdPropertyPage extends PropertyPage {
 
-public class SamplePropertyPage extends PropertyPage {
+	static final String RULE_SET_FILE_EXAMPLE_TEXT = "Example: conf/quality-config/pmd-ruleset.xml";
+	static final String CUSTOM_JAR_PATHS_EXAMPLE_TEXT = "Example: config/pmd/custom-ruleset-0.jar, config/pmd/custom-ruleset-1.jar";
 
 	private Text ruleSetFilePathText;
-	private Text jarFilePathsText;
+	private Text customJarFilePathsText;
 	private Button enabledButton;
+	private Label ruleSetFilePathLabel;
+	private Label customJarFilePathsLabel;
 
 	/**
 	 * Constructor for SamplePropertyPage.
 	 */
-	public SamplePropertyPage() {
+	public PmdPropertyPage() {
 		super();
 	}
 
@@ -62,34 +65,39 @@ public class SamplePropertyPage extends PropertyPage {
 		Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Ruleset file path:");
 
+		String ruleSetFilePath = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
+				PmdPreferences.INVALID_RULESET_FILE_PATH);
 		// Path text field
 		ruleSetFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData();
 		gd.widthHint = convertWidthInCharsToPixels(60);
 		ruleSetFilePathText.setLayoutData(gd);
-		ruleSetFilePathText.setText(
-				preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, PmdPreferences.INVALID_RULESET_FILE_PATH));
+		ruleSetFilePathText.setText(ruleSetFilePath);
+		ruleSetFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
 
-		Label exampleLabel = new Label(composite, SWT.NONE);
-		exampleLabel.setText("Example: conf/quality-config/pmd-ruleset.xml");
-		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		ruleSetFilePathLabel = new Label(composite, SWT.NONE);
+		ruleSetFilePathLabel.setText(RULE_SET_FILE_EXAMPLE_TEXT);
+		ruleSetFilePathLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		ruleSetFilePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
 
-		jarFilePathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		customJarFilePathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData();
 		gd.widthHint = convertWidthInCharsToPixels(60);
-		jarFilePathsText.setLayoutData(gd);
-		jarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
+		customJarFilePathsText.setLayoutData(gd);
+		customJarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
+		customJarFilePathsText.addKeyListener(new CustomModulesKeyListener(this));
 
-		exampleLabel = new Label(composite, SWT.NONE);
-		exampleLabel.setText("Example: config/pmd/custom-ruleset-0.jar, config/pmd/custom-ruleset-1.jar");
-		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		customJarFilePathsLabel = new Label(composite, SWT.NONE);
+		customJarFilePathsLabel.setText(CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
+		customJarFilePathsLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		customJarFilePathsLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
-		exampleLabel = new Label(composite, SWT.NONE);
+		Label exampleLabel = new Label(composite, SWT.NONE);
 		exampleLabel.setText("To hide the violation flags in the (Package/Project) Explorer, " + System.lineSeparator()
 				+ "open Eclipse's global preferences and search for 'Label Decorations'.");
 		// exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -112,6 +120,22 @@ public class SamplePropertyPage extends PropertyPage {
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		separator.setLayoutData(gridData);
+	}
+
+	Text getRuleSetFilePathText() {
+		return ruleSetFilePathText;
+	}
+
+	Label getRuleSetFilePathLabel() {
+		return ruleSetFilePathLabel;
+	}
+
+	Text getCustomJarFilePathsText() {
+		return customJarFilePathsText;
+	}
+
+	Label getCustomJarFilePathsLabel() {
+		return customJarFilePathsLabel;
 	}
 
 	/**
@@ -149,7 +173,7 @@ public class SamplePropertyPage extends PropertyPage {
 		super.performDefaults();
 		// Populate the owner text field with the default value
 		ruleSetFilePathText.setText(PmdPreferences.INVALID_RULESET_FILE_PATH);
-		jarFilePathsText.setText("");
+		customJarFilePathsText.setText("");
 		enabledButton.setSelection(false);
 	}
 
@@ -165,7 +189,7 @@ public class SamplePropertyPage extends PropertyPage {
 		// }
 
 		preferences.put(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, ruleSetFilePathText.getText());
-		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, jarFilePathsText.getText());
+		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, customJarFilePathsText.getText());
 		preferences.putBoolean(PmdPreferences.PROP_KEY_ENABLED, enabledButton.getSelection());
 
 		try {

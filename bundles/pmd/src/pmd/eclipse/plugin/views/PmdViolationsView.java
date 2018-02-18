@@ -61,7 +61,7 @@ import pmd.eclipse.plugin.PmdUIPlugin;
 import pmd.eclipse.plugin.icons.ImageRegistryKey;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.markers.PmdViolationMarker;
-import pmd.eclipse.plugin.settings.PmdPreferences;
+import pmd.eclipse.plugin.preference.PmdPreferences;
 
 public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {

@@ -284,9 +284,9 @@
    </extension>
    <extension point="org.eclipse.ui.propertyPages">
       <page
-            class="pmd.eclipse.plugin.experimental.properties.SamplePropertyPage"
+            class="pmd.eclipse.plugin.preference.PmdPropertyPage"
             icon="icons/pmd-icon-16.gif"
-            id="pmd.eclipse.plugin.experimental.properties.samplePropertyPage"
+            id="qa.eclipse.plugin.checkstyle.preference.propertyPage"
             name="PMD Settings">
             <enabledWhen>
             <and>

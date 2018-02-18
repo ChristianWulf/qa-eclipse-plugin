@@ -18,9 +18,14 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class CheckstylePropertyPage extends PropertyPage {
 
+	static final String CONFIG_FILE_PATH_DEFAULT_TEXT = "Example: conf/quality-config/cs-conf.xml";
+	static final String CUSTOM_MODULES_DEFAULT_TEXT = "Example: config/checkstyle/custom-modules-0.jar, config/checkstyle/custom-modules-1.jar";
+
 	private Text configFilePathText;
 	private Text customModulesJarPathsText;
 	private Button enabledButton;
+	private Label exampleLabel;
+	private Label exampleCustomModulesLabel;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -56,8 +61,6 @@ public class CheckstylePropertyPage extends PropertyPage {
 
 		addSeparator(composite);
 
-		Label exampleLabel;
-
 		// Label for path field
 		Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Configuration file path:");
@@ -68,10 +71,12 @@ public class CheckstylePropertyPage extends PropertyPage {
 		gd.widthHint = convertWidthInCharsToPixels(60);
 		configFilePathText.setLayoutData(gd);
 		configFilePathText.setText(CheckstylePreferences.INSTANCE.loadConfigFilePath(preferences));
+		configFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
 
 		exampleLabel = new Label(composite, SWT.NONE);
-		exampleLabel.setText("Example: conf/quality-config/cs-conf.xml");
+		exampleLabel.setText(CONFIG_FILE_PATH_DEFAULT_TEXT);
 		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		exampleLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom modules (comma separated):");
@@ -81,16 +86,18 @@ public class CheckstylePropertyPage extends PropertyPage {
 		gd.widthHint = convertWidthInCharsToPixels(60);
 		customModulesJarPathsText.setLayoutData(gd);
 		customModulesJarPathsText.setText(preferences.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, ""));
+		customModulesJarPathsText.addKeyListener(new CustomModulesKeyListener(this));
 
-		exampleLabel = new Label(composite, SWT.NONE);
-		exampleLabel.setText("Example: config/checkstyle/custom-modules-0.jar, config/checkstyle/custom-modules-1.jar");
-		exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		exampleCustomModulesLabel = new Label(composite, SWT.NONE);
+		exampleCustomModulesLabel.setText(CUSTOM_MODULES_DEFAULT_TEXT);
+		exampleCustomModulesLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		exampleCustomModulesLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
-		exampleLabel = new Label(composite, SWT.NONE);
-		exampleLabel.setText("To hide the violation flags in the (Package/Project) Explorer, " + System.lineSeparator()
-				+ "open Eclipse's global preferences and search for 'Label Decorations'.");
+		Label hideFlagsHintLabel = new Label(composite, SWT.NONE);
+		hideFlagsHintLabel.setText("To hide the violation flags in the (Package/Project) Explorer, "
+				+ System.lineSeparator() + "open Eclipse's global preferences and search for 'Label Decorations'.");
 		// exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
 		new Label(composite, SWT.NONE); // serves as newline
@@ -111,6 +118,22 @@ public class CheckstylePropertyPage extends PropertyPage {
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		separator.setLayoutData(gridData);
+	}
+
+	Text getConfigFilePathText() {
+		return configFilePathText;
+	}
+
+	Label getExampleLabel() {
+		return exampleLabel;
+	}
+
+	Text getCustomModulesJarPathsText() {
+		return customModulesJarPathsText;
+	}
+
+	Label getExampleCustomModulesLabel() {
+		return exampleCustomModulesLabel;
 	}
 
 	/**

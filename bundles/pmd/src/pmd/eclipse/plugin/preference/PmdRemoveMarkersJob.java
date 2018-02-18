@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.settings;
+package pmd.eclipse.plugin.preference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

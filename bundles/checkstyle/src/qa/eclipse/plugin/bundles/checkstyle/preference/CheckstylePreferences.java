@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 public class CheckstylePreferences {
 
 	/** split pattern */
-	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
+	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	public static final CheckstylePreferences INSTANCE = new CheckstylePreferences("qa.eclipse.plugin.checkstyle");
 

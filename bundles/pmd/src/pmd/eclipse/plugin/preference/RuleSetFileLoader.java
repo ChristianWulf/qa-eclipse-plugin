@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.settings;
+package pmd.eclipse.plugin.preference;
 
 import java.io.File;
 import java.util.Iterator;
