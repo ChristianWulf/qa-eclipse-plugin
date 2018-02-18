@@ -15,6 +15,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.JavaModelException;
 
+import qa.eclipse.plugin.bundles.common.JavaUtil;
+
 /**
  * Represents an IResourceDeltaVisitor which collects all IFiles that have been
  * added or changed. Removed files and marker deltas are ignored. Hence, this

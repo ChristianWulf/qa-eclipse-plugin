@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.JavaModelException;
 
-import pmd.eclipse.plugin.JavaUtil;
+import qa.eclipse.plugin.bundles.common.JavaUtil;
 
 /**
  * Represents an IResourceDeltaVisitor which collects all IFiles that have been

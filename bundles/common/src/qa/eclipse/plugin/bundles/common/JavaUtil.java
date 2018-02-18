@@ -1,4 +1,4 @@
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.bundles.common;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
-class JavaUtil {
+public class JavaUtil {
 
 	private final Map<IProject, IJavaProject> javaProjectByIProject = new HashMap<>();
 

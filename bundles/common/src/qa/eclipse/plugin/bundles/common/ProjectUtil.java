@@ -1,4 +1,4 @@
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.bundles.common;
 
 import java.io.File;
 

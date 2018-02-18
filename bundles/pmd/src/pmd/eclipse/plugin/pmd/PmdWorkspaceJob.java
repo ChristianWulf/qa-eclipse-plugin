@@ -27,10 +27,10 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
-import pmd.eclipse.plugin.eclipse.ProjectUtil;
 import pmd.eclipse.plugin.icons.FileIconDecorator;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.preference.PmdPreferences;
+import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 class PmdWorkspaceJob extends WorkspaceJob {
 

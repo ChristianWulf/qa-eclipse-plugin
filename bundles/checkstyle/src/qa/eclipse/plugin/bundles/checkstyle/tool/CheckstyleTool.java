@@ -26,9 +26,9 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatform;
-import qa.eclipse.plugin.bundles.checkstyle.FileUtil;
-import qa.eclipse.plugin.bundles.checkstyle.ProjectUtil;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 public class CheckstyleTool {
 
@@ -61,25 +61,28 @@ public class CheckstyleTool {
 		checker.setLocaleLanguage(platformLocale.getLanguage());
 		checker.setLocaleCountry(platformLocale.getCountry());
 
-//		ClassLoader classLoader2 = CommonUtils.class.getClassLoader();
-//		URL emptyResourceName = CommonUtils.class.getResource("");
-//		URL slashResourceName = CommonUtils.class.getResource("/");
-//		URL relResourceName = CommonUtils.class.getResource("config/cs-suppressions.xml");
-//		URL absResourceName = CommonUtils.class.getResource("/config/cs-suppressions.xml");
+		// ClassLoader classLoader2 = CommonUtils.class.getClassLoader();
+		// URL emptyResourceName = CommonUtils.class.getResource("");
+		// URL slashResourceName = CommonUtils.class.getResource("/");
+		// URL relResourceName =
+		// CommonUtils.class.getResource("config/cs-suppressions.xml");
+		// URL absResourceName =
+		// CommonUtils.class.getResource("/config/cs-suppressions.xml");
 		// adds the Eclipse project's path to Checkstyle's class loader to find the file
 		// of the SuppressFilter module
 		// DOES NOT WORK since the class loader is not used to resolve the file path
-		
+
 		// Possibilities: pass URL, absolute file path, or class path file path
-		
-//		URL[] classLoaderUrls;
-//		try {
-//			classLoaderUrls = new URL[] { eclipseProjectPath.toURI().toURL() };
-//		} catch (MalformedURLException e) {
-//			throw new IllegalStateException(e);
-//		}
-//		ClassLoader classLoader = new URLClassLoader(classLoaderUrls, Thread.currentThread().getContextClassLoader());
-//		checker.setClassLoader(classLoader);
+
+		// URL[] classLoaderUrls;
+		// try {
+		// classLoaderUrls = new URL[] { eclipseProjectPath.toURI().toURL() };
+		// } catch (MalformedURLException e) {
+		// throw new IllegalStateException(e);
+		// }
+		// ClassLoader classLoader = new URLClassLoader(classLoaderUrls,
+		// Thread.currentThread().getContextClassLoader());
+		// checker.setClassLoader(classLoader);
 
 		String configFilePath = CheckstylePreferences.INSTANCE.loadConfigFilePath(projectPreferences);
 		File configFile = FileUtil.makeAbsoluteFile(configFilePath, eclipseProjectPath);

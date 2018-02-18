@@ -254,6 +254,7 @@
       <extension
             point="org.eclipse.ui.views">
          <view
+               category="qa.eclipse.plugin.category.qa"
                class="qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView"
                icon="icons/checkstyle-favicon.ico"
                id="qa.eclipse.plugin.checkstyle.view"

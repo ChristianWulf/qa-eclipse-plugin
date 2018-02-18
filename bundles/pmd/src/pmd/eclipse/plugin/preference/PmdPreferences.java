@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import net.sourceforge.pmd.RuleSets;
-import pmd.eclipse.plugin.eclipse.FileUtil;
+import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 public class PmdPreferences {
 
@@ -77,8 +77,7 @@ public class PmdPreferences {
 	}
 
 	synchronized void updateRulsetCache(IProject project, IEclipsePreferences preferences) {
-		IPath location = project.getLocation(); // getRawLocation returns null
-		File eclipseProjectPath = location.makeAbsolute().toFile();
+		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
 
 		// set or replace ruleset

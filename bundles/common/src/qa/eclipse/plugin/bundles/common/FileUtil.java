@@ -1,11 +1,9 @@
-package pmd.eclipse.plugin.eclipse;
+package qa.eclipse.plugin.bundles.common;
 // architectural hint: may use eclipse packages
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import pmd.eclipse.plugin.PmdUIPlugin;
 
 public final class FileUtil {
 
@@ -29,7 +27,7 @@ public final class FileUtil {
 				urls[i] = jarFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				// jarFile is filled by the user, so continue loop upon exception
-				PmdUIPlugin.getDefault().logThrowable("Cannot convert file to URL: " + jarFile, e);
+				Logger.logThrowable("Cannot convert file to URL: " + jarFile, e);
 			}
 		}
 		return urls;
@@ -40,7 +38,7 @@ public final class FileUtil {
 			File file = FileUtil.makeAbsoluteFile(filePath, parentFile);
 			if (!file.exists()) {
 				String message = String.format("%s not found on file path '%s'.", messagePrefix, filePath);
-				PmdUIPlugin.getDefault().logWarning(message);
+				Logger.logWarning(message);
 			}
 		}
 	}
