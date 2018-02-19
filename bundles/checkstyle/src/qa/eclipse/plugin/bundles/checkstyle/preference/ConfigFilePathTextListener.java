@@ -11,28 +11,30 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import qa.eclipse.plugin.bundles.common.ProjectUtil;
+
 class ConfigFilePathTextListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: the file path does not point to an existing file.";
 	private static final String ABSOLUTE_FILE_PATH_TEXT = "Attention: an absolute file path is not recommended if you work in a team.";
 
-	private final CheckstylePropertyPage checkstylePropertyPage;
+	private final CheckstylePropertyPage propertyPage;
 
-	public ConfigFilePathTextListener(CheckstylePropertyPage checkstylePropertyPage) {
-		this.checkstylePropertyPage = checkstylePropertyPage;
+	public ConfigFilePathTextListener(CheckstylePropertyPage propertyPage) {
+		this.propertyPage = propertyPage;
 	}
 
 	@Override
 	public void keyReleased(KeyEvent event) {
 		Object source = event.getSource();
-		Text textField = checkstylePropertyPage.getConfigFilePathText();
+		Text textField = propertyPage.getConfigFilePathText();
 		if (source != textField) {
 			return;
 		}
 
 		String text = textField.getText();
 
-		Label label = checkstylePropertyPage.getExampleLabel();
+		Label label = propertyPage.getExampleLabel();
 		Path path;
 		try {
 			path = Paths.get(text);
@@ -43,14 +45,17 @@ class ConfigFilePathTextListener extends KeyAdapter {
 			return;
 		}
 
-		if (!Files.exists(path)) {
-			label.setText(NON_EXISTING_FILE_TEXT);
+		if (path.isAbsolute()) {
+			label.setText(ABSOLUTE_FILE_PATH_TEXT);
 			label.setForeground(label.getDisplay().getSystemColor(SWT.COLOR_RED));
 			return;
 		}
 
-		if (path.isAbsolute()) {
-			label.setText(ABSOLUTE_FILE_PATH_TEXT);
+		Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(propertyPage);
+		Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
+
+		if (!Files.exists(absoluteConfigFilePath)) {
+			label.setText(NON_EXISTING_FILE_TEXT);
 			label.setForeground(label.getDisplay().getSystemColor(SWT.COLOR_RED));
 			return;
 		}

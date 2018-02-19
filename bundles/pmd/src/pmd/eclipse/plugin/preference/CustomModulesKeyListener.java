@@ -11,6 +11,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import qa.eclipse.plugin.bundles.common.ProjectUtil;
+
 class CustomModulesKeyListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: at least one of the file paths does not point to an existing file.";
@@ -46,14 +48,17 @@ class CustomModulesKeyListener extends KeyAdapter {
 				return;
 			}
 
-			if (!Files.exists(path)) {
-				label.setText(NON_EXISTING_FILE_TEXT);
+			if (path.isAbsolute()) {
+				label.setText(ABSOLUTE_FILE_PATH_TEXT);
 				label.setForeground(label.getDisplay().getSystemColor(SWT.COLOR_RED));
 				return;
 			}
 
-			if (path.isAbsolute()) {
-				label.setText(ABSOLUTE_FILE_PATH_TEXT);
+			Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(propertyPage);
+			Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
+
+			if (!Files.exists(absoluteConfigFilePath)) {
+				label.setText(NON_EXISTING_FILE_TEXT);
 				label.setForeground(label.getDisplay().getSystemColor(SWT.COLOR_RED));
 				return;
 			}
