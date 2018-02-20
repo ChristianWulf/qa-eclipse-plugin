@@ -94,7 +94,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
-		RuleSets ruleSets = PmdPreferences.INSTANCE.getRuleSets(eclipseProject);
+		RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
 		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
 		Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
@@ -145,6 +145,11 @@ class PmdWorkspaceJob extends WorkspaceJob {
 					// ignore if marker could not be created
 				}
 			}
+
+			// violations suppressed by NOCS etc.
+			// for (SuppressedViolation violation : report.getSuppressedRuleViolations()) {
+			// System.out.println("user: " + violation.getUserMessage());
+			// }
 
 			// update explorer view so that the new violation flags are displayed
 			FileIconDecorator.refresh();

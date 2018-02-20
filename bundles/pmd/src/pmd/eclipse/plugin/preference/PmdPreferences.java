@@ -6,7 +6,6 @@ import java.net.URLClassLoader;
 // architectural hints: do not use plugin-specific types to avoid a cascade of class compilings
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -34,7 +33,6 @@ public class PmdPreferences {
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 	private final RuleSetFileLoader ruleSetFileLoader = new RuleSetFileLoader();
-	private final Map<IProject, RuleSets> ruleSetCache = new ConcurrentHashMap<>();
 
 	private final String node;
 
@@ -69,23 +67,18 @@ public class PmdPreferences {
 			projectScopeByProject.put(project, projectPref);
 
 			preferences = projectPref.getNode(node);
-			preferences.addPreferenceChangeListener(new PmdPreferenceChangeListener(this, project, preferences));
-			updateRulsetCache(project, preferences);
+			preferences.addPreferenceChangeListener(new PmdPreferenceChangeListener(project));
 		}
 
 		return preferences;
 	}
 
-	synchronized void updateRulsetCache(IProject project, IEclipsePreferences preferences) {
+	public RuleSets loadRuleSetFrom(IProject project) {
+		IScopeContext projectPref = projectScopeByProject.get(project);
+		IEclipsePreferences preferences = projectPref.getNode(node);
 		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
-
-		// set or replace ruleset
-		ruleSetCache.put(project, ruleSets);
-	}
-
-	public RuleSets getRuleSets(IProject eclipseProject) {
-		return ruleSetCache.get(eclipseProject);
+		return ruleSets;
 	}
 
 	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath) {
