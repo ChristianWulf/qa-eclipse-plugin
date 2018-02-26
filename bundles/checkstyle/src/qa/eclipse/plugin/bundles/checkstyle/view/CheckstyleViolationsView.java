@@ -5,6 +5,7 @@ import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarke
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_LINENUMBER;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PRIORITY;
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_PROJECTNAME;
+import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_VIOLATION_MSG;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -111,6 +112,9 @@ public class CheckstyleViolationsView extends ViewPart
 		verticalKeyByPriority.put(SeverityLevel.WARNING.ordinal(), KEY_PREFIX + "warning");
 		verticalKeyByPriority.put(SeverityLevel.INFO.ordinal(), KEY_PREFIX + "info");
 		verticalKeyByPriority.put(SeverityLevel.IGNORE.ordinal(), KEY_PREFIX + "ignore");
+		
+//		violationPriorityBySeverityLevel.put(SeverityLevel.ERROR, 0);
+//		int violationPriority = violationPriorityBySeverityLevel.get(SeverityLevel.ERROR);
 	}
 
 	@Override
@@ -451,6 +455,7 @@ public class CheckstyleViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(400);
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_VIOLATION_MSG));
 		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);

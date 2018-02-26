@@ -5,6 +5,7 @@ import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_PR
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME;
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RULENAME;
 import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_RULESET;
+import static pmd.eclipse.plugin.views.PmdViolationMarkerComparator.SORT_PROP_VIOLATION_MSG;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -434,6 +435,7 @@ public class PmdViolationsView extends ViewPart
 		column.setMoveable(true);
 		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(400);
+		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_VIOLATION_MSG));
 		column.addListener(SWT.Move, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);

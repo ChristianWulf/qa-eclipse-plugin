@@ -16,6 +16,7 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	public static final int SORT_PROP_LINENUMBER = 2;
 	public static final int SORT_PROP_PROJECTNAME = 3;
 	public static final int SORT_PROP_CHECK_PACKAGE_NAME = 4;
+	public static final int SORT_PROP_VIOLATION_MSG = 5;
 
 	private int selectedSortProperty;
 
@@ -51,6 +52,10 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 		}
 		case SORT_PROP_CHECK_PACKAGE_NAME: {
 			compareResult = compareCheckPackageName(marker1, marker2);
+			break;
+		}
+		case SORT_PROP_VIOLATION_MSG: {
+			compareResult = compareViolationMessageText(marker1, marker2);
 			break;
 		}
 		default: {
@@ -108,4 +113,12 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	private int compareCheckPackageName(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
 		return marker1.getCheckPackageName().compareToIgnoreCase(marker2.getCheckPackageName());
 	}
+
+	/**
+	 * Assumed sort order is SWT.UP.
+	 */
+	private int compareViolationMessageText(CheckstyleViolationMarker marker1, CheckstyleViolationMarker marker2) {
+		return marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
+	}
+
 }

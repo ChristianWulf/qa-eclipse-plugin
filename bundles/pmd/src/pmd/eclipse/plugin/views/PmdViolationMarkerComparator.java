@@ -16,6 +16,7 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	public static final int SORT_PROP_LINENUMBER = 2;
 	public static final int SORT_PROP_RULESET = 3;
 	public static final int SORT_PROP_PROJECTNAME = 4;
+	public static final int SORT_PROP_VIOLATION_MSG = 5;
 
 	private int selectedSortProperty;
 
@@ -51,6 +52,10 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 		}
 		case SORT_PROP_PROJECTNAME: {
 			compareResult = compareProjectName(marker1, marker2);
+			break;
+		}
+		case SORT_PROP_VIOLATION_MSG: {
+			compareResult = compareViolationMessage(marker1, marker2);
 			break;
 		}
 		default: {
@@ -107,5 +112,12 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	 */
 	private int compareProjectName(PmdViolationMarker marker1, PmdViolationMarker marker2) {
 		return marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
+	}
+
+	/**
+	 * Assumed sort order is SWT.UP.
+	 */
+	private int compareViolationMessage(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+		return marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
 	}
 }
