@@ -88,7 +88,12 @@ public class CheckstyleTool {
 		File configFile = FileUtil.makeAbsoluteFile(configFilePath, eclipseProjectPath);
 		String absoluteConfigFilePath = configFile.toString();
 
-		PropertyResolver propertyResolver = new PropertiesExpander(new Properties());
+		/** Auto-set the config loc directory. */
+		Properties properties = new Properties();
+		properties.put("config_loc", configFile.getAbsoluteFile().getParent());
+				
+		PropertyResolver propertyResolver = new PropertiesExpander(properties);
+				
 		IgnoredModulesOptions ignoredModulesOptions = IgnoredModulesOptions.OMIT;
 		ThreadModeSettings threadModeSettings = ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
 		Configuration configuration;
