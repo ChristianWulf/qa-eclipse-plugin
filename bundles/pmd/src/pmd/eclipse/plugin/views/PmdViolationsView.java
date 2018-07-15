@@ -76,6 +76,7 @@ public class PmdViolationsView extends ViewPart
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
 	private static final String PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d)";
+	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
 	private static final String NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
 			+ " Violations: %d of %d";
 	private static final int FILTER_INDEX_PRIORITY = 0;
@@ -175,10 +176,9 @@ public class PmdViolationsView extends ViewPart
 					@Override
 					public void run() {
 						Object input = tableViewer.getInput();
-						List<PmdViolationMarker> tableElements = (List<PmdViolationMarker>) input;
-						int numViolations = tableElements.size();
+						List<PmdViolationMarker> numFilteredViolations = (List<PmdViolationMarker>) input;
 
-						updateNumViolationsLabel(numViolations);
+						updateTitleAndLabel(numFilteredViolations);
 					}
 				});
 
@@ -582,20 +582,28 @@ public class PmdViolationsView extends ViewPart
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				int numViolations = pmdViolationMarkers.size();
-				// tab title
-				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
-				PmdViolationsView.this.setPartName(newPartName);
-
+				// setInput must be set first so that numFilteredViolations is correct
 				tableViewer.setInput(pmdViolationMarkers);
 
-				updateNumViolationsLabel(numViolations);
+				updateTitleAndLabel(pmdViolationMarkers);
 			}
+
 		});
 	}
 
-	private void updateNumViolationsLabel(int numViolations) {
+	private void updateTitleAndLabel(final List<PmdViolationMarker> pmdViolationMarkers) {
 		int numFilteredViolations = tableViewer.getTable().getItemCount();
+		int numViolations = pmdViolationMarkers.size();
+		updateTabTitle(numFilteredViolations, numViolations);
+		updateNumViolationsLabel(numFilteredViolations, numViolations);
+	}
+
+	private void updateTabTitle(int numFilteredViolations, int numViolations) {
+		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
+		setPartName(newPartName);
+	}
+
+	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
 		String text = String.format(NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING, numFilteredViolations, numViolations);
 		numViolationsLabel.setText(text);
 		numViolationsLabel.getParent().layout(); // update label
