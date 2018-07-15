@@ -75,7 +75,6 @@ public class PmdViolationsView extends ViewPart
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
-	private static final String PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d)";
 	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
 	private static final String NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
 			+ " Violations: %d of %d";
@@ -591,9 +590,9 @@ public class PmdViolationsView extends ViewPart
 		});
 	}
 
-	private void updateTitleAndLabel(final List<PmdViolationMarker> pmdViolationMarkers) {
+	private void updateTitleAndLabel(final List<?> violationMarkers) {
 		int numFilteredViolations = tableViewer.getTable().getItemCount();
-		int numViolations = pmdViolationMarkers.size();
+		int numViolations = violationMarkers.size();
 		updateTabTitle(numFilteredViolations, numViolations);
 		updateNumViolationsLabel(numFilteredViolations, numViolations);
 	}

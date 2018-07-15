@@ -78,7 +78,7 @@ public class CheckstyleViolationsView extends ViewPart
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
-	private static final String PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d)";
+	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
 	private static final String NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
 			+ " Violations: %d of %d";
 	private static final int FILTER_INDEX_PRIORITY = 0;
@@ -184,10 +184,9 @@ public class CheckstyleViolationsView extends ViewPart
 					@Override
 					public void run() {
 						Object input = tableViewer.getInput();
-						List<CheckstyleViolationMarker> tableElements = (List<CheckstyleViolationMarker>) input;
-						int numViolations = tableElements.size();
+						List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) input;
 
-						updateNumViolationsLabel(numViolations);
+						updateTitleAndLabel(violationMarkers);
 					}
 				});
 
@@ -604,22 +603,27 @@ public class CheckstyleViolationsView extends ViewPart
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				int numViolations = violationMarkers.size();
-				// tab title
-				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
-				CheckstyleViolationsView.this.setPartName(newPartName);
-				
 				tableViewer.setInput(violationMarkers);
-				
-				updateNumViolationsLabel(numViolations);
+
+				updateTitleAndLabel(violationMarkers);
 			}
 		});
 	}
 
-	private void updateNumViolationsLabel(int numViolations) {
+	private void updateTitleAndLabel(final List<?> violationMarkers) {
 		int numFilteredViolations = tableViewer.getTable().getItemCount();
-		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations,
-				numViolations);
+		int numViolations = violationMarkers.size();
+		updateTabTitle(numFilteredViolations, numViolations);
+		updateNumViolationsLabel(numFilteredViolations, numViolations);
+	}
+
+	private void updateTabTitle(int numFilteredViolations, int numViolations) {
+		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
+		setPartName(newPartName);
+	}
+
+	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
+		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations, numViolations);
 		numViolationsLabel.setText(text);
 		numViolationsLabel.getParent().layout(); // update label
 	}

@@ -1,6 +1,7 @@
 package pmd.eclipse.plugin.preference;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 // architectural hints: do not use plugin-specific types to avoid a cascade of class compilings
@@ -35,6 +36,8 @@ public class PmdPreferences {
 	private final RuleSetFileLoader ruleSetFileLoader = new RuleSetFileLoader();
 
 	private final String node;
+
+	private URLClassLoader osgiClassLoaderWithCustomRules;
 
 	private PmdPreferences(String node) {
 		// private singleton constructor
@@ -94,13 +97,21 @@ public class PmdPreferences {
 			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}
 
-		URLClassLoader osgiClassLoaderWithCustomRules = new URLClassLoader(urls, getClass().getClassLoader());
+		osgiClassLoaderWithCustomRules = new URLClassLoader(urls, getClass().getClassLoader());
 
 		String ruleSetFilePathValue = preferences.get(PROP_KEY_RULE_SET_FILE_PATH, INVALID_RULESET_FILE_PATH);
 		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
 		String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
 		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
+	}
+
+	public void close() {
+		try {
+			osgiClassLoaderWithCustomRules.close();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 }

@@ -88,7 +88,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// update explorer view so that the violation flag are not displayed anymore
 		FileIconDecorator.refresh();
 
-		String taskName = "Analyzing " + eclipseFiles.size() + " file(s)...";
+		String taskName = String.format("Analyzing %d file(s)...", eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
 
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
@@ -129,6 +129,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		pmdProcessor.onFinished();
 
 		displayViolationMarkers(eclipseFilesMap, problemRenderer);
+
+		PmdPreferences.INSTANCE.close();
 
 		return Status.OK_STATUS;
 	}
