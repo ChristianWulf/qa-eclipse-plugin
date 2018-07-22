@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -19,6 +20,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -156,6 +158,25 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			// update explorer view so that the new violation flags are displayed
 			FileIconDecorator.refresh();
 		}
+
+		report.errors().forEachRemaining(error -> {
+			String errorFilename = error.getFile();
+			IFile eclipseFile = eclipseFilesMap.get(errorFilename);
+			try {
+				appendProcessingErrorMarker(eclipseFile, error);
+			} catch (CoreException e) {
+				// ignore if marker could not be created
+			}
+		});
+	}
+
+	private void appendProcessingErrorMarker(IFile eclipseFile, ProcessingError error) throws CoreException {
+		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
+		// whether it is displayed as error, warning, info or other in the Problems View
+		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		marker.setAttribute(IMarker.MESSAGE, error.getMsg());
+		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
+		marker.setAttribute(IMarker.LOCATION, error.getFile());
 	}
 
 }

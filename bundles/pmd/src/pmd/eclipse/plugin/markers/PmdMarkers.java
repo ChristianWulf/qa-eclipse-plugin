@@ -21,6 +21,7 @@ public final class PmdMarkers {
 	public static final String MEDIUM_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".medium";
 	public static final String MEDIUMLOW_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".mediumlow";
 	public static final String LOW_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".low";
+	public static final String PMD_ERROR_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".error";
 
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
