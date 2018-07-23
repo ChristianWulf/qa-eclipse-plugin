@@ -22,7 +22,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 	public CheckstyleListener(IProgressMonitor monitor, Map<String, IFile> eclipseFileByFilePath) {
 		this.eclipseFileByFilePath = eclipseFileByFilePath;
 		int numFiles = eclipseFileByFilePath.size();
-		String taskName = "Analyzing " + numFiles + " file(s)...";
+		String taskName = String.format("Analyzing %d file(s)...", numFiles);
 		this.monitor = SubMonitor.convert(monitor, taskName, numFiles);
 	}
 
