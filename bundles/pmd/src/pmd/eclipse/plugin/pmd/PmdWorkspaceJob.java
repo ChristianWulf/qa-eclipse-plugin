@@ -53,6 +53,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 	}
 
+	private static final int IMARKER_SEVERITY_OTHERS = 3;
+
 	// @Inject
 	// private final UISynchronize sync;
 	private final List<IFile> eclipseFiles;
@@ -167,13 +169,14 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			} catch (CoreException e) {
 				// ignore if marker could not be created
 			}
+			// PmdUIPlugin.getDefault().logWarning(error.getMsg());
 		});
 	}
 
 	private void appendProcessingErrorMarker(IFile eclipseFile, ProcessingError error) throws CoreException {
 		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
 		// whether it is displayed as error, warning, info or other in the Problems View
-		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		marker.setAttribute(IMarker.SEVERITY, IMARKER_SEVERITY_OTHERS);
 		marker.setAttribute(IMarker.MESSAGE, error.getMsg());
 		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 		marker.setAttribute(IMarker.LOCATION, error.getFile());
