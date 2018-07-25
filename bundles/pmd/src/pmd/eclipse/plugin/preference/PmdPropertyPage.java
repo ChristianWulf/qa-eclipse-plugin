@@ -1,19 +1,30 @@
 package pmd.eclipse.plugin.preference;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class PmdPropertyPage extends PropertyPage {
@@ -65,15 +76,41 @@ public class PmdPropertyPage extends PropertyPage {
 		Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Ruleset file path:");
 
+		Composite lineComposite = createDefaultComposite(composite, 2);
+
 		String ruleSetFilePath = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
 				PmdPreferences.INVALID_RULESET_FILE_PATH);
 		// Path text field
-		ruleSetFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		ruleSetFilePathText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData();
 		gd.widthHint = convertWidthInCharsToPixels(60);
 		ruleSetFilePathText.setLayoutData(gd);
 		ruleSetFilePathText.setText(ruleSetFilePath);
 		ruleSetFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
+
+		Button browseButton = new Button(lineComposite, SWT.NONE);
+		browseButton.setText("...");
+		browseButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				String message = "Select your rule set file for this project...";
+				ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), project, message);
+				int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					Object[] selectedObjects = dialog.getResult();
+					if (selectedObjects.length > 0) {
+						IFile selectedFilePath = (IFile) selectedObjects[0];
+						IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
+						Display.getCurrent().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								ruleSetFilePathText.setText(projectRelativePath.toString());
+							}
+						});
+					}
+				}
+			}
+		});
 
 		ruleSetFilePathLabel = new Label(composite, SWT.NONE);
 		ruleSetFilePathLabel.setText(RULE_SET_FILE_EXAMPLE_TEXT);
@@ -83,12 +120,46 @@ public class PmdPropertyPage extends PropertyPage {
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
 
-		customJarFilePathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		lineComposite = createDefaultComposite(composite, 2);
+
+		customJarFilePathsText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData();
 		gd.widthHint = convertWidthInCharsToPixels(60);
 		customJarFilePathsText.setLayoutData(gd);
 		customJarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
 		customJarFilePathsText.addKeyListener(new CustomModulesKeyListener(this));
+
+		// browseButton = new Button(lineComposite, SWT.NONE);
+		browseButton.setText("...");
+		browseButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				String message = "Select your custom rule jar file(s) for this project...";
+				ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), project, message);
+				int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					Object[] selectedObjects = dialog.getResult();
+					if (selectedObjects.length == 0) {
+						return;
+					}
+
+					List<String> filePathNames = new ArrayList<>();
+					for (Object selectedObject : selectedObjects) {
+						IFile selectedFilePath = (IFile) selectedObject;
+						IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
+						String filePathName = projectRelativePath.toString();
+						filePathNames.add(filePathName);
+					}
+
+					Display.getCurrent().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							customJarFilePathsText.setText(StringUtils.join(filePathNames, ','));
+						}
+					});
+				}
+			}
+		});
 
 		customJarFilePathsLabel = new Label(composite, SWT.NONE);
 		customJarFilePathsLabel.setText(CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
@@ -157,6 +228,7 @@ public class PmdPropertyPage extends PropertyPage {
 	private Composite createDefaultComposite(Composite parent, int numColumns) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
 		layout.numColumns = numColumns;
 		composite.setLayout(layout);
 
