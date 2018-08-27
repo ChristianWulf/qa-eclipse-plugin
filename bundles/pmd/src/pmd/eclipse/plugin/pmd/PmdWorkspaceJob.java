@@ -83,7 +83,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		for (IFile eclipseFile : eclipseFiles) {
 			try {
 				// also remove previous PMD markers on that file
-				eclipseFile.deleteMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, IResource.DEPTH_ZERO);
+				PmdMarkers.deleteMarkers(eclipseFile);
 			} catch (CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}

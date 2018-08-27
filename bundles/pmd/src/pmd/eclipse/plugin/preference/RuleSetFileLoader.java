@@ -60,6 +60,7 @@ public class RuleSetFileLoader {
 			// The call factory.createRuleSet(..) internally calls ServiceLoader.load(..)
 			// which uses the context class loader to find an implementation for the
 			// interface Language.
+			// Look at: net.sourceforge.pmd.util.ResourceLoader.loadResourceAsStream(String)
 			// However, the context class loader in an equinox environment does not find the
 			// correct implementation.
 			// Hence, we overwrite the context class loader with an equinox class loader.

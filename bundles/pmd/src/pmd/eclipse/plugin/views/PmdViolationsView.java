@@ -146,6 +146,7 @@ public class PmdViolationsView extends ViewPart
 			public void handleEvent(Event event) {
 				@SuppressWarnings("unchecked")
 				List<PmdViolationMarker> violationMarkers = (List<PmdViolationMarker>) tableViewer.getInput();
+				// PmdMarkers.deleteMarkers(resource);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
 		});

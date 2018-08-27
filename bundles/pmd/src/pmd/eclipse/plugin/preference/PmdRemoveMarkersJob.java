@@ -1,7 +1,6 @@
 package pmd.eclipse.plugin.preference;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,7 +27,7 @@ class PmdRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			project.deleteMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
+			PmdMarkers.deleteMarkers(project);
 		} catch (CoreException e) {
 			String message = String.format("Could not delete all markers for project '%s'", project);
 			PmdUIPlugin.getDefault().logThrowable(message, e);
