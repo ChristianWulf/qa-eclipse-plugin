@@ -18,11 +18,17 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 public final class CheckstyleMarkers {
 
+	private static final int IMARKER_SEVERITY_OTHERS = 3;
+
+	/** marker to delete violation and error markers */
+	public static final String ABSTRACT_CHECKSTYLE_COMMON_MARKER = "qa.eclipse.plugin.checkstyle.markers.common";
+	/** marker to identify violation marker for the violations view */
 	public static final String ABSTRACT_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.checkstyle.markers.violation";
 	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".error";
 	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".warning";
 	public static final String INFO_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".info";
 	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".ignore";
+	public static final String EXCEPTION_CHECKSTYLE_MARKER = ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".exception";
 
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
@@ -78,4 +84,16 @@ public final class CheckstyleMarkers {
 		return markers;
 	}
 
+	public static void deleteMarkers(IResource resource) throws CoreException {
+		resource.deleteMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_COMMON_MARKER, true, IResource.DEPTH_INFINITE);
+	}
+
+	public static void appendProcessingErrorMarker(IFile eclipseFile, Throwable throwable) throws CoreException {
+		IMarker marker = eclipseFile.createMarker(CheckstyleMarkers.EXCEPTION_CHECKSTYLE_MARKER);
+		// whether it is displayed as error, warning, info or other in the Problems View
+		marker.setAttribute(IMarker.SEVERITY, IMARKER_SEVERITY_OTHERS);
+		marker.setAttribute(IMarker.MESSAGE, throwable.toString());
+		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
+		marker.setAttribute(IMarker.LOCATION, eclipseFile.getFullPath().toString());
+	}
 }

@@ -42,8 +42,8 @@ public class CheckstyleJob extends WorkspaceJob {
 		}
 
 		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
-		boolean pmdEnabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
-		if (!pmdEnabled) { // if PMD is disabled for this project
+		boolean enabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
+		if (!enabled) { // if Checkstyle is disabled for this project
 			return Status.OK_STATUS;
 		}
 
@@ -54,9 +54,8 @@ public class CheckstyleJob extends WorkspaceJob {
 			eclipseFileByFilePath.put(key, eclipseFile);
 
 			try {
-				// also remove previous PMD markers on that file
-				eclipseFile.deleteMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
-						IResource.DEPTH_ZERO);
+				// also remove previous markers on that file
+				CheckstyleMarkers.deleteMarkers(eclipseFile);
 			} catch (CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}

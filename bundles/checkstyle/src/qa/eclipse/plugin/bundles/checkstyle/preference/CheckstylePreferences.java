@@ -57,7 +57,7 @@ public class CheckstylePreferences {
 			projectScopeByProject.put(project, projectPref);
 
 			preferences = projectPref.getNode(node);
-			preferences.addPreferenceChangeListener(new CheckstylePreferenceChangeListener(this, project, preferences));
+			preferences.addPreferenceChangeListener(new CheckstylePreferenceChangeListener(project));
 			// updateRulsetCache(project, preferences);
 		}
 

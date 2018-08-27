@@ -13,7 +13,6 @@ import java.util.Properties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import com.puppycrawl.tools.checkstyle.Checker;
@@ -91,9 +90,9 @@ public class CheckstyleTool {
 		/** Auto-set the config loc directory. */
 		Properties properties = new Properties();
 		properties.put("config_loc", configFile.getAbsoluteFile().getParent());
-				
+
 		PropertyResolver propertyResolver = new PropertiesExpander(properties);
-				
+
 		IgnoredModulesOptions ignoredModulesOptions = IgnoredModulesOptions.OMIT;
 		ThreadModeSettings threadModeSettings = ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
 		Configuration configuration;
@@ -141,12 +140,31 @@ public class CheckstyleTool {
 		try {
 			checker.process(files);
 		} catch (CheckstyleException e) {
-			if (e.getCause() instanceof OperationCanceledException) {
-				// user requested cancellation, keep silent
-			} else {
-				throw new IllegalStateException(e); // log to error view somewhere
-			}
+			throw new IllegalStateException(e);
 		}
+
+		// process each file separately to be able to skip it
+		// for (File fileToCheck : files) {
+		// for (IFile eclipseFile : eclipseFiles) {
+		// final File sourceCodeFile =
+		// eclipseFile.getLocation().toFile().getAbsoluteFile();
+		//
+		// List<File> filesToCheck = Arrays.asList(sourceCodeFile);
+		// try {
+		// checker.process(filesToCheck);
+		// } catch (CheckstyleException e) {
+		// if (e.getCause() instanceof OperationCanceledException) {
+		// throw new IllegalStateException(e);
+		// } else {
+		// // skip file upon syntax error
+		// try {
+		// CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, e);
+		// } catch (CoreException e1) {
+		// // ignore if marker could not be created
+		// }
+		// }
+		// }
+		// }
 	}
 
 }

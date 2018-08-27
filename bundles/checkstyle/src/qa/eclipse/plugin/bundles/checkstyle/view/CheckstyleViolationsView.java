@@ -155,6 +155,7 @@ public class CheckstyleViolationsView extends ViewPart
 				@SuppressWarnings("unchecked")
 				List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) tableViewer
 						.getInput();
+				// CheckstyleMarkers.deleteMarkers(eclipseFile);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
 		});
@@ -623,7 +624,8 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
-		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations, numViolations);
+		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations,
+				numViolations);
 		numViolationsLabel.setText(text);
 		numViolationsLabel.getParent().layout(); // update label
 	}

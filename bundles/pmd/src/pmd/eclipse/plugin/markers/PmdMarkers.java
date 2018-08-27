@@ -17,7 +17,7 @@ public final class PmdMarkers {
 
 	/** marker to delete violation and error markers */
 	public static final String ABSTRACT_PMD_VIOLATION_COMMON = "pmd.eclipse.plugin.markers.common";
-	/** marker to identify violation marker for the view */
+	/** marker to identify violation marker for the violations view */
 	public static final String ABSTRACT_PMD_VIOLATION_MARKER = "pmd.eclipse.plugin.markers.violation";
 	public static final String HIGH_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".high";
 	public static final String MEDIUMHIGH_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".mediumhigh";

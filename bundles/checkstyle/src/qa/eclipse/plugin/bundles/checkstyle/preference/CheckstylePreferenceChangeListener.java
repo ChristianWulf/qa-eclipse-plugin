@@ -1,27 +1,28 @@
 package qa.eclipse.plugin.bundles.checkstyle.preference;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 
 class CheckstylePreferenceChangeListener implements IPreferenceChangeListener {
 
-	private final CheckstylePreferences checkstylePreferences;
 	private final IProject project;
-	private final IEclipsePreferences preferences;
 
-	public CheckstylePreferenceChangeListener(CheckstylePreferences checkstylePreferences, IProject project,
-			IEclipsePreferences preferences) {
-		this.checkstylePreferences = checkstylePreferences;
+	public CheckstylePreferenceChangeListener(IProject project) {
 		this.project = project;
-		this.preferences = preferences;
 	}
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
-		// TODO Auto-generated method stub
+		if (event.getKey() == CheckstylePreferences.PROP_KEY_ENABLED) {
+			String newEnabled = (String) event.getNewValue();
+			Boolean enabled = Boolean.valueOf(newEnabled);
+			if (!enabled) { // remove all violation markers
+				String jobName = String.format("Removing Checkstyle violations for project '%s'...", project.getName());
 
+				CheckstyleRemoveMarkersJob.start(jobName, project);
+			}
+		}
 	}
 
 }
