@@ -24,7 +24,7 @@ public class RuleSetFileLoader {
 		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		try {
 			registeredRuleSets = factory.getRegisteredRuleSets();
-		} catch (RuleSetNotFoundException e) {
+		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
 			throw new IllegalStateException(e);
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
@@ -67,7 +67,7 @@ public class RuleSetFileLoader {
 			// Finally, we rollback the context class loader to its original one.
 			RuleSet ruleSet = factory.createRuleSet(ruleSetFilePath);
 			return new RuleSets(ruleSet);
-		} catch (RuleSetNotFoundException e) {
+		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
 			if (!new File(ruleSetFilePath).exists()) {
 				// RuleSetNotFoundException at this place means: file not found.
 				// Since PMD does not work without any ruleset file,

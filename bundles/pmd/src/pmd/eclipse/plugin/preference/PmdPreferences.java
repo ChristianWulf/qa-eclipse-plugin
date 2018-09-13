@@ -97,7 +97,10 @@ public class PmdPreferences {
 			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}
 
-		osgiClassLoaderWithCustomRules = new URLClassLoader(urls, getClass().getClassLoader());
+		ClassLoader parentClassLoader;
+		// parentClassLoader = Thread.currentThread().getContextClassLoader();
+		parentClassLoader = getClass().getClassLoader(); // equinox class loader with jars from the lib folder
+		osgiClassLoaderWithCustomRules = new URLClassLoader(urls, parentClassLoader);
 
 		String ruleSetFilePathValue = preferences.get(PROP_KEY_RULE_SET_FILE_PATH, INVALID_RULESET_FILE_PATH);
 		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
