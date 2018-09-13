@@ -42,6 +42,7 @@ public class PmdPreferences {
 	private PmdPreferences(String node) {
 		// private singleton constructor
 		this.node = node;
+		this.osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
 	}
 
 	public IEclipsePreferences getDefaultPreferences() {

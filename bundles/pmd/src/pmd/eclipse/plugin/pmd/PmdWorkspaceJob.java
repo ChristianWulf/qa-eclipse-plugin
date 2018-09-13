@@ -98,43 +98,46 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
-		RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
-		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
+		try {
+			RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
+			final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
-		Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
-		PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
-		final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
+			Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
+			PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
+			final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
 
-		CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
-				collectingRenderers);
+			CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
+					collectingRenderers);
 
-		final RuleContext context = new RuleContext();
+			final RuleContext context = new RuleContext();
 
-		pmdProcessor.onStarted();
-		for (IFile eclipseFile : eclipseFiles) {
-			if (monitor.isCanceled()) {
-				// only stop the loop, not the whole method to finish reporting
-				break;
+			pmdProcessor.onStarted();
+			for (IFile eclipseFile : eclipseFiles) {
+				if (monitor.isCanceled()) {
+					// only stop the loop, not the whole method to finish reporting
+					break;
+				}
+
+				if (!eclipseFile.isAccessible()) {
+					continue;
+				}
+
+				final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
+				final DataSource dataSource = new FileDataSource(sourceCodeFile);
+
+				// map file name to eclipse file: necessary for adding markers at the end
+				String niceFileName = dataSource.getNiceFileName(false, "");
+				eclipseFilesMap.put(niceFileName, eclipseFile);
+
+				pmdProcessor.processFile(dataSource, context);
 			}
+			pmdProcessor.onFinished();
 
-			if (!eclipseFile.isAccessible()) {
-				continue;
-			}
+			displayViolationMarkers(eclipseFilesMap, problemRenderer);
 
-			final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
-			final DataSource dataSource = new FileDataSource(sourceCodeFile);
-
-			// map file name to eclipse file: necessary for adding markers at the end
-			String niceFileName = dataSource.getNiceFileName(false, "");
-			eclipseFilesMap.put(niceFileName, eclipseFile);
-
-			pmdProcessor.processFile(dataSource, context);
+		} finally {
+			PmdPreferences.INSTANCE.close();
 		}
-		pmdProcessor.onFinished();
-
-		displayViolationMarkers(eclipseFilesMap, problemRenderer);
-
-		PmdPreferences.INSTANCE.close();
 
 		return Status.OK_STATUS;
 	}
