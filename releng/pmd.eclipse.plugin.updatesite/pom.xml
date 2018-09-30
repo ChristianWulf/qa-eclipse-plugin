@@ -21,6 +21,11 @@
 		<maven.deploy.skip>false</maven.deploy.skip>
 		<updatesite_repo_path>${project.build.directory}/repository/</updatesite_repo_path>
 		<updatesite_target_path>file:///srv/vhosts/eus/qa/snapshot/</updatesite_target_path>
+		<!-- wagon -->
+		<wagon.url>${updatesite_target_path}</wagon.url>
+		<wagon.fromDir>${updatesite_repo_path}</wagon.fromDir>
+		<wagon.toDir>.</wagon.toDir>
+		<wagon.includes>**</wagon.includes>
 	</properties>
 
 	<!-- <distributionManagement> -->
@@ -39,12 +44,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
 				<version>2.0.0</version>
-				<configuration>
-					<fromDir>${updatesite_repo_path}</fromDir>
-					<includes>**</includes>
-					<url>${updatesite_target_path}</url>
-					<toDir>.</toDir>
-				</configuration>
+				<!-- configuration is defined in <properties> -->
 			</plugin>
 		</plugins>
 
