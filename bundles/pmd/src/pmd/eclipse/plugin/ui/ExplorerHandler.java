@@ -21,8 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdJob;
 import pmd.eclipse.plugin.ui.visitors.ResourceCollector;
 
 public class ExplorerHandler extends AbstractHandler {
@@ -55,9 +54,8 @@ public class ExplorerHandler extends AbstractHandler {
 
 			Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();
 
-			PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 			for (Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
-				pmdTool.startAsyncAnalysis(entry.getValue());
+				PmdJob.startAsyncAnalysis(entry.getValue());
 			}
 		}
 

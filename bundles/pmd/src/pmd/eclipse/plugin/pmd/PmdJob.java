@@ -10,12 +10,18 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceRuleFactory;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -34,7 +40,7 @@ import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.preference.PmdPreferences;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
-class PmdWorkspaceJob extends WorkspaceJob {
+public class PmdJob extends WorkspaceJob {
 
 	private static class ConstantRuleSetFactory extends RuleSetFactory {
 		private final RuleSets ruleSets;
@@ -59,7 +65,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 	// private final UISynchronize sync;
 	private final List<IFile> eclipseFiles;
 
-	public PmdWorkspaceJob(String name, List<IFile> eclipseFiles) {
+	private PmdJob(String name, List<IFile> eclipseFiles) {
 		super(name);
 		this.eclipseFiles = eclipseFiles;
 	}
@@ -183,6 +189,31 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		marker.setAttribute(IMarker.MESSAGE, error.getMsg());
 		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 		marker.setAttribute(IMarker.LOCATION, error.getFile());
+	}
+
+	/**
+	 * All passed files must belong to the same project.
+	 * 
+	 * @param eclipseFiles
+	 */
+	public static void startAsyncAnalysis(List<IFile> eclipseFiles) {
+		if (eclipseFiles.isEmpty()) {
+			return;
+		}
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+
+		ISchedulingRule jobRule = null;
+		for (IFile eclipseFile : eclipseFiles) {
+			ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
+			jobRule = MultiRule.combine(jobRule, fileRule);
+		}
+
+		Job job = new PmdJob("Analysis by PMD", eclipseFiles);
+		job.setRule(jobRule);
+		job.setUser(true);
+		job.schedule();
 	}
 
 }

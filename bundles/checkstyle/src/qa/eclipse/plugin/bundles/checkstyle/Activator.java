@@ -95,7 +95,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 		try {
 			event.getDelta().accept(resourceDeltaFileCollector);
 		} catch (CoreException e) {
-			throw new IllegalStateException(e);
+			Activator.getDefault().logThrowable("Error on resource changed.", e);
 		}
 
 		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {

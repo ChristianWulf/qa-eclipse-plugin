@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdJob;
 import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 
 public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder {
@@ -27,11 +27,8 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	private static final IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
 
-	private final PmdTool pmdTool;
-
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
-		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
@@ -91,15 +88,15 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 		try {
 			delta.accept(resourceDeltaFileCollector);
 		} catch (CoreException e) {
-			throw new IllegalStateException(e);
+			PmdUIPlugin.getDefault().logThrowable("Error on accepting resource.", e);
 		}
 
 		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+			PmdJob.startAsyncAnalysis(addedFiles.getValue());
 		}
 
 		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+			PmdJob.startAsyncAnalysis(changedFiles.getValue());
 		}
 
 		// your view listens to marker changes and thus is indirectly notified about
