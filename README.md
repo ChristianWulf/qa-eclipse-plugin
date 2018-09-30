@@ -52,3 +52,11 @@ The "prefs" file is intended to be uploaded to your repository to share your con
 ```
 mvn clean package
 ```
+
+## Local Development
+1. Build *qa.eclipse.plugin* via `mvn clean package`
+2. Copy the three build artifacts from
+- `qa-eclipse-plugin/bundles/XXX/target/qa.eclipse.plugin.bundles.XXX-1.0.0-SNAPSHOT.jar` (where XXX is supposed to be `common`, `checkstyle`, and `pmd`) to your Eclipse installation folder:      
+- `Path/To/Eclipse/dropins/plugins` (You might need to create the `plugins` folder
+3. Start Eclipse via the clean flag, e.g., `./eclipse -clean` on Linux. The clean flag is used to clean Eclipse's plugin cache.
+4. In Eclipse, check if the plugin is installed. Check if *Window -> Show View -> Other... -> Quality Assurance* is available.
