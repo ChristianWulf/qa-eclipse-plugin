@@ -32,12 +32,22 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 	}
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
 		IBuildContext buildContext = getContext();
 		IBuildConfiguration[] allReferencedBuildConfigs = buildContext.getAllReferencedBuildConfigs();
 		IBuildConfiguration[] allReferencingBuildConfigs = buildContext.getAllReferencingBuildConfigs();
 		IBuildConfiguration[] requestedConfigs = buildContext.getRequestedConfigs();
 
+		try {
+			buildByKind(kind, monitor);
+		} catch (CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on building by kind.", e);
+		}
+
+		return EMPTY_PROJECT_ARRAY;
+	}
+
+	private void buildByKind(int kind, IProgressMonitor monitor) throws CoreException {
 		switch (kind) {
 		case IncrementalProjectBuilder.FULL_BUILD: {
 			fullBuild(monitor);
@@ -67,8 +77,6 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 		default:
 			break;
 		}
-
-		return EMPTY_PROJECT_ARRAY;
 	}
 
 	@Override
@@ -82,14 +90,10 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	}
 
-	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) {
+	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
 		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
-		try {
-			delta.accept(resourceDeltaFileCollector);
-		} catch (CoreException e) {
-			PmdUIPlugin.getDefault().logThrowable("Error on accepting resource.", e);
-		}
+		delta.accept(resourceDeltaFileCollector);
 
 		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
 			PmdJob.startAsyncAnalysis(addedFiles.getValue());
