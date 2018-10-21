@@ -9,6 +9,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import pmd.eclipse.plugin.PmdUIPlugin;
+import qa.eclipse.plugin.bundles.common.ClassLoaderUtil;
 
 public class RuleSetFileLoader {
 
@@ -16,19 +17,29 @@ public class RuleSetFileLoader {
 	private final RuleSets defaultRuleSets;
 
 	public RuleSetFileLoader() {
-		final RuleSetFactory factory = new RuleSetFactory(getClass().getClassLoader(), RulePriority.LOW, false, true);
+		ClassLoader classLoader = getClass().getClassLoader();
 
-		Iterator<RuleSet> registeredRuleSets;
+		final RuleSetFactory factory = new RuleSetFactory(classLoader, RulePriority.LOW, false, true);
 
-		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-		try {
-			registeredRuleSets = factory.getRegisteredRuleSets();
-		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
-			throw new IllegalStateException(e);
-		} finally {
-			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
-		}
+		Iterator<RuleSet> registeredRuleSets = ClassLoaderUtil.executeWithContextClassLoader(classLoader, () -> {
+			try {
+				return factory.getRegisteredRuleSets();
+			} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
+				throw new IllegalStateException(e);
+			}
+		});
+
+		// final ClassLoader savedContextClassLoader =
+		// Thread.currentThread().getContextClassLoader();
+		// Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+		// try {
+		// registeredRuleSets = factory.getRegisteredRuleSets();
+		// } catch (RuleSetNotFoundException | RuntimeException e) { //
+		// RuntimeException: if rule class was not found
+		// throw new IllegalStateException(e);
+		// } finally {
+		// Thread.currentThread().setContextClassLoader(savedContextClassLoader);
+		// }
 
 		defaultRuleSets = new RuleSets();
 		while (registeredRuleSets.hasNext()) {

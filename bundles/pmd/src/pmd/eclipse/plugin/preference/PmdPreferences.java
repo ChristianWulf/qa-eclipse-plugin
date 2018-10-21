@@ -16,13 +16,12 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import net.sourceforge.pmd.RuleSets;
+import pmd.eclipse.plugin.PmdUIPlugin;
 import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 public class PmdPreferences {
-
-	/** split pattern */
-	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	public static final String INVALID_RULESET_FILE_PATH = "invalid/ruleset/file/path";
 
@@ -86,17 +85,11 @@ public class PmdPreferences {
 	}
 
 	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath) {
-		URL[] urls;
+		String[] customRulesJarPaths = PreferencesUtil.loadCustomJarPaths(preferences,
+				PROP_KEY_CUSTOM_RULES_JARS);
 
-		// load custom rules into a new class loader
-		final String customRulesJarsValue = preferences.get(PROP_KEY_CUSTOM_RULES_JARS, "");
-		if (customRulesJarsValue.trim().isEmpty()) {
-			urls = new URL[0];
-		} else {
-			String[] customRulesJars = customRulesJarsValue.split(BY_COMMA_AND_TRIM);
-			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
-			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
-		}
+		FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJarPaths);
+		URL[] urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJarPaths);
 
 		ClassLoader parentClassLoader;
 		// parentClassLoader = Thread.currentThread().getContextClassLoader();
@@ -114,7 +107,9 @@ public class PmdPreferences {
 		try {
 			osgiClassLoaderWithCustomRules.close();
 		} catch (IOException e) {
-			throw new IllegalStateException(e);
+			String messageFormat = "Could not close the custom class loader for the custom rule files.";
+			String message = String.format(messageFormat);
+			PmdUIPlugin.getDefault().logThrowable(message, e);
 		}
 	}
 

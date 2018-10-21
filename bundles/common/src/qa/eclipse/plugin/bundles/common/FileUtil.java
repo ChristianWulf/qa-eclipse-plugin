@@ -23,12 +23,22 @@ public final class FileUtil {
 		URL[] urls = new URL[jarFilePaths.length];
 		for (int i = 0; i < jarFilePaths.length; i++) {
 			File jarFile = FileUtil.makeAbsoluteFile(jarFilePaths[i], parentFile);
+			URL fileUrl;
 			try {
-				urls[i] = jarFile.toURI().toURL();
+				fileUrl = jarFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				// jarFile is filled by the user, so continue loop upon exception
 				Logger.logThrowable("Cannot convert file to URL: " + jarFile, e);
+				continue;
 			}
+
+			if (fileUrl.toString().endsWith("/")) {
+				String message = String.format("The passed jar file '%s' may not end with a slash ('/').",
+						fileUrl.toString());
+				throw new IllegalStateException(message);
+			}
+
+			urls[i] = fileUrl;
 		}
 		return urls;
 	}

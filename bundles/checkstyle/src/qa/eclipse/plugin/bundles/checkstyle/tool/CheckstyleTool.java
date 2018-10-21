@@ -2,6 +2,7 @@ package qa.eclipse.plugin.bundles.checkstyle.tool;
 // may not contain anything from the Eclipse API
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -27,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatform;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 public class CheckstyleTool {
@@ -37,6 +39,12 @@ public class CheckstyleTool {
 		this.checker = new Checker();
 	}
 
+	/**
+	 * You need to catch potential runtime exceptions if you call this method.
+	 * 
+	 * @param eclipseFiles
+	 * @param checkstyleListener
+	 */
 	// FIXME remove Eclipse API
 	public void startAsyncAnalysis(List<IFile> eclipseFiles, CheckstyleListener checkstyleListener) {
 		IFile file = eclipseFiles.get(0);
@@ -100,7 +108,9 @@ public class CheckstyleTool {
 			configuration = ConfigurationLoader.loadConfiguration(absoluteConfigFilePath, propertyResolver,
 					ignoredModulesOptions, threadModeSettings);
 		} catch (CheckstyleException e) {
-			throw new IllegalStateException(e);
+			String message = String.format("Could not load Checkstyle configuration from '%s'.",
+					absoluteConfigFilePath);
+			throw new IllegalStateException(message, e);
 		}
 
 		// Configuration suppressFilterConfiguration =
@@ -114,32 +124,38 @@ public class CheckstyleTool {
 		// }
 		// }
 
-		String[] customModuleJarPaths = CheckstylePreferences.INSTANCE.loadCustomModuleJarPaths(projectPreferences);
+		String[] customModuleJarPaths = PreferencesUtil.loadCustomJarPaths(projectPreferences,
+				CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS);
+
 		URL[] moduleClassLoaderUrls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
-		ClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls, getClass().getClassLoader());
-		checker.setModuleClassLoader(moduleClassLoader);
+		try (URLClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls,
+				getClass().getClassLoader())) {
+			checker.setModuleClassLoader(moduleClassLoader);
 
-		try {
-			checker.configure(configuration);
-		} catch (CheckstyleException e) {
-			throw new IllegalStateException(e);
-		}
+			try {
+				checker.configure(configuration);
+			} catch (CheckstyleException e) {
+				throw new IllegalStateException(e);
+			}
 
-		checker.addListener(checkstyleListener);
-		checker.addBeforeExecutionFileFilter(checkstyleListener);
+			checker.addListener(checkstyleListener);
+			checker.addBeforeExecutionFileFilter(checkstyleListener);
 
-		// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
+			// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
 
-		List<File> files = new ArrayList<>();
+			List<File> files = new ArrayList<>();
 
-		for (IFile eclipseFile : eclipseFiles) {
-			final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
-			files.add(sourceCodeFile);
-		}
+			for (IFile eclipseFile : eclipseFiles) {
+				final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
+				files.add(sourceCodeFile);
+			}
 
-		try {
-			checker.process(files);
-		} catch (CheckstyleException e) {
+			try {
+				checker.process(files);
+			} catch (CheckstyleException e) {
+				throw new IllegalStateException(e);
+			}
+		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 
