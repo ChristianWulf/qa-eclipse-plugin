@@ -10,7 +10,7 @@ public final class ClassLoaderUtil {
 		// utility class
 	}
 
-	public static ClassLoader newClassLoader(URL[] urls, ClassLoader parentClassLoader) {
+	public static URLClassLoader newClassLoader(URL[] urls, ClassLoader parentClassLoader) {
 		URLClassLoader osgiClassLoaderWithUrls = new URLClassLoader(urls, parentClassLoader);
 		return osgiClassLoaderWithUrls;
 	}
