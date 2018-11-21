@@ -3,12 +3,16 @@ package pmd.eclipse.plugin.preference;
 import java.io.File;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import pmd.eclipse.plugin.PmdUIPlugin;
+import pmd.eclipse.plugin.markers.PmdMarkers;
 
 public class RuleSetFileLoader {
 
@@ -41,16 +45,8 @@ public class RuleSetFileLoader {
 	 * @param ruleSetFilePath
 	 * @return the rule set declared in the given <code>ruleSetFilePath</code>, or
 	 *         the built-in default rule set.
-	 * @throws RuleSetNotFoundException
-	 *             if
-	 *             <ul>
-	 *             <li>the given <code>ruleSetFilePath</code> cannot be found,
-	 *             or</li>
-	 *             <li>one of the declared rules cannot be found in the
-	 *             classpath</li>
-	 *             </ul>
 	 */
-	public RuleSets load(String ruleSetFilePath, ClassLoader classLoaderWithCustomRules) {
+	public RuleSets load(String ruleSetFilePath, IProject project, ClassLoader classLoaderWithCustomRules) {
 		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
 
 		final RuleSetFactory factory = new RuleSetFactory(classLoaderWithCustomRules, RulePriority.LOW, false, true);
@@ -67,17 +63,21 @@ public class RuleSetFileLoader {
 			RuleSet ruleSet = factory.createRuleSet(ruleSetFilePath);
 			return new RuleSets(ruleSet);
 		} catch (RuleSetNotFoundException e) {
+			final String message;
 			if (!new File(ruleSetFilePath).exists()) {
 				// RuleSetNotFoundException at this place means: file not found.
 				// Since PMD does not work without any ruleset file,
 				// we use as default all of the rule sets which PMD provides.
 				String messageFormat = "Ruleset file not found on file path '%s'. Defaulting to all of the rule sets which PMD provides.";
-				String message = String.format(messageFormat, ruleSetFilePath);
-				PmdUIPlugin.getDefault().logThrowable(message, e);
+				message = String.format(messageFormat, ruleSetFilePath);
 			} else {
 				String messageFormat = "Ruleset file references rules which are not in the (custom rules) classpath: %s. Defaulting to all of the rule sets which PMD provides.";
-				String message = String.format(messageFormat, e.getLocalizedMessage());
-				PmdUIPlugin.getDefault().logThrowable(message, e);
+				message = String.format(messageFormat, e.getLocalizedMessage());
+			}
+			try {
+				PmdMarkers.appendViolationMarker(project, message);
+			} catch (CoreException e1) {
+				PmdUIPlugin.getDefault().logThrowable("Cannot set marker error, while reporting: " + message, e);
 			}
 			return defaultRuleSets;
 		} finally {

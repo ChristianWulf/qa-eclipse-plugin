@@ -77,11 +77,11 @@ public class PmdPreferences {
 		IScopeContext projectPref = projectScopeByProject.get(project);
 		IEclipsePreferences preferences = projectPref.getNode(node);
 		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
-		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
+		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath, project);
 		return ruleSets;
 	}
 
-	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath) {
+	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath, IProject project) {
 		URL[] urls;
 
 		// load custom rules into a new class loader
@@ -100,7 +100,7 @@ public class PmdPreferences {
 		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
 		String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
-		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
+		return ruleSetFileLoader.load(ruleSetFilePath, project, osgiClassLoaderWithCustomRules);
 	}
 
 }

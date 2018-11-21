@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -61,6 +62,18 @@ public final class PmdMarkers {
 
 		// whether it is displayed as error, warning, info or other in the Problems View
 		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+	}
+
+	public static void appendViolationMarker(IProject eclipseFile, String message) throws CoreException {
+		String markerType = HIGH_PMD_VIOLATION_MARKER;
+
+		IMarker marker = eclipseFile.createMarker(markerType);
+		marker.setAttribute(IMarker.MESSAGE, message);
+		marker.setAttribute(IMarker.LINE_NUMBER, "");
+
+		marker.setAttribute(ATTR_KEY_PRIORITY, RulePriority.HIGH.getPriority());
+		marker.setAttribute(ATTR_KEY_RULENAME, "ConfigurationError");
+		marker.setAttribute(ATTR_KEY_RULESETNAME, "");
 	}
 
 	public static IMarker[] findAllInWorkspace() {
