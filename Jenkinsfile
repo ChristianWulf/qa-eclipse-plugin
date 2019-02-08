@@ -12,8 +12,8 @@ node {
 	}
 
 	stage ('Prepare') {
-		sh 'mvn -version ; ls /var/lib/jenkins/tools/'
-		sh 'cd ' + env.WORKSPACE + '; mvn -s settings.xml -B clean'
+		sh 'wget http://www.gutscheine.org/mirror/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz ; tar -xvzpf apache-maven-3.6.0-bin.tar.gz'
+		sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -s settings.xml -B clean'
 	}
 
 	stage ('Compile and Deploy') {
