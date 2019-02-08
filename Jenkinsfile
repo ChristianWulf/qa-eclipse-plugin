@@ -17,7 +17,8 @@ node {
 
 	stage ('Compile and Deploy') {
 		withCredentials([file(credentialsId: ID, variable: 'key_file')]) {
-			sh 'mkdir qa ; scp qa repo@repo.se.internal:/var/www/html/qa'
+			sh '[ ! -q qa ] && mkdir qa'
+			sh 'scp qa repo@repo.se.internal:/var/www/html/qa'
 			sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -X -s settings.xml -B package -Dkeystore=${key_file} -DupdatesiteUrl=' + UPDATE_SITE_URL
 		}
 	}
