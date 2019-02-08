@@ -120,7 +120,7 @@ public class PmdJob extends WorkspaceJob {
 			ClassLoaderUtil.executeWithContextClassLoader(osgiClassLoaderWithCustomRules, () -> {
 				File eclipseProjectPath = ProjectUtil.getProjectPath(eclipseProject);
 				// don't cache rule sets. Reload on each execution.
-				RuleSets ruleSets = PmdPreferences.INSTANCE.loadUpdatedRuleSet(preferences, eclipseProjectPath,
+				RuleSets ruleSets = PmdPreferences.INSTANCE.loadUpdatedRuleSet(preferences, eclipseProject, eclipseProjectPath,
 						osgiClassLoaderWithCustomRules);
 				final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 

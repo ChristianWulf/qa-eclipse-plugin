@@ -67,7 +67,7 @@ public class PmdPreferences {
 		return preferences;
 	}
 
-	public RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath,
+	public RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, IProject project, File eclipseProjectPath,
 			ClassLoader osgiClassLoaderWithCustomRules) {
 		String ruleSetFilePathValue = preferences.get(PROP_KEY_RULE_SET_FILE_PATH, INVALID_RULESET_FILE_PATH);
 		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);

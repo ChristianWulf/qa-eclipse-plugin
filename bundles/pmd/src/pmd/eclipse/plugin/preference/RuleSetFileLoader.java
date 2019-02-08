@@ -12,7 +12,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import pmd.eclipse.plugin.PmdUIPlugin;
-
+import pmd.eclipse.plugin.markers.PmdMarkers;
 import qa.eclipse.plugin.bundles.common.ClassLoaderUtil;
 
 public class RuleSetFileLoader {
