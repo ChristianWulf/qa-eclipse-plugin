@@ -11,9 +11,8 @@
 	<!-- Link to the parent pom -->
 	<parent>
 		<groupId>chw.experimental</groupId>
-		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
+		<artifactId>qa.eclipse.plugin.bundles</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../releng/pmd.eclipse.plugin.configuration</relativePath>
 	</parent>
 
 	<build>

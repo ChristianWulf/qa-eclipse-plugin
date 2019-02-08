@@ -2,20 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>chw.experimental</groupId>
 	<artifactId>qa.eclipse.plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
 
-	<!-- Link to the parent pom -->
-	<parent>
-		<groupId>chw.experimental</groupId>
-		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>./releng/pmd.eclipse.plugin.configuration</relativePath>
-	</parent>
-
 	<properties>
-		<maven.deploy.skip>false</maven.deploy.skip>
+		<tychoVersion>1.3.0</tychoVersion>
+		<tycho-extras.version>1.3.0</tycho-extras.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<eclipseRepoUrl>http://download.eclipse.org/releases/oxygen</eclipseRepoUrl>
+		<pmd.version>5.8.1</pmd.version>
+		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
+		<!-- maven.deploy.skip>true</maven.deploy.skip -->
 	</properties>
 
 	<modules>
@@ -24,5 +24,58 @@
 		<module>releng</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>${eclipseRepoUrl}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tychoVersion}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
 
