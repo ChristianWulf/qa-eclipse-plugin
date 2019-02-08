@@ -12,7 +12,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.markers.PmdMarkers;
+
+import qa.eclipse.plugin.bundles.common.ClassLoaderUtil;
 
 public class RuleSetFileLoader {
 
@@ -20,19 +21,29 @@ public class RuleSetFileLoader {
 	private final RuleSets defaultRuleSets;
 
 	public RuleSetFileLoader() {
-		final RuleSetFactory factory = new RuleSetFactory(getClass().getClassLoader(), RulePriority.LOW, false, true);
+		ClassLoader classLoader = getClass().getClassLoader();
 
-		Iterator<RuleSet> registeredRuleSets;
+		final RuleSetFactory factory = new RuleSetFactory(classLoader, RulePriority.LOW, false, true);
 
-		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-		try {
-			registeredRuleSets = factory.getRegisteredRuleSets();
-		} catch (RuleSetNotFoundException e) {
-			throw new IllegalStateException(e);
-		} finally {
-			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
-		}
+		Iterator<RuleSet> registeredRuleSets = ClassLoaderUtil.executeWithContextClassLoader(classLoader, () -> {
+			try {
+				return factory.getRegisteredRuleSets();
+			} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
+				throw new IllegalStateException(e);
+			}
+		});
+
+		// final ClassLoader savedContextClassLoader =
+		// Thread.currentThread().getContextClassLoader();
+		// Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+		// try {
+		// registeredRuleSets = factory.getRegisteredRuleSets();
+		// } catch (RuleSetNotFoundException | RuntimeException e) { //
+		// RuntimeException: if rule class was not found
+		// throw new IllegalStateException(e);
+		// } finally {
+		// Thread.currentThread().setContextClassLoader(savedContextClassLoader);
+		// }
 
 		defaultRuleSets = new RuleSets();
 		while (registeredRuleSets.hasNext()) {
@@ -56,13 +67,14 @@ public class RuleSetFileLoader {
 			// The call factory.createRuleSet(..) internally calls ServiceLoader.load(..)
 			// which uses the context class loader to find an implementation for the
 			// interface Language.
+			// Look at: net.sourceforge.pmd.util.ResourceLoader.loadResourceAsStream(String)
 			// However, the context class loader in an equinox environment does not find the
 			// correct implementation.
 			// Hence, we overwrite the context class loader with an equinox class loader.
 			// Finally, we rollback the context class loader to its original one.
 			RuleSet ruleSet = factory.createRuleSet(ruleSetFilePath);
 			return new RuleSets(ruleSet);
-		} catch (RuleSetNotFoundException e) {
+		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
 			final String message;
 			if (!new File(ruleSetFilePath).exists()) {
 				// RuleSetNotFoundException at this place means: file not found.

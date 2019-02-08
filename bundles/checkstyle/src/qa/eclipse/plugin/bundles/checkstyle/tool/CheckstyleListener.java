@@ -11,7 +11,6 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 
 class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
@@ -22,7 +21,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 	public CheckstyleListener(IProgressMonitor monitor, Map<String, IFile> eclipseFileByFilePath) {
 		this.eclipseFileByFilePath = eclipseFileByFilePath;
 		int numFiles = eclipseFileByFilePath.size();
-		String taskName = "Analyzing " + numFiles + " file(s)...";
+		String taskName = String.format("Analyzing %d file(s)...", numFiles);
 		this.monitor = SubMonitor.convert(monitor, taskName, numFiles);
 	}
 
@@ -63,12 +62,19 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		} catch (CoreException e) {
 			// ignore if marker could not be created
 		}
-
 	}
 
 	@Override
 	public void addException(AuditEvent event, Throwable throwable) {
-		Activator.getDefault().logThrowable(event.getMessage(), throwable);
+//		Activator.getDefault().logThrowable(event.getMessage(), throwable);
+		
+		String violationFilename = event.getFileName();
+		IFile eclipseFile = eclipseFileByFilePath.get(violationFilename);
+		try {
+			CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, throwable);
+		} catch (CoreException e) {
+			// ignore if marker could not be created
+		}
 	}
 
 }

@@ -78,8 +78,9 @@ public class CheckstyleViolationsView extends ViewPart
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
-	private static final String PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d)";
-	private static final String NUMBER_OF_CHECKSTYLE_VIOLATIONS = "Number of " + TOOL_NAME + " Violations: ";
+	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
+	private static final String NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
+			+ " Violations: %d of %d";
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
 
@@ -112,9 +113,10 @@ public class CheckstyleViolationsView extends ViewPart
 		verticalKeyByPriority.put(SeverityLevel.WARNING.ordinal(), KEY_PREFIX + "warning");
 		verticalKeyByPriority.put(SeverityLevel.INFO.ordinal(), KEY_PREFIX + "info");
 		verticalKeyByPriority.put(SeverityLevel.IGNORE.ordinal(), KEY_PREFIX + "ignore");
-		
-//		violationPriorityBySeverityLevel.put(SeverityLevel.ERROR, 0);
-//		int violationPriority = violationPriorityBySeverityLevel.get(SeverityLevel.ERROR);
+
+		// violationPriorityBySeverityLevel.put(SeverityLevel.ERROR, 0);
+		// int violationPriority =
+		// violationPriorityBySeverityLevel.get(SeverityLevel.ERROR);
 	}
 
 	@Override
@@ -153,10 +155,11 @@ public class CheckstyleViolationsView extends ViewPart
 				@SuppressWarnings("unchecked")
 				List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) tableViewer
 						.getInput();
+				// CheckstyleMarkers.deleteMarkers(eclipseFile);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
 		});
-//		clearButton.setText("Clear");
+		// clearButton.setText("Clear");
 		clearButton.setToolTipText("Clears all Checkstyle violations");
 
 		Label separatorLabel = new Label(firstLine, SWT.BORDER);
@@ -176,6 +179,18 @@ public class CheckstyleViolationsView extends ViewPart
 				filterBySelectionIndex(selectionIndex);
 				tableViewer.refresh(false);
 				viewPreferences.putInt(PREF_FILTER_PRIORITY, selectionIndex); // save filter setting
+
+				Display.getDefault().asyncExec(new Runnable() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void run() {
+						Object input = tableViewer.getInput();
+						List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) input;
+
+						updateTitleAndLabel(violationMarkers);
+					}
+				});
+
 				return;
 			}
 		});
@@ -589,16 +604,30 @@ public class CheckstyleViolationsView extends ViewPart
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				int numViolations = violationMarkers.size();
-				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
-
-				CheckstyleViolationsView.this.setPartName(newPartName);
-				numViolationsLabel.setText(NUMBER_OF_CHECKSTYLE_VIOLATIONS + numViolations);
-				numViolationsLabel.getParent().layout(); // fixed bug: the label was not displayed upon reopening the
-															// view
 				tableViewer.setInput(violationMarkers);
+
+				updateTitleAndLabel(violationMarkers);
 			}
 		});
+	}
+
+	private void updateTitleAndLabel(final List<?> violationMarkers) {
+		int numFilteredViolations = tableViewer.getTable().getItemCount();
+		int numViolations = violationMarkers.size();
+		updateTabTitle(numFilteredViolations, numViolations);
+		updateNumViolationsLabel(numFilteredViolations, numViolations);
+	}
+
+	private void updateTabTitle(int numFilteredViolations, int numViolations) {
+		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
+		setPartName(newPartName);
+	}
+
+	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
+		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations,
+				numViolations);
+		numViolationsLabel.setText(text);
+		numViolationsLabel.getParent().layout(); // update label
 	}
 
 	public TableViewer getTableViewer() {

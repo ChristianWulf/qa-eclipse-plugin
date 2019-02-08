@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.Logger;
 
 public class CheckstyleJob extends WorkspaceJob {
 
@@ -42,8 +43,8 @@ public class CheckstyleJob extends WorkspaceJob {
 		}
 
 		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
-		boolean pmdEnabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
-		if (!pmdEnabled) { // if PMD is disabled for this project
+		boolean enabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
+		if (!enabled) { // if Checkstyle is disabled for this project
 			return Status.OK_STATUS;
 		}
 
@@ -54,9 +55,8 @@ public class CheckstyleJob extends WorkspaceJob {
 			eclipseFileByFilePath.put(key, eclipseFile);
 
 			try {
-				// also remove previous PMD markers on that file
-				eclipseFile.deleteMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
-						IResource.DEPTH_ZERO);
+				// also remove previous markers on that file
+				CheckstyleMarkers.deleteMarkers(eclipseFile);
 			} catch (CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}
@@ -68,7 +68,12 @@ public class CheckstyleJob extends WorkspaceJob {
 		CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
 
 		CheckstyleTool checkstyleTool = new CheckstyleTool();
-		checkstyleTool.startAsyncAnalysis(eclipseFiles, checkstyleListener);
+		try {
+			checkstyleTool.startAsyncAnalysis(eclipseFiles, checkstyleListener);
+		} catch (Exception e) {
+			Logger.logThrowable("Exception while analyzing with Checkstyle.", e);
+			return Status.CANCEL_STATUS;
+		}
 
 		return Status.OK_STATUS;
 	}

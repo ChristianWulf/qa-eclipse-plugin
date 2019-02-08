@@ -1,24 +1,35 @@
 package pmd.eclipse.plugin.pmd;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceRuleFactory;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -30,9 +41,13 @@ import net.sourceforge.pmd.util.datasource.FileDataSource;
 import pmd.eclipse.plugin.icons.FileIconDecorator;
 import pmd.eclipse.plugin.markers.PmdMarkers;
 import pmd.eclipse.plugin.preference.PmdPreferences;
+import qa.eclipse.plugin.bundles.common.ClassLoaderUtil;
+import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.Logger;
+import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
-class PmdWorkspaceJob extends WorkspaceJob {
+public class PmdJob extends WorkspaceJob {
 
 	private static class ConstantRuleSetFactory extends RuleSetFactory {
 		private final RuleSets ruleSets;
@@ -51,11 +66,13 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 	}
 
+	private static final int IMARKER_SEVERITY_OTHERS = 3;
+
 	// @Inject
 	// private final UISynchronize sync;
 	private final List<IFile> eclipseFiles;
 
-	public PmdWorkspaceJob(String name, List<IFile> eclipseFiles) {
+	private PmdJob(String name, List<IFile> eclipseFiles) {
 		super(name);
 		this.eclipseFiles = eclipseFiles;
 	}
@@ -79,7 +96,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		for (IFile eclipseFile : eclipseFiles) {
 			try {
 				// also remove previous PMD markers on that file
-				eclipseFile.deleteMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, IResource.DEPTH_ZERO);
+				PmdMarkers.deleteMarkers(eclipseFile);
 			} catch (CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}
@@ -88,22 +105,47 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// update explorer view so that the violation flag are not displayed anymore
 		FileIconDecorator.refresh();
 
-		String taskName = "Analyzing " + eclipseFiles.size() + " file(s)...";
+		String taskName = String.format("Analyzing %d file(s)...", eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
 
 		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
-		RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
-		final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
+		URL[] urls = getCustomJarUrls(eclipseProject);
+		// ClassLoader parentClassLoader =
+		// Thread.currentThread().getContextClassLoader();
+		ClassLoader parentClassLoader = getClass().getClassLoader(); // equinox class loader with jars from the lib folder
 
-		Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
-		PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
-		final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
+		try (URLClassLoader osgiClassLoaderWithCustomRules = ClassLoaderUtil.newClassLoader(urls, parentClassLoader)) {
+			ClassLoaderUtil.executeWithContextClassLoader(osgiClassLoaderWithCustomRules, () -> {
+				File eclipseProjectPath = ProjectUtil.getProjectPath(eclipseProject);
+				// don't cache rule sets. Reload on each execution.
+				RuleSets ruleSets = PmdPreferences.INSTANCE.loadUpdatedRuleSet(preferences, eclipseProjectPath,
+						osgiClassLoaderWithCustomRules);
+				final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
-		CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
-				collectingRenderers);
+				Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
+				PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
+				final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
 
+				CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
+						collectingRenderers);
+
+				processFiles(monitor, eclipseFilesMap, pmdProcessor);
+
+				displayViolationMarkers(eclipseFilesMap, problemRenderer);
+
+				return null;
+			});
+		} catch (IOException e) {
+			Logger.logThrowable("Exception while analyzing with PMD.", e);
+		}
+
+		return Status.OK_STATUS;
+	}
+
+	private void processFiles(IProgressMonitor monitor, final Map<String, IFile> eclipseFilesMap,
+			CancelablePmdProcessor pmdProcessor) {
 		final RuleContext context = new RuleContext();
 
 		pmdProcessor.onStarted();
@@ -127,10 +169,16 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			pmdProcessor.processFile(dataSource, context);
 		}
 		pmdProcessor.onFinished();
+	}
 
-		displayViolationMarkers(eclipseFilesMap, problemRenderer);
+	private URL[] getCustomJarUrls(IProject project) {
+		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
+		String[] customRulesJarPaths = PreferencesUtil.loadCustomJarPaths(preferences, PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS);
 
-		return Status.OK_STATUS;
+		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
+		FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJarPaths);
+		URL[] urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJarPaths);
+		return urls;
 	}
 
 	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap, PmdProblemRenderer problemRenderer) {
@@ -154,6 +202,51 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			// update explorer view so that the new violation flags are displayed
 			FileIconDecorator.refresh();
 		}
+
+		report.errors().forEachRemaining(error -> {
+			String errorFilename = error.getFile();
+			IFile eclipseFile = eclipseFilesMap.get(errorFilename);
+			try {
+				appendProcessingErrorMarker(eclipseFile, error);
+			} catch (CoreException e) {
+				// ignore if marker could not be created
+			}
+			// PmdUIPlugin.getDefault().logWarning(error.getMsg());
+		});
+	}
+
+	private void appendProcessingErrorMarker(IFile eclipseFile, ProcessingError error) throws CoreException {
+		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
+		// whether it is displayed as error, warning, info or other in the Problems View
+		marker.setAttribute(IMarker.SEVERITY, IMARKER_SEVERITY_OTHERS);
+		marker.setAttribute(IMarker.MESSAGE, error.getMsg());
+		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
+		marker.setAttribute(IMarker.LOCATION, error.getFile());
+	}
+
+	/**
+	 * All passed files must belong to the same project.
+	 * 
+	 * @param eclipseFiles
+	 */
+	public static void startAsyncAnalysis(List<IFile> eclipseFiles) {
+		if (eclipseFiles.isEmpty()) {
+			return;
+		}
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+
+		ISchedulingRule jobRule = null;
+		for (IFile eclipseFile : eclipseFiles) {
+			ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
+			jobRule = MultiRule.combine(jobRule, fileRule);
+		}
+
+		Job job = new PmdJob("Analysis by PMD", eclipseFiles);
+		job.setRule(jobRule);
+		job.setUser(true);
+		job.schedule();
 	}
 
 }

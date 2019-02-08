@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -37,22 +38,13 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
-				<version>1.0-beta-5</version>
-				<executions>
-					<execution>
-						<id>upload-repo</id>
-						<phase>package</phase>
-						<goals>
-							<goal>upload</goal>
-						</goals>
-						<configuration>
-							<fromDir>${updatesite_repo_path}</fromDir>
-							<includes>**</includes>
-							<url>${updatesite_target_path}</url>
-							<toDir>.</toDir>
-						</configuration>
-					</execution>
-				</executions>
+				<version>2.0.0</version>
+				<configuration>
+					<url>${updatesite_target_path}</url>
+					<fromDir>${updatesite_repo_path}</fromDir>
+					<toDir>.</toDir>
+					<includes>**</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 
@@ -64,7 +56,6 @@
 				<version>2.6</version>
 			</extension>
 		</extensions>
-
 	</build>
 
 </project>

@@ -126,7 +126,7 @@
             name="checkstyle.check_name">
       </attribute>
       <super
-            type="org.eclipse.core.resources.textmarker">
+            type="qa.eclipse.plugin.checkstyle.markers.common">
       </super>
       <attribute
             name="checkstyle.check_package">
@@ -301,5 +301,30 @@
             </and>
          </enablement>
       </decorator>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.common"
+         name="Abstract Checkstyle Common Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="qa.eclipse.plugin.checkstyle.markers.violation.exception"
+         name="Checkstyle Exception Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="qa.eclipse.plugin.checkstyle.markers.common">
+      </super>
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
 </plugin>

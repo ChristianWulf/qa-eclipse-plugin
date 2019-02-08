@@ -14,18 +14,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdJob;
 
 // used by, for example, 
 //	popup:#CompilationUnitEditorContext
 public class CompilationUnitEditorHandler extends AbstractHandler {
-
-	private final PmdTool pmdTool;
-
-	public CompilationUnitEditorHandler() {
-		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
-	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -42,7 +35,7 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 			IFile file = fileEditorInput.getFile();
 
 			List<IFile> files = Arrays.asList(file);
-			pmdTool.startAsyncAnalysis(files);
+			PmdJob.startAsyncAnalysis(files);
 		}
 
 		return null;

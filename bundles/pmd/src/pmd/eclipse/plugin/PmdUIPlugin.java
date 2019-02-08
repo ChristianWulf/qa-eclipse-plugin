@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 
 import pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder;
 import pmd.eclipse.plugin.icons.ImageRegistryKey;
-import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdJob;
 import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 
 /**
@@ -34,8 +34,6 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	private static PmdUIPlugin plugin;
 
 	private BundleContext context;
-
-	private PmdTool pmdTool;
 
 	/**
 	 * The constructor
@@ -55,7 +53,6 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		super.start(context);
 		plugin = this;
 		this.context = context;
-		this.pmdTool = new PmdTool();
 
 		// IDocumentProvider provider = ((ITextEditor)
 		// PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).getDocumentProvider();
@@ -74,15 +71,15 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		try {
 			event.getDelta().accept(resourceDeltaFileCollector);
 		} catch (CoreException e) {
-			throw new IllegalStateException(e);
+			PmdUIPlugin.getDefault().logThrowable("Error on resource changed.", e);
 		}
 
 		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+			PmdJob.startAsyncAnalysis(addedFiles.getValue());
 		}
 
 		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+			PmdJob.startAsyncAnalysis(changedFiles.getValue());
 		}
 
 		// our view listens to marker changes and thus is indirectly notified about
@@ -154,10 +151,6 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	public BundleContext getContext() {
 		return context;
-	}
-
-	public PmdTool getPmdTool() {
-		return pmdTool;
 	}
 
 	public void logThrowable(String message, Throwable throwable) {

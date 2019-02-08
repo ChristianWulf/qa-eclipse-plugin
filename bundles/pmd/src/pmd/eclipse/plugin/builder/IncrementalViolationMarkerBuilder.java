@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.pmd.PmdTool;
+import pmd.eclipse.plugin.pmd.PmdJob;
 import pmd.eclipse.plugin.ui.visitors.ResourceDeltaFileCollector;
 
 public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder {
@@ -27,20 +27,27 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	private static final IProject[] EMPTY_PROJECT_ARRAY = new IProject[0];
 
-	private final PmdTool pmdTool;
-
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
-		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
 		IBuildContext buildContext = getContext();
 		IBuildConfiguration[] allReferencedBuildConfigs = buildContext.getAllReferencedBuildConfigs();
 		IBuildConfiguration[] allReferencingBuildConfigs = buildContext.getAllReferencingBuildConfigs();
 		IBuildConfiguration[] requestedConfigs = buildContext.getRequestedConfigs();
 
+		try {
+			buildByKind(kind, monitor);
+		} catch (CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on building by kind.", e);
+		}
+
+		return EMPTY_PROJECT_ARRAY;
+	}
+
+	private void buildByKind(int kind, IProgressMonitor monitor) throws CoreException {
 		switch (kind) {
 		case IncrementalProjectBuilder.FULL_BUILD: {
 			fullBuild(monitor);
@@ -70,8 +77,6 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 		default:
 			break;
 		}
-
-		return EMPTY_PROJECT_ARRAY;
 	}
 
 	@Override
@@ -85,21 +90,17 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	}
 
-	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) {
+	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
 		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
-		try {
-			delta.accept(resourceDeltaFileCollector);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
+		delta.accept(resourceDeltaFileCollector);
 
 		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+			PmdJob.startAsyncAnalysis(addedFiles.getValue());
 		}
 
 		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+			PmdJob.startAsyncAnalysis(changedFiles.getValue());
 		}
 
 		// your view listens to marker changes and thus is indirectly notified about

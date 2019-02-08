@@ -11,6 +11,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
 class CustomModulesKeyListener extends KeyAdapter {
@@ -34,7 +35,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 
 		String text = textField.getText();
 
-		String[] filePaths = text.split(PmdPreferences.BY_COMMA_AND_TRIM);
+		String[] filePaths = text.split(PreferencesUtil.BY_COMMA_AND_TRIM);
 
 		Label label = propertyPage.getCustomJarFilePathsLabel();
 		for (String filePath : filePaths) {

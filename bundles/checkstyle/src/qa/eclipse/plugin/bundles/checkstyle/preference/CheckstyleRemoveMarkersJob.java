@@ -1,4 +1,4 @@
-package pmd.eclipse.plugin.preference;
+package qa.eclipse.plugin.bundles.checkstyle.preference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceRuleFactory;
@@ -11,15 +11,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 
-import pmd.eclipse.plugin.PmdUIPlugin;
-import pmd.eclipse.plugin.icons.FileIconDecorator;
-import pmd.eclipse.plugin.markers.PmdMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.Activator;
+import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 
-class PmdRemoveMarkersJob extends Job {
+class CheckstyleRemoveMarkersJob extends Job {
 
 	private final IProject project;
 
-	private PmdRemoveMarkersJob(String name, IProject project) {
+	private CheckstyleRemoveMarkersJob(String name, IProject project) {
 		super(name);
 		this.project = project;
 	}
@@ -27,10 +27,10 @@ class PmdRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			PmdMarkers.deleteMarkers(project);
+			CheckstyleMarkers.deleteMarkers(project);
 		} catch (CoreException e) {
 			String message = String.format("Could not delete all markers for project '%s'", project);
-			PmdUIPlugin.getDefault().logThrowable(message, e);
+			Activator.getDefault().logThrowable(message, e);
 		}
 
 		FileIconDecorator.refresh();
@@ -43,7 +43,7 @@ class PmdRemoveMarkersJob extends Job {
 		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 		ISchedulingRule projectRule = ruleFactory.markerRule(project);
 
-		Job job = new PmdRemoveMarkersJob(jobName, project);
+		Job job = new CheckstyleRemoveMarkersJob(jobName, project);
 		job.setRule(projectRule);
 		job.setUser(true);
 		job.schedule();

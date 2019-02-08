@@ -49,6 +49,17 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			return;
 		}
 
+		ImageDescriptor imageDescriptor = null;
+		try {
+			imageDescriptor = getImageDescriptor(resource);
+		} catch (CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on decorating element.", e);
+		}
+
+		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
+	}
+
+	private ImageDescriptor getImageDescriptor(IResource resource) throws CoreException {
 		int depth = IResource.DEPTH_INFINITE;
 		// if (resource instanceof IFolder) {
 		// depth = IResource.DEPTH_INFINITE;
@@ -56,16 +67,11 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		// depth = IResource.DEPTH_ZERO;
 		// }
 
-		IMarker[] markers;
-		try {
-			markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
+		IMarker[] markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
 
 		// do not display any file decorator if there are no markers
 		if (markers.length == 0) {
-			return;
+			return null;
 		}
 
 		int highestPriority = RulePriority.LOW.getPriority();
@@ -90,7 +96,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		}
 
-		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
+		return imageDescriptor;
 	}
 
 	public static void refresh() {

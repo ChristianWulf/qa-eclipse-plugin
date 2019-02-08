@@ -16,12 +16,16 @@ import net.sourceforge.pmd.RuleViolation;
 
 public final class PmdMarkers {
 
+	/** marker to delete violation and error markers */
+	public static final String ABSTRACT_PMD_VIOLATION_COMMON = "pmd.eclipse.plugin.markers.common";
+	/** marker to identify violation marker for the violations view */
 	public static final String ABSTRACT_PMD_VIOLATION_MARKER = "pmd.eclipse.plugin.markers.violation";
 	public static final String HIGH_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".high";
 	public static final String MEDIUMHIGH_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".mediumhigh";
 	public static final String MEDIUM_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".medium";
 	public static final String MEDIUMLOW_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".mediumlow";
 	public static final String LOW_PMD_VIOLATION_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".low";
+	public static final String PMD_ERROR_MARKER = ABSTRACT_PMD_VIOLATION_MARKER + ".error";
 
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
@@ -87,4 +91,7 @@ public final class PmdMarkers {
 		return markers;
 	}
 
+	public static void deleteMarkers(IResource resource) throws CoreException {
+		resource.deleteMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_COMMON, true, IResource.DEPTH_INFINITE);
+	}
 }

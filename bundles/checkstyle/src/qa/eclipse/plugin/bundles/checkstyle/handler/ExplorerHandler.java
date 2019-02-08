@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 public class ExplorerHandler extends AbstractHandler {
@@ -81,7 +82,7 @@ public class ExplorerHandler extends AbstractHandler {
 			try {
 				resource.accept(resourceCollector, depth, IContainer.NONE);
 			} catch (CoreException e) {
-				throw new IllegalStateException(e);
+				Activator.getDefault().logThrowable("Error on accepting resource.", e);
 			}
 		}
 	}

@@ -67,6 +67,7 @@ import pmd.eclipse.plugin.preference.PmdPreferences;
 public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {
 
+	public static final String TOOL_NAME = "PMD";
 	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
 
 	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
@@ -74,8 +75,9 @@ public class PmdViolationsView extends ViewPart
 	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
 	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
 
-	private static final String PART_NAME_FORMAT_STRING = "PMD Violations (%d)";
-	private static final String NUMBER_OF_PMD_VIOLATIONS = "Number of PMD Violations: ";
+	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
+	private static final String NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
+			+ " Violations: %d of %d";
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
 
@@ -85,7 +87,7 @@ public class PmdViolationsView extends ViewPart
 	private final ViewerComparator comparator = new PmdViolationMarkerComparator();
 	private final Preferences viewPreferences;
 
-	private Label label;
+	private Label numViolationsLabel;
 	private TableViewer tableViewer;
 
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
@@ -121,8 +123,8 @@ public class PmdViolationsView extends ViewPart
 		firstLineLayout.marginWidth = 0;
 		firstLine.setLayout(firstLineLayout);
 
-		label = new Label(firstLine, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		numViolationsLabel = new Label(firstLine, SWT.NONE);
+		numViolationsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
 
 		Button clearButton = new Button(firstLine, SWT.PUSH);
 		clearButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
@@ -144,6 +146,7 @@ public class PmdViolationsView extends ViewPart
 			public void handleEvent(Event event) {
 				@SuppressWarnings("unchecked")
 				List<PmdViolationMarker> violationMarkers = (List<PmdViolationMarker>) tableViewer.getInput();
+				// PmdMarkers.deleteMarkers(resource);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
 		});
@@ -167,6 +170,18 @@ public class PmdViolationsView extends ViewPart
 				filterByPriority(lowestPriority);
 				tableViewer.refresh(false);
 				viewPreferences.putInt(PREF_FILTER_PRIORITY, lowestPriority); // save filter setting
+
+				Display.getDefault().asyncExec(new Runnable() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void run() {
+						Object input = tableViewer.getInput();
+						List<PmdViolationMarker> numFilteredViolations = (List<PmdViolationMarker>) input;
+
+						updateTitleAndLabel(numFilteredViolations);
+					}
+				});
+
 				return;
 			}
 		});
@@ -567,15 +582,31 @@ public class PmdViolationsView extends ViewPart
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				int numViolations = pmdViolationMarkers.size();
-				String newPartName = String.format(PART_NAME_FORMAT_STRING, numViolations);
-
-				PmdViolationsView.this.setPartName(newPartName);
-				label.setText(NUMBER_OF_PMD_VIOLATIONS + numViolations);
-				label.getParent().layout(); // fixed bug: the label was not displayed upon reopening the view
+				// setInput must be set first so that numFilteredViolations is correct
 				tableViewer.setInput(pmdViolationMarkers);
+
+				updateTitleAndLabel(pmdViolationMarkers);
 			}
+
 		});
+	}
+
+	private void updateTitleAndLabel(final List<?> violationMarkers) {
+		int numFilteredViolations = tableViewer.getTable().getItemCount();
+		int numViolations = violationMarkers.size();
+		updateTabTitle(numFilteredViolations, numViolations);
+		updateNumViolationsLabel(numFilteredViolations, numViolations);
+	}
+
+	private void updateTabTitle(int numFilteredViolations, int numViolations) {
+		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
+		setPartName(newPartName);
+	}
+
+	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
+		String text = String.format(NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING, numFilteredViolations, numViolations);
+		numViolationsLabel.setText(text);
+		numViolationsLabel.getParent().layout(); // update label
 	}
 
 	public TableViewer getTableViewer() {

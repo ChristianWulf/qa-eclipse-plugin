@@ -157,7 +157,7 @@
             value="true">
       </persistent>
       <super
-            type="org.eclipse.core.resources.textmarker">
+            type="pmd.eclipse.plugin.markers.common">
       </super>
    </extension>
    <extension
@@ -356,6 +356,31 @@
       <persistent
             value="true">
       </persistent>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.violation.error"
+         name="PMD Error Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="pmd.eclipse.plugin.markers.common">
+      </super>
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="pmd.eclipse.plugin.markers.common"
+         name="Abstract PMD Common Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
    </extension>
 
 </plugin>

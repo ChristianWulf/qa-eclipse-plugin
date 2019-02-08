@@ -1,5 +1,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/ChristianWulf/qa-eclipse-plugin.svg)](https://github.com/ChristianWulf/qa-eclipse-plugin/issues)
 [![GitHub license](https://img.shields.io/github/license/ChristianWulf/qa-eclipse-plugin.svg)](https://github.com/ChristianWulf/qa-eclipse-plugin/blob/master/LICENSE)
+[![Build Status](https://build.se.informatik.uni-kiel.de/jenkins/buildStatus/icon?job=Eclipse%20Plugin%20for%20QA%20Tools)](http://build.se.informatik.uni-kiel.de/jenkins/job/Eclipse%20Plugin%20for%20QA%20Tools/)
 
 # Lightweight Eclipse Plugin for Quality Assurance Tools
 The offical Eclipse plugins for PMD and Checkstyle work great...as long as you do not want to add custom rules or checks, respectively. For this purpose, you need to implement an Eclipse Plugin Fragment including the new rules/checks. This causes an unnecessarily high implementation effort and hampers the setup of a common, uniform QA configuration for each of your team members. 
@@ -7,7 +8,7 @@ The offical Eclipse plugins for PMD and Checkstyle work great...as long as you d
 Hence, I implemented a new plugin, which covers all of the matured QA tools, and allows an easy integration of custom rules/checks via a config file. Eclipse Plugin Fragments are not necessary. You can keep your QA config files and use them for your build tool, your continuous integration infrastructure, and within Eclipse.
 
 - Done: PMD, Checkstyle
-- In progress: Findbugs
+- In progress: Spotbugs (formerly Findbugs) 
 - Planned: nothing else, so far.
 
  See our [associated milestones](https://github.com/ChristianWulf/qa-eclipse-plugin/milestones).
@@ -51,3 +52,11 @@ The "prefs" file is intended to be uploaded to your repository to share your con
 ```
 mvn clean package
 ```
+
+## Local Development
+1. Build *qa.eclipse.plugin* via `mvn clean package`
+2. Copy the three build artifacts from
+- `qa-eclipse-plugin/bundles/XXX/target/qa.eclipse.plugin.bundles.XXX-1.0.0-SNAPSHOT.jar` (where XXX is supposed to be `common`, `checkstyle`, and `pmd`) to your Eclipse installation folder:      
+- `Path/To/Eclipse/dropins/plugins` (You might need to create the `plugins` folder
+3. Start Eclipse via the clean flag, e.g., `./eclipse -clean` on Linux. The clean flag is used to clean Eclipse's plugin cache.
+4. In Eclipse, check if the plugin is installed. Check if *Window -> Show View -> Other... -> Quality Assurance* is available.
