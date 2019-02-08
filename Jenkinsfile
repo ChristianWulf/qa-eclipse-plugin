@@ -1,8 +1,7 @@
 #!groovy
 
-LOCAL_PATH = "/opt/se/qa-eclipse-plugin"
 ID = "kdt-jenkins"
-REPO_HOST = "repo.se.internal"
+UPDATE_SITE_URL = "repo@repo.se.internal/var/www/html/qa"
 
 node {
 	stage ('Checkout') {
@@ -18,7 +17,7 @@ node {
 
 	stage ('Compile and Deploy') {
 		withCredentials([file(credentialsId: ID, variable: 'key_file')]) {
-			sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -X -s settings.xml -B package -Dkeystore=${key_file} -Dupdatesite=repo@' + REPO_HOST + '/var/www/html'
+			sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -X -s settings.xml -B package -Dkeystore=${key_file} -DupdatesiteUrl=UPDATE_SITE_URL
 		}
 	}
 }
