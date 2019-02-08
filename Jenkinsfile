@@ -12,6 +12,7 @@ node {
 	}
 
 	stage ('Prepare') {
+		sh 'mvn -version'
 		sh 'cd ' + env.WORKSPACE + '; mvn -s settings.xml -B clean'
 	}
 
