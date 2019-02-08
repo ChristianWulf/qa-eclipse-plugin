@@ -1,7 +1,7 @@
 #!groovy
 
 ID = "kdt-jenkins"
-UPDATE_SITE_URL = "repo@repo.se.internal/var/www/html/qa"
+UPDATE_SITE_URL = "sftp://repo@repo.se.internal/var/www/html/qa"
 
 node {
 	stage ('Checkout') {
