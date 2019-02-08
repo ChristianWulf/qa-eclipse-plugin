@@ -1,2 +1,7 @@
 *.class
 target/
+bin/
+**/.sessings/**
+**/.project
+**/.classpath
+
