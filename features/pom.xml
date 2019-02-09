@@ -2,19 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>chw.experimental</groupId>
-	<artifactId>qa.eclipse.plugin.features</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-
-	<packaging>pom</packaging>
-
-	<name>Eclipse Plugins for QA Tools - Features</name>
-
 	<parent>
 		<groupId>chw.experimental</groupId>
 		<artifactId>qa.eclipse.plugin</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
+	<artifactId>qa.eclipse.plugin.features</artifactId>
+
+	<packaging>pom</packaging>
+
+	<name>Eclipse Plugins for QA Tools - Features</name>
 
 	<modules>
 		<module>qa.eclipse.plugin.pmd</module>
