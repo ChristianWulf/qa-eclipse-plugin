@@ -18,7 +18,7 @@
 	<properties>
 		<maven.deploy.skip>false</maven.deploy.skip>
 		<buildRepoPath>${project.build.directory}/repository/</buildRepoPath>
-		<updateSiteUrl>file:///srv/vhosts/eus/qa/snapshot/</updateSiteUrl>
+		<!-- updateSiteUrl>file:///srv/vhosts/eus/qa/snapshot/</updateSiteUrl -->
 	</properties>
 
 	<!-- <distributionManagement> -->
