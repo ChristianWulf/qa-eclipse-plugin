@@ -9,7 +9,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>qa.eclipse.plugin.checkstyle.feature</artifactId>
+	<artifactId>qa.eclipse.plugin.checkstyle</artifactId>
 
 	<packaging>eclipse-feature</packaging>
 
