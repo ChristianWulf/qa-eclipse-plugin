@@ -1,18 +1,22 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>chw.experimental</groupId>
-    <artifactId>pmd.eclipse.plugin.tests</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-	<!-- Link to the parent pom -->
+	<groupId>chw.experimental</groupId>
+	<artifactId>qa.eclipse.plugin.tests</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
+
+	<name>Eclipse Plugins for QA Tools - Tests</name>
+
 	<parent>
 		<groupId>chw.experimental</groupId>
 		<artifactId>qa.eclipse.plugin</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-    <modules>
-        <module>pmd.eclipse.plugin.ui.test</module>
-    </modules>
+	<modules>
+		<module>qa.eclipse.plugin.ui.test</module>
+	</modules>
 </project>
