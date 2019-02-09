@@ -4,8 +4,8 @@
 
 	<groupId>chw.experimental</groupId>
 	<artifactId>qa.eclipse.plugin.bundles.checkstyle</artifactId>
-
 	<version>1.0.0-SNAPSHOT</version>
+
 	<packaging>eclipse-plugin</packaging>
 	
 	<name>Eclipse Plugins for QA Tools - Checkstyle Plugin</name>
