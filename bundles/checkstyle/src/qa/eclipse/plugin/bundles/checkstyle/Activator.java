@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle;
 
 import java.util.List;
@@ -19,7 +34,7 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
 public class Activator extends AbstractUIPlugin implements IResourceChangeListener {
 
@@ -30,34 +45,34 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	private static Activator plugin;
 
 	/**
-	 * The constructor
+	 * The constructor.
 	 */
 	public Activator() {
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
 	 * BundleContext)
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
+		Activator.plugin = this;
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+	public void stop(final BundleContext context) throws Exception {
+		Activator.plugin = null;
 		super.stop(context);
 	}
 
@@ -67,42 +82,42 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return plugin;
+		return Activator.plugin;
 	}
 
 	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
+	protected void initializeImageRegistry(final ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 
 		ImageRegistryKey.initialize(reg);
 	}
 
-	public void logThrowable(String message, Throwable throwable) {
-		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
-		getLog().log(status);
+	public void logThrowable(final String message, final Throwable throwable) {
+		final IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, throwable);
+		this.getLog().log(status);
 	}
 
-	public void logWarning(String message) {
-		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
-		getLog().log(status);
+	public void logWarning(final String message) {
+		final IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, message);
+		this.getLog().log(status);
 	}
 
 	@Override
 	// represents: analyze on save
-	public void resourceChanged(IResourceChangeEvent event) {
-		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
+	public void resourceChanged(final IResourceChangeEvent event) {
+		final ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
 		try {
 			event.getDelta().accept(resourceDeltaFileCollector);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			Activator.getDefault().logThrowable("Error on resource changed.", e);
 		}
 
-		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
 			CheckstyleJob.startAsyncAnalysis(addedFiles.getValue());
 		}
 
-		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
 			CheckstyleJob.startAsyncAnalysis(changedFiles.getValue());
 		}
 

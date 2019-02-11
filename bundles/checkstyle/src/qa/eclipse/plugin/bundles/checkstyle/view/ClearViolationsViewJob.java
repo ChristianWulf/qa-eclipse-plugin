@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import java.util.List;
@@ -24,40 +39,40 @@ class ClearViolationsViewJob extends WorkspaceJob {
 
 	private final List<CheckstyleViolationMarker> violationMarkers;
 
-	private ClearViolationsViewJob(List<CheckstyleViolationMarker> violationMarkers) {
+	private ClearViolationsViewJob(final List<CheckstyleViolationMarker> violationMarkers) {
 		super("Clear violations view");
 		this.violationMarkers = violationMarkers;
 	}
 
 	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor);
+	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
+		final SubMonitor subMonitor = SubMonitor.convert(monitor);
 
-		for (CheckstyleViolationMarker checkstyleViolationMarker : violationMarkers) {
-			IMarker marker = checkstyleViolationMarker.getMarker();
+		for (final CheckstyleViolationMarker checkstyleViolationMarker : this.violationMarkers) {
+			final IMarker marker = checkstyleViolationMarker.getMarker();
 
 			subMonitor.split(1);
 			marker.delete();
 		}
-		
+
 		FileIconDecorator.refresh();
 
 		return Status.OK_STATUS;
 	}
 
-	public static void startAsyncAnalysis(List<CheckstyleViolationMarker> violationMarkers) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+	public static void startAsyncAnalysis(final List<CheckstyleViolationMarker> violationMarkers) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 
 		ISchedulingRule jobRule = null;
-		for (CheckstyleViolationMarker violationMakrer : violationMarkers) {
-			IMarker marker = violationMakrer.getMarker();
-			IResource resource = marker.getResource();
-			ISchedulingRule fileRule = ruleFactory.markerRule(resource);
+		for (final CheckstyleViolationMarker violationMakrer : violationMarkers) {
+			final IMarker marker = violationMakrer.getMarker();
+			final IResource resource = marker.getResource();
+			final ISchedulingRule fileRule = ruleFactory.markerRule(resource);
 			jobRule = MultiRule.combine(jobRule, fileRule);
 		}
 
-		Job job = new ClearViolationsViewJob(violationMarkers);
+		final Job job = new ClearViolationsViewJob(violationMarkers);
 		job.setRule(jobRule);
 		job.setUser(true);
 		job.schedule();

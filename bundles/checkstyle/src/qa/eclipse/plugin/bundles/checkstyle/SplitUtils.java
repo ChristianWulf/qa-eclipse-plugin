@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle;
 
 import java.util.ArrayList;
@@ -12,93 +27,93 @@ public final class SplitUtils {
 
 	/**
 	 * This is builder operation.
-	 * 
+	 *
 	 * @param text
 	 *            to be split.
 	 * @return the next builder step to define how often the text should be split.
 	 */
-	public static SplitResult split(String text) {
+	public static ISplitResult split(final String text) {
 		return new SplitResultImpl(text);
 	}
 
-	public static interface SplitResult {
+	public static interface ISplitResult {
 
-		public QuantityResult once();
+		public IQuantityResult once();
 
-		public QuantityResult always();
+		public IQuantityResult always();
 	}
 
-	static class SplitResultImpl implements SplitResult, QuantityResult, SeparatorResult {
+	static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
 
 		private final String text;
 		private SplitQuantity splitQuantity;
 		private char separator;
 
-		public SplitResultImpl(String text) {
+		public SplitResultImpl(final String text) {
 			this.text = text;
 		}
 
 		@Override
-		public QuantityResult once() {
+		public IQuantityResult once() {
 			// return new QuantityResultImpl(text, SplitQuantity.ONCE);
-			splitQuantity = SplitQuantity.ONCE;
+			this.splitQuantity = SplitQuantity.ONCE;
 			return this;
 		}
 
 		@Override
-		public QuantityResult always() {
+		public IQuantityResult always() {
 			// return new QuantityResultImpl(text, SplitQuantity.ALWAYS);
-			splitQuantity = SplitQuantity.ALWAYS;
+			this.splitQuantity = SplitQuantity.ALWAYS;
 			return this;
 		}
 
 		@Override
-		public SeparatorResult at(char separator) {
+		public ISeparatorResult at(final char separator) {
 			this.separator = separator;
 			return this;
 		}
 
 		@Override
 		public List<String> fromTheRight() {
-			return splitFromTheRight(text, splitQuantity, separator);
+			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
 		public List<String> fromTheLeft() {
-			return splitFromTheLeft(text, splitQuantity, separator);
+			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
 		}
 
 	}
 
-	public static interface QuantityResult {
+	public static interface IQuantityResult {
 
-		public SeparatorResult at(char separator);
+		public ISeparatorResult at(char separator);
 	}
 
 	public static enum SplitQuantity {
 		ONCE, ALWAYS
 	}
 
-	static class QuantityResultImpl implements QuantityResult {
+	static class QuantityResultImpl implements IQuantityResult {
 
-		private String text;
-		private SplitQuantity splitQuantity;
+		private final String text;
+		private final SplitQuantity splitQuantity;
 
-		public QuantityResultImpl(String text, SplitQuantity splitQuantity) {
+		public QuantityResultImpl(final String text, final SplitQuantity splitQuantity) {
 			this.text = text;
 			this.splitQuantity = splitQuantity;
 		}
 
 		@Override
-		public SeparatorResult at(char separator) {
-			return new SeparatorResultImpl(text, splitQuantity, separator);
+		public ISeparatorResult at(final char separator) {
+			return new SeparatorResultImpl(this.text, this.splitQuantity, separator);
 		}
 	}
 
-	public static interface SeparatorResult {
+	public static interface ISeparatorResult {
 		/**
 		 * This is a terminal operation.
-		 * 
+		 *
 		 * @return the text parts separated at the separator position(s); or a newly
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in passed the text (from left to right).
@@ -107,7 +122,7 @@ public final class SplitUtils {
 
 		/**
 		 * This is a terminal operation.
-		 * 
+		 *
 		 * @return the text parts separated at the separator position(s); or a newly
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in the passed text (from left to right).
@@ -115,13 +130,13 @@ public final class SplitUtils {
 		public List<String> fromTheLeft();
 	}
 
-	static class SeparatorResultImpl implements SeparatorResult {
+	static class SeparatorResultImpl implements ISeparatorResult {
 
-		private String text;
-		private SplitQuantity splitQuantity;
-		private char separator;
+		private final String text;
+		private final SplitQuantity splitQuantity;
+		private final char separator;
 
-		public SeparatorResultImpl(String text, SplitQuantity splitQuantity, char separator) {
+		public SeparatorResultImpl(final String text, final SplitQuantity splitQuantity, final char separator) {
 			this.text = text;
 			this.splitQuantity = splitQuantity;
 			this.separator = separator;
@@ -129,12 +144,12 @@ public final class SplitUtils {
 
 		@Override
 		public List<String> fromTheRight() {
-			return splitFromTheRight(text, splitQuantity, separator);
+			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
 		public List<String> fromTheLeft() {
-			return splitFromTheLeft(text, splitQuantity, separator);
+			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
 		}
 
 	}
@@ -149,16 +164,16 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheRight(String text, SplitQuantity splitQuantity, char separator) {
-		List<String> textParts = new ArrayList<>();
+	static List<String> splitFromTheRight(final String text, final SplitQuantity splitQuantity, final char separator) {
+		final List<String> textParts = new ArrayList<>();
 		int endIndex = text.length();
 
 		for (int i = text.length() - 1; i >= 0; i--) {
-			char character = text.charAt(i);
+			final char character = text.charAt(i);
 			if (character == separator) {
-				int beginIndex = i + 1; // +1: don't include the separator
+				final int beginIndex = i + 1; // +1: don't include the separator
 
-				String textPart = text.substring(beginIndex, endIndex);
+				final String textPart = text.substring(beginIndex, endIndex);
 				textParts.add(textPart);
 
 				endIndex = i;
@@ -169,7 +184,7 @@ public final class SplitUtils {
 			}
 		}
 
-		String textPart = text.substring(0, endIndex);
+		final String textPart = text.substring(0, endIndex);
 		textParts.add(textPart);
 
 		// According to the javadoc, the text parts should be sorted according
@@ -190,16 +205,16 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheLeft(String text, SplitQuantity splitQuantity, char separator) {
-		List<String> textParts = new ArrayList<>();
+	static List<String> splitFromTheLeft(final String text, final SplitQuantity splitQuantity, final char separator) {
+		final List<String> textParts = new ArrayList<>();
 		int beginIndex = 0;
 
 		for (int i = 0; i < text.length(); i++) {
-			char character = text.charAt(i);
+			final char character = text.charAt(i);
 			if (character == separator) {
-				int endIndex = i;
+				final int endIndex = i;
 
-				String textPart = text.substring(beginIndex, endIndex);
+				final String textPart = text.substring(beginIndex, endIndex);
 				textParts.add(textPart);
 
 				beginIndex = i + 1; // +1: don't include the separator
@@ -210,7 +225,7 @@ public final class SplitUtils {
 			}
 		}
 
-		String textPart = text.substring(beginIndex, text.length());
+		final String textPart = text.substring(beginIndex, text.length());
 		textParts.add(textPart);
 
 		return textParts;

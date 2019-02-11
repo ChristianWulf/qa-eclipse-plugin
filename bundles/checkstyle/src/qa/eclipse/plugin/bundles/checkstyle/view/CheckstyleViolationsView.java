@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_NAME;
@@ -284,10 +299,10 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private int loadSavedFilterPriority(TableCombo tableCombo) {
-		final int DEFAULT_PRIORITY = SeverityLevel.IGNORE.ordinal();
-		int filterPriority = viewPreferences.getInt(PREF_FILTER_PRIORITY, DEFAULT_PRIORITY);
+		final int defaultPriority = SeverityLevel.IGNORE.ordinal();
+		int filterPriority = viewPreferences.getInt(PREF_FILTER_PRIORITY, defaultPriority);
 		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
-			filterPriority = DEFAULT_PRIORITY;
+			filterPriority = defaultPriority;
 		}
 		return filterPriority;
 	}

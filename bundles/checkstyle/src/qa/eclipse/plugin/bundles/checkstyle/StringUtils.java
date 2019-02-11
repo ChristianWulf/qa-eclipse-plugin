@@ -1,10 +1,25 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle;
 
 public final class StringUtils {
 
 	/**
 	 * The empty String {@code ""}.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public static final String EMPTY = "";
@@ -39,8 +54,8 @@ public final class StringUtils {
 	 * @return the joined String, {@code null} if null array input
 	 * @since 3.2
 	 */
-	public static String join(int[] numbers, char separator) {
-		return join(numbers, separator, 0, numbers.length);
+	public static String join(final int[] numbers, final char separator) {
+		return StringUtils.join(numbers, separator, 0, numbers.length);
 	}
 
 	/**
@@ -81,7 +96,7 @@ public final class StringUtils {
 		}
 		final int noOfItems = endIndex - startIndex;
 		if (noOfItems <= 0) {
-			return EMPTY;
+			return StringUtils.EMPTY;
 		}
 		final StringBuilder buf = new StringBuilder(noOfItems * 16);
 		for (int i = startIndex; i < endIndex; i++) {

@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.marker;
 
 import java.io.File;
@@ -8,55 +23,55 @@ public class CheckstyleViolationMarker {
 
 	private final IMarker marker;
 
-	public CheckstyleViolationMarker(IMarker marker) {
+	public CheckstyleViolationMarker(final IMarker marker) {
 		super();
 		this.marker = marker;
 	}
 
 	public IMarker getMarker() {
-		return marker;
+		return this.marker;
 	}
 
 	/**
 	 * @return the priority (3 highest to 0 lowest) or -1 otherwise.
 	 */
 	public int getSeverityLevelIndex() {
-		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_PRIORITY, -1);
+		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_PRIORITY, -1);
 	}
 
 	/**
 	 * @return the line number or 0 otherwise.
 	 */
 	public int getLineNumer() {
-		return marker.getAttribute(IMarker.LINE_NUMBER, 0);
+		return this.marker.getAttribute(IMarker.LINE_NUMBER, 0);
 	}
 
 	/**
 	 * @return the violation message or the empty string otherwise.
 	 */
 	public String getMessage() {
-		return marker.getAttribute(IMarker.MESSAGE, "");
+		return this.marker.getAttribute(IMarker.MESSAGE, "");
 	}
 
 	public String getCheckName() {
-		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_NAME, "");
+		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_NAME, "");
 	}
 
 	public String getCheckPackageName() {
-		return marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_PACKAGE, "");
+		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_PACKAGE, "");
 	}
 
 	public String getProjectName() {
-		return marker.getResource().getProject().getName();
+		return this.marker.getResource().getProject().getName();
 	}
 
 	public String getDirectoryPath() {
-		File file = marker.getResource().getRawLocation().toFile();
+		final File file = this.marker.getResource().getRawLocation().toFile();
 		return file.getParent();
 	}
 
 	public String getFileName() {
-		File file = marker.getResource().getRawLocation().toFile();
+		final File file = this.marker.getResource().getRawLocation().toFile();
 		return file.getName();
 	}
 
@@ -64,24 +79,29 @@ public class CheckstyleViolationMarker {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((marker == null) ? 0 : marker.hashCode());
+		result = (prime * result) + ((this.marker == null) ? 0 : this.marker.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
-		CheckstyleViolationMarker other = (CheckstyleViolationMarker) obj;
-		if (marker == null) {
-			if (other.marker != null)
+		}
+		final CheckstyleViolationMarker other = (CheckstyleViolationMarker) obj;
+		if (this.marker == null) {
+			if (other.marker != null) {
 				return false;
-		} else if (!marker.equals(other.marker))
+			}
+		} else if (!this.marker.equals(other.marker)) {
 			return false;
+		}
 		return true;
 	}
 
