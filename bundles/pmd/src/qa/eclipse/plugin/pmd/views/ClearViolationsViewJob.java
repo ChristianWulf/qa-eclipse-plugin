@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
-class final ClearViolationsViewJob extends WorkspaceJob {
+class ClearViolationsViewJob extends WorkspaceJob {
 
 	private final List<PmdViolationMarker> violationMarkers;
 

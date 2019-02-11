@@ -30,7 +30,7 @@ import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 
-class final CheckstyleRemoveMarkersJob extends Job {
+class CheckstyleRemoveMarkersJob extends Job {
 
 	private final IProject project;
 
