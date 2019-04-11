@@ -65,8 +65,9 @@ class CancelablePmdProcessor {
 	public void processFile(final DataSource dataSource, final RuleContext context) {
 		final String niceFileName = filenameFrom(dataSource);
 
-		final PmdRunnable pmdRunnable = new PmdRunnable(configuration, dataSource, niceFileName, renderers, context,
-				ruleSetFactory, processor);
+		final RuleSets rs = createRuleSets(ruleSetFactory);
+
+		final PmdRunnable pmdRunnable = new PmdRunnable(dataSource, niceFileName, renderers, context, rs, processor);
 
 		final Report resultReport = pmdRunnable.call();
 

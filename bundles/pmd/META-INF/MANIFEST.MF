@@ -19,12 +19,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: qa.eclipse.plugin.pmd.PmdUIPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/pmd-core-5.8.1.jar,
- lib/pmd-java-5.8.1.jar,
- lib/commons-lang3-3.4.jar,
- lib/commons-io-2.4.jar,
+ lib/pmd-core-6.13.0.jar,
+ lib/pmd-java-6.13.0.jar,
+ lib/commons-lang3-3.8.1.jar,
+ lib/commons-io-2.6.jar,
  lib/jaxen-1.1.6.jar,
- lib/asm-5.0.4.jar,
+ lib/asm-7.1.jar,
  lib/saxon-9.1.0.8-dom.jar,
  lib/saxon-9.1.0.8.jar
 Export-Package: net.sourceforge.pmd;
