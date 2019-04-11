@@ -36,3 +36,4 @@ Export-Package: net.sourceforge.pmd;
    net.sourceforge.pmd.util.datasource,
    net.sourceforge.pmd.lang.dfa.report,
    net.sourceforge.pmd.stat"
+Automatic-Module-Name: qa.eclipse.plugin.bundles.pmd
