@@ -1,11 +1,19 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.views;
-
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_LINENUMBER;
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_PRIORITY;
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME;
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_RULENAME;
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_RULESET;
-import static qa.eclipse.plugin.pmd.views.PmdViolationMarkerComparator.SORT_PROP_VIOLATION_MSG;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,13 +78,14 @@ public class PmdViolationsView extends ViewPart
 	public static final String TOOL_NAME = "PMD";
 	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
 
-	static final String PREF_SORT_DIRECTION = ID + ".sortDirection";
-	static final String PREF_SORT_COLUMN_INDEX = ID + ".sortColumnIndex";
-	static final String PREF_FILTER_PRIORITY = ID + ".filterPriority";
-	static final String PREF_COLUMN_ORDER = ID + ".columnOrder";
+	static final String PREF_SORT_DIRECTION = PmdViolationsView.ID + ".sortDirection";
+	static final String PREF_SORT_COLUMN_INDEX = PmdViolationsView.ID + ".sortColumnIndex";
+	static final String PREF_FILTER_PRIORITY = PmdViolationsView.ID + ".filterPriority";
+	static final String PREF_COLUMN_ORDER = PmdViolationsView.ID + ".columnOrder";
 
-	private static final String FILTERED_PART_NAME_FORMAT_STRING = TOOL_NAME + " Violations (%d of %d)";
-	private static final String NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING = "Number of " + TOOL_NAME
+	private static final String FILTERED_PART_NAME_FORMAT_STRING = PmdViolationsView.TOOL_NAME
+			+ " Violations (%d of %d)";
+	private static final String NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING = "Number of " + PmdViolationsView.TOOL_NAME
 			+ " Violations: %d of %d";
 	private static final int FILTER_INDEX_PRIORITY = 0;
 	private static final int FILTER_INDEX_PROJECT = 1;
@@ -95,57 +104,58 @@ public class PmdViolationsView extends ViewPart
 	private final Map<Integer, String> keyByPriority = new HashMap<>();
 
 	public PmdViolationsView() {
-		IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
-		defaultPreferences.putInt(PREF_SORT_DIRECTION, SWT.DOWN);
-		defaultPreferences.putInt(PREF_SORT_COLUMN_INDEX, SWT.DOWN);
+		final IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
+		defaultPreferences.putInt(PmdViolationsView.PREF_SORT_DIRECTION, SWT.DOWN);
+		defaultPreferences.putInt(PmdViolationsView.PREF_SORT_COLUMN_INDEX, SWT.DOWN);
 
-		viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
+		this.viewPreferences = PmdPreferences.INSTANCE.getEclipseScopedPreferences();
 
-		viewerFilters[FILTER_INDEX_PRIORITY] = new PmdPriorityViewerFilter();
-		viewerFilters[FILTER_INDEX_PROJECT] = new PmdProjectNameViewerFilter();
+		this.viewerFilters[PmdViolationsView.FILTER_INDEX_PRIORITY] = new PmdPriorityViewerFilter();
+		this.viewerFilters[PmdViolationsView.FILTER_INDEX_PROJECT] = new PmdProjectNameViewerFilter();
 
-		keyByPriority.put(RulePriority.HIGH.getPriority(), "pmd.high.clvertical");
-		keyByPriority.put(RulePriority.MEDIUM_HIGH.getPriority(), "pmd.mediumhigh.clvertical");
-		keyByPriority.put(3, "pmd.medium.clvertical");
-		keyByPriority.put(4, "pmd.mediumlow.clvertical");
-		keyByPriority.put(5, "pmd.low.clvertical");
+		this.keyByPriority.put(RulePriority.HIGH.getPriority(), "pmd.high.clvertical");
+		this.keyByPriority.put(RulePriority.MEDIUM_HIGH.getPriority(), "pmd.mediumhigh.clvertical");
+		this.keyByPriority.put(3, "pmd.medium.clvertical");
+		this.keyByPriority.put(4, "pmd.mediumlow.clvertical");
+		this.keyByPriority.put(5, "pmd.low.clvertical");
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		Composite composite = parent;
+	public void createPartControl(final Composite parent) {
+		final Composite composite = parent;
 		composite.setLayout(new GridLayout(1, false));
 
-		Composite firstLine = new Composite(composite, SWT.NONE);
+		final Composite firstLine = new Composite(composite, SWT.NONE);
 		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		GridLayout firstLineLayout = new GridLayout(5, false);
+		final GridLayout firstLineLayout = new GridLayout(5, false);
 		firstLineLayout.marginHeight = 0;
 		firstLineLayout.marginWidth = 0;
 		firstLine.setLayout(firstLineLayout);
 
-		numViolationsLabel = new Label(firstLine, SWT.NONE);
-		numViolationsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		this.numViolationsLabel = new Label(firstLine, SWT.NONE);
+		this.numViolationsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
 
-		Button clearButton = new Button(firstLine, SWT.PUSH);
+		final Button clearButton = new Button(firstLine, SWT.PUSH);
 		clearButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
-		String symbolicName = "platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/clear.png";
+		final String symbolicName = "platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/clear.png";
 		// PlatformUI.getWorkbench().getSharedImages().getImage(symbolicName)
 		// AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
 		// "/icons/settings.png").createImage();
-		ImageDescriptor clearButtonImageDescriptor;
+		final ImageDescriptor clearButtonImageDescriptor;
 		try {
 			clearButtonImageDescriptor = ImageDescriptor.createFromURL(new URL(symbolicName));
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			throw new IllegalStateException(e);
 		}
-		Image clearButtonImage = clearButtonImageDescriptor.createImage();
+		final Image clearButtonImage = clearButtonImageDescriptor.createImage();
 		clearButton.setImage(clearButtonImage);
 		clearButton.setBackground(firstLine.getBackground());
 		clearButton.addListener(SWT.Selection, new Listener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				@SuppressWarnings("unchecked")
-				List<PmdViolationMarker> violationMarkers = (List<PmdViolationMarker>) tableViewer.getInput();
+				final List<PmdViolationMarker> violationMarkers = (List<PmdViolationMarker>) PmdViolationsView.this.tableViewer
+						.getInput();
 				// PmdMarkers.deleteMarkers(resource);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
@@ -153,99 +163,102 @@ public class PmdViolationsView extends ViewPart
 		// clearButton.setText("Clear");
 		clearButton.setToolTipText("Clears all PMD violations");
 
-		Label separatorLabel = new Label(firstLine, SWT.BORDER);
+		final Label separatorLabel = new Label(firstLine, SWT.BORDER);
 		separatorLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
-		Label filterLabel = new Label(firstLine, SWT.NONE);
+		final Label filterLabel = new Label(firstLine, SWT.NONE);
 		filterLabel.setText("Filters:");
 		filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 
-		TableCombo tableCombo = new TableCombo(firstLine, SWT.READ_ONLY | SWT.BORDER);
+		final TableCombo tableCombo = new TableCombo(firstLine, SWT.READ_ONLY | SWT.BORDER);
 		tableCombo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 		tableCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TableCombo source = (TableCombo) e.getSource();
-				int lowestPriority = source.getSelectionIndex() + 1;
-				filterByPriority(lowestPriority);
-				tableViewer.refresh(false);
-				viewPreferences.putInt(PREF_FILTER_PRIORITY, lowestPriority); // save filter setting
+			public void widgetSelected(final SelectionEvent e) {
+				final TableCombo source = (TableCombo) e.getSource();
+				final int lowestPriority = source.getSelectionIndex() + 1;
+				PmdViolationsView.this.filterByPriority(lowestPriority);
+				PmdViolationsView.this.tableViewer.refresh(false);
+				PmdViolationsView.this.viewPreferences.putInt(PmdViolationsView.PREF_FILTER_PRIORITY, lowestPriority); // save
+				// filter
+				// setting
 
 				Display.getDefault().asyncExec(new Runnable() {
 					@SuppressWarnings("unchecked")
 					@Override
 					public void run() {
-						Object input = tableViewer.getInput();
-						List<PmdViolationMarker> numFilteredViolations = (List<PmdViolationMarker>) input;
+						final Object input = PmdViolationsView.this.tableViewer.getInput();
+						final List<PmdViolationMarker> numFilteredViolations = (List<PmdViolationMarker>) input;
 
-						updateTitleAndLabel(numFilteredViolations);
+						PmdViolationsView.this.updateTitleAndLabel(numFilteredViolations);
 					}
 				});
 
 				return;
 			}
 		});
-		createTableComboItems(tableCombo);
+		this.createTableComboItems(tableCombo);
 
-		tableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
-		tableViewer.setUseHashlookup(true);
+		this.tableViewer = new TableViewer(composite,
+				SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+		this.tableViewer.setUseHashlookup(true);
 		// activate the tooltip support for the viewer
-		ColumnViewerToolTipSupport.enableFor(tableViewer, ToolTip.NO_RECREATE);
+		ColumnViewerToolTipSupport.enableFor(this.tableViewer, ToolTip.NO_RECREATE);
 
-		createColumns();
+		this.createColumns();
 
 		// tableColumnLayout.setColumnData(column, new ColumnWeightData(20, 200, true));
 
 		// configure table
-		tableViewer.getTable().setHeaderVisible(true);
-		tableViewer.getTable().setLinesVisible(true);
-		tableViewer.getTable().setSortDirection(loadSavedSortDirection());
-		tableViewer.getTable().setSortColumn(loadSavedSortColumn());
-		tableViewer.getTable().setColumnOrder(loadSavedColumnOrder());
+		this.tableViewer.getTable().setHeaderVisible(true);
+		this.tableViewer.getTable().setLinesVisible(true);
+		this.tableViewer.getTable().setSortDirection(this.loadSavedSortDirection());
+		this.tableViewer.getTable().setSortColumn(this.loadSavedSortColumn());
+		this.tableViewer.getTable().setColumnOrder(this.loadSavedColumnOrder());
 
 		// we use the comparator when sorting by column
-		tableViewer.setComparator(comparator);
+		this.tableViewer.setComparator(this.comparator);
 
-		tableViewer.addSelectionChangedListener(this);
+		this.tableViewer.addSelectionChangedListener(this);
 
-		tableViewer.setFilters(viewerFilters);
+		this.tableViewer.setFilters(this.viewerFilters);
 		// load filter settings
-		int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
+		final int loadSavedFilterPriority = this.loadSavedFilterPriority(tableCombo);
 		tableCombo.select(loadSavedFilterPriority - 1);
-		filterByPriority(loadSavedFilterPriority);
+		this.filterByPriority(loadSavedFilterPriority);
 
 		// interprets the input and transforms it into rows
-		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		this.tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		// on double click: opens the corresponding file in the proper editor, jumps to
 		// the line, and selects it
-		tableViewer.addDoubleClickListener(this);
+		this.tableViewer.addDoubleClickListener(this);
 
-		addContextMenu();
-		addToolBarButtons();
+		this.addContextMenu();
+		this.addToolBarButtons();
 
 		// Layout the viewer
-		GridData gridData = new GridData();
+		final GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
-		tableViewer.getControl().setLayoutData(gridData);
+		this.tableViewer.getControl().setLayoutData(gridData);
 
 		// TODO unknown what this is necessary for
-		getSite().setSelectionProvider(tableViewer);
+		this.getSite().setSelectionProvider(this.tableViewer);
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 
-		updateView();
+		this.updateView();
 	}
 
-	private void createTableComboItems(TableCombo tableCombo) {
+	private void createTableComboItems(final TableCombo tableCombo) {
 		String imageRegistryKey;
 		Image image;
 		TableItem ti;
 
-		for (RulePriority rulePriority : RulePriority.values()) {
+		for (final RulePriority rulePriority : RulePriority.values()) {
 			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(rulePriority.getPriority());
 			image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
@@ -263,37 +276,37 @@ public class PmdViolationsView extends ViewPart
 		// toolBar.add(action);
 	}
 
-	private int loadSavedFilterPriority(TableCombo tableCombo) {
-		final int DEFAULT_PRIORITY = RulePriority.LOW.getPriority();
-		int filterPriority = viewPreferences.getInt(PREF_FILTER_PRIORITY, DEFAULT_PRIORITY);
-		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
-			filterPriority = DEFAULT_PRIORITY;
+	private int loadSavedFilterPriority(final TableCombo tableCombo) {
+		final int defaultPriority = RulePriority.LOW.getPriority();
+		int filterPriority = this.viewPreferences.getInt(PmdViolationsView.PREF_FILTER_PRIORITY, defaultPriority);
+		if ((filterPriority < 0) || (filterPriority >= tableCombo.getItemCount())) {
+			filterPriority = defaultPriority;
 		}
 		return filterPriority;
 	}
 
 	private int loadSavedSortDirection() {
-		int savedSortDirection = viewPreferences.getInt(PREF_SORT_DIRECTION, SWT.NONE);
+		final int savedSortDirection = this.viewPreferences.getInt(PmdViolationsView.PREF_SORT_DIRECTION, SWT.NONE);
 		return savedSortDirection;
 	}
 
 	private TableColumn loadSavedSortColumn() {
-		Integer columnIndex = viewPreferences.getInt(PREF_SORT_COLUMN_INDEX, 0);
+		final Integer columnIndex = this.viewPreferences.getInt(PmdViolationsView.PREF_SORT_COLUMN_INDEX, 0);
 		TableColumn savedSortColumn;
 		try {
-			savedSortColumn = tableViewer.getTable().getColumn(columnIndex);
-		} catch (IllegalArgumentException e) {
-			savedSortColumn = tableViewer.getTable().getColumn(0);
+			savedSortColumn = this.tableViewer.getTable().getColumn(columnIndex);
+		} catch (final IllegalArgumentException e) {
+			savedSortColumn = this.tableViewer.getTable().getColumn(0);
 		}
 		return savedSortColumn;
 	}
 
 	private int[] loadSavedColumnOrder() {
-		final int numColumns = tableViewer.getTable().getColumnCount();
-		int[] columnOrderIndices = new int[numColumns];
+		final int numColumns = this.tableViewer.getTable().getColumnCount();
+		final int[] columnOrderIndices = new int[numColumns];
 
-		String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
-		String[] columnOrdersEncoded = columnOrderPreference.split(",");
+		final String columnOrderPreference = this.viewPreferences.get(PmdViolationsView.PREF_COLUMN_ORDER, "");
+		final String[] columnOrdersEncoded = columnOrderPreference.split(",");
 
 		boolean reset = false;
 
@@ -301,10 +314,10 @@ public class PmdViolationsView extends ViewPart
 			for (int i = 0; i < columnOrdersEncoded.length; i++) {
 				String columnOrderEncoded = columnOrdersEncoded[i];
 				columnOrderEncoded = columnOrderEncoded.trim();
-				int columnOrderIndex = Integer.parseInt(columnOrderEncoded);
+				final int columnOrderIndex = Integer.parseInt(columnOrderEncoded);
 				columnOrderIndices[i] = columnOrderIndex;
 			}
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			// if one of the encoded indices is an invalid number,
 			// use the default order 0,1,2,...
 			reset = true;
@@ -332,21 +345,21 @@ public class PmdViolationsView extends ViewPart
 		// getSite().registerContextMenu(menuManager, tableViewer);
 		// getEditorSite().registerContextMenu(menuManager, tableViewer, false);
 
-		Menu contextMenu = new Menu(tableViewer.getTable());
-		tableViewer.getTable().setMenu(contextMenu);
+		final Menu contextMenu = new Menu(this.tableViewer.getTable());
+		this.tableViewer.getTable().setMenu(contextMenu);
 
-		for (TableColumn tableColumn : tableViewer.getTable().getColumns()) {
-			createMenuItem(contextMenu, tableColumn);
+		for (final TableColumn tableColumn : this.tableViewer.getTable().getColumns()) {
+			this.createMenuItem(contextMenu, tableColumn);
 		}
 	}
 
-	private void createMenuItem(Menu contextMenu, TableColumn tableColumn) {
+	private void createMenuItem(final Menu contextMenu, final TableColumn tableColumn) {
 		final MenuItem itemName = new MenuItem(contextMenu, SWT.CHECK);
 		itemName.setText(tableColumn.getText());
 		itemName.setSelection(tableColumn.getResizable());
 		itemName.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				if (itemName.getSelection()) {
 					tableColumn.setWidth(150);
 					tableColumn.setResizable(true);
@@ -360,20 +373,20 @@ public class PmdViolationsView extends ViewPart
 
 	@Override
 	public void dispose() { // is called on closing the view and on closing Eclipse itself
-		flushSettings();
+		this.flushSettings();
 
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
 	}
 
 	private void createColumns() {
-		Listener columnMovedListener = new Listener() {
+		final Listener columnMovedListener = new Listener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (event.type == SWT.Move) {
-					int[] columnOrder = tableViewer.getTable().getColumnOrder();
-					String columnOrderEncoded = StringUtils.join(columnOrder, ',');
-					viewPreferences.put(PREF_COLUMN_ORDER, columnOrderEncoded);
+					final int[] columnOrder = PmdViolationsView.this.tableViewer.getTable().getColumnOrder();
+					final String columnOrderEncoded = StringUtils.join(columnOrder, ',');
+					PmdViolationsView.this.viewPreferences.put(PmdViolationsView.PREF_COLUMN_ORDER, columnOrderEncoded);
 				}
 			}
 		};
@@ -381,32 +394,32 @@ public class PmdViolationsView extends ViewPart
 		TableViewerColumn tableViewerColumn;
 		TableColumn column;
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public Image getImage(Object element) {
-				PmdViolationMarker violationMarker = (PmdViolationMarker) element;
-				int pmdPriority = violationMarker.getPriority();
-				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
-				Image image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
+			public Image getImage(final Object element) {
+				final PmdViolationMarker violationMarker = (PmdViolationMarker) element;
+				final int pmdPriority = violationMarker.getPriority();
+				final String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
+				final Image image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
 
 			@Override
-			public String getText(Object element) {
+			public String getText(final Object element) {
 				return "";
 			}
 
 			@Override
-			public Image getToolTipImage(Object object) {
-				return getImage(object);
+			public Image getToolTipImage(final Object object) {
+				return this.getImage(object);
 			}
 
 			@Override
-			public String getToolTipText(Object element) {
-				PmdViolationMarker violationMarker = (PmdViolationMarker) element;
-				int pmdPriority = violationMarker.getPriority();
-				RulePriority pmdRulePriority = RulePriority.valueOf(pmdPriority);
+			public String getToolTipText(final Object element) {
+				final PmdViolationMarker violationMarker = (PmdViolationMarker) element;
+				final int pmdPriority = violationMarker.getPriority();
+				final RulePriority pmdRulePriority = RulePriority.valueOf(pmdPriority);
 				return pmdRulePriority.toString();
 			}
 		});
@@ -414,16 +427,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Priority"); // only icon; hover shows explanation (HIGH, LOW, ...)
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PRIORITY));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_PRIORITY));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getRuleName();
 			}
 		});
@@ -431,16 +445,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Rule name");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULENAME));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_RULENAME));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getMessage();
 			}
 		});
@@ -448,16 +463,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Violation message");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(400);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_VIOLATION_MSG));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_VIOLATION_MSG));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return String.valueOf(marker.getProjectName());
 			}
 		});
@@ -465,16 +481,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Project");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_PROJECTNAME));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return String.valueOf(marker.getLineNumer());
 			}
 		});
@@ -482,16 +499,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Line");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_LINENUMBER));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_LINENUMBER));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getRuleSetName();
 			}
 		});
@@ -499,16 +517,17 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Rule set");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(viewPreferences, tableViewer, SORT_PROP_RULESET));
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				PmdViolationMarkerComparator.SORT_PROP_RULESET));
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getDirectoryPath();
 			}
 		});
@@ -516,15 +535,15 @@ public class PmdViolationsView extends ViewPart
 		column.setText("Directory path");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addListener(SWT.Move, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
+		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				PmdViolationMarker marker = (PmdViolationMarker) element;
+			public String getText(final Object element) {
+				final PmdViolationMarker marker = (PmdViolationMarker) element;
 				return marker.getFileName();
 			}
 		});
@@ -532,18 +551,18 @@ public class PmdViolationsView extends ViewPart
 		column.setText("File name");
 		column.setResizable(true);
 		column.setMoveable(true);
-		column.setData(tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
 		column.setWidth(200);
 		column.addListener(SWT.Move, columnMovedListener);
 	}
 
 	@Override
 	public void setFocus() {
-		tableViewer.getControl().setFocus();
+		this.tableViewer.getControl().setFocus();
 	}
 
 	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		// do nothing when selecting (the event is not aware of left-click or
 		// right-click)
 	}
@@ -552,21 +571,21 @@ public class PmdViolationsView extends ViewPart
 	 * @see <a href=
 	 *      "https://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2FresAdv_events.htm"
 	 *      >Link to type-based switch</a>
-	 * 
+	 *
 	 * @see <a href=
 	 *      "https://stackoverflow.com/questions/10501966/add-change-listener-on-marker">Link
 	 *      to findMarkerDeltas</a>
 	 */
 	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true);
+	public void resourceChanged(final IResourceChangeEvent event) {
+		final IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true);
 		// do not unnecessarily collect all PMD markers again if no marker of this
 		// resource was changed
 		if (markerDeltas.length == 0) {
 			return;
 		}
 
-		updateView();
+		this.updateView();
 	}
 
 	private void updateView() {
@@ -574,8 +593,8 @@ public class PmdViolationsView extends ViewPart
 
 		final List<PmdViolationMarker> pmdViolationMarkers = new ArrayList<>();
 
-		for (IMarker marker : updatedMarkers) {
-			PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
+		for (final IMarker marker : updatedMarkers) {
+			final PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
 			pmdViolationMarkers.add(pmdViolationMarker);
 		}
 
@@ -583,75 +602,77 @@ public class PmdViolationsView extends ViewPart
 			@Override
 			public void run() {
 				// setInput must be set first so that numFilteredViolations is correct
-				tableViewer.setInput(pmdViolationMarkers);
+				PmdViolationsView.this.tableViewer.setInput(pmdViolationMarkers);
 
-				updateTitleAndLabel(pmdViolationMarkers);
+				PmdViolationsView.this.updateTitleAndLabel(pmdViolationMarkers);
 			}
 
 		});
 	}
 
 	private void updateTitleAndLabel(final List<?> violationMarkers) {
-		int numFilteredViolations = tableViewer.getTable().getItemCount();
-		int numViolations = violationMarkers.size();
-		updateTabTitle(numFilteredViolations, numViolations);
-		updateNumViolationsLabel(numFilteredViolations, numViolations);
+		final int numFilteredViolations = this.tableViewer.getTable().getItemCount();
+		final int numViolations = violationMarkers.size();
+		this.updateTabTitle(numFilteredViolations, numViolations);
+		this.updateNumViolationsLabel(numFilteredViolations, numViolations);
 	}
 
-	private void updateTabTitle(int numFilteredViolations, int numViolations) {
-		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
-		setPartName(newPartName);
+	private void updateTabTitle(final int numFilteredViolations, final int numViolations) {
+		final String newPartName = String.format(PmdViolationsView.FILTERED_PART_NAME_FORMAT_STRING,
+				numFilteredViolations, numViolations);
+		this.setPartName(newPartName);
 	}
 
-	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
-		String text = String.format(NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING, numFilteredViolations, numViolations);
-		numViolationsLabel.setText(text);
-		numViolationsLabel.getParent().layout(); // update label
+	private void updateNumViolationsLabel(final int numFilteredViolations, final int numViolations) {
+		final String text = String.format(PmdViolationsView.NUMBER_OF_PMD_VIOLATIONS_FORMAT_STRING,
+				numFilteredViolations, numViolations);
+		this.numViolationsLabel.setText(text);
+		this.numViolationsLabel.getParent().layout(); // update label
 	}
 
 	public TableViewer getTableViewer() {
 		// tableViewer.getTable().getItem(index)
 		// tableViewer.getTable().showItem(item);
 		// tableViewer.reveal(element);
-		return tableViewer;
+		return this.tableViewer;
 	}
 
 	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		PmdViolationMarker pmdViolationMarker = (PmdViolationMarker) selection.getFirstElement();
+	public void doubleClick(final DoubleClickEvent event) {
+		final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+		final PmdViolationMarker pmdViolationMarker = (PmdViolationMarker) selection.getFirstElement();
 		if (pmdViolationMarker == null) {
 			return;
 		}
 
 		try {
-			IDE.openEditor(getSite().getPage(), pmdViolationMarker.getMarker());
-		} catch (PartInitException e) {
+			IDE.openEditor(this.getSite().getPage(), pmdViolationMarker.getMarker());
+		} catch (final PartInitException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
 	private void flushSettings() {
 		try {
-			viewPreferences.flush();
-		} catch (Exception e) {
+			this.viewPreferences.flush();
+		} catch (final Exception e) { // NOPMD
 			// we do not want to hinder Eclipse to quit.
 			// So, we catch all exceptions here.
 		}
 	}
 
-	private void filterByPriority(int lowestPriority) {
-		PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
+	private void filterByPriority(final int lowestPriority) {
+		final PmdPriorityViewerFilter priorityFilter = (PmdPriorityViewerFilter) this.viewerFilters[PmdViolationsView.FILTER_INDEX_PRIORITY];
 		priorityFilter.setLowestPriority(lowestPriority);
 
-		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getEclipseEditorPreferences();
+		final IEclipsePreferences preferences = PmdPreferences.INSTANCE.getEclipseEditorPreferences();
 		// highest priority (here: 1) should always be displayed
-		for (int i = 1; i < lowestPriority + 1; i++) {
-			String key = keyByPriority.get(i);
+		for (int i = 1; i < (lowestPriority + 1); i++) {
+			final String key = this.keyByPriority.get(i);
 			preferences.putBoolean(key, true);
 		}
-		for (int i = lowestPriority + 1; i < 5 + 1; i++) {
-			String key = keyByPriority.get(i);
+		for (int i = lowestPriority + 1; i < (5 + 1); i++) {
+			final String key = this.keyByPriority.get(i);
 			preferences.putBoolean(key, false);
 		}
 	}

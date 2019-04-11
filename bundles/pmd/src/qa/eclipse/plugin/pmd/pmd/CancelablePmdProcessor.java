@@ -54,31 +54,31 @@ class CancelablePmdProcessor {
 		this.ruleSetFactory = ruleSetFactory;
 		this.renderers = renderers;
 
-		this.processor = new SourceCodeProcessor(configuration);
+		processor = new SourceCodeProcessor(configuration);
 	}
 
 	public void onStarted() {
-		final RuleSets rs = this.createRuleSets(this.ruleSetFactory);
-		this.configuration.getAnalysisCache().checkValidity(rs, this.configuration.getClassLoader());
+		final RuleSets rs = createRuleSets(ruleSetFactory);
+		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 	}
 
 	public void processFile(final DataSource dataSource, final RuleContext context) {
-		final String niceFileName = this.filenameFrom(dataSource);
+		final String niceFileName = filenameFrom(dataSource);
 
-		final PmdRunnable pmdRunnable = new PmdRunnable(this.configuration, dataSource, niceFileName, this.renderers, context,
-				this.ruleSetFactory, this.processor);
+		final PmdRunnable pmdRunnable = new PmdRunnable(configuration, dataSource, niceFileName, renderers, context,
+				ruleSetFactory, processor);
 
 		final Report resultReport = pmdRunnable.call();
 
-		this.reports.add(resultReport);
+		reports.add(resultReport);
 	}
 
 	public void onFinished() {
-		this.collectReports(this.renderers);
+		collectReports(renderers);
 	}
 
 	private String filenameFrom(final DataSource dataSource) {
-		return dataSource.getNiceFileName(this.configuration.isReportShortNames(), this.configuration.getInputPaths());
+		return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
 	}
 
 	/**
@@ -91,11 +91,11 @@ class CancelablePmdProcessor {
 	 * @return the rules within a rulesets
 	 */
 	private RuleSets createRuleSets(final RuleSetFactory factory) {
-		return RulesetsFactoryUtils.getRuleSets(this.configuration.getRuleSets(), factory);
+		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
 	}
 
 	private void collectReports(final List<Renderer> localRenderers) {
-		for (final Report report : this.reports) {
+		for (final Report report : reports) {
 			for (final Renderer r : localRenderers) {
 				try {
 					r.renderFileReport(report);

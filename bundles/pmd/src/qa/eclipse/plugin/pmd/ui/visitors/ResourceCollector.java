@@ -36,10 +36,10 @@ public class ResourceCollector implements IResourceVisitor {
 		switch (resourceType) {
 		case IResource.FILE: {
 			final IProject project = resource.getProject();
-			List<IFile> files = this.projectResources.get(project);
+			List<IFile> files = projectResources.get(project);
 			if (files == null) {
 				files = new ArrayList<>();
-				this.projectResources.put(project, files);
+				projectResources.put(project, files);
 			}
 
 			final IFile file = (IFile) resource;
@@ -62,7 +62,7 @@ public class ResourceCollector implements IResourceVisitor {
 	}
 
 	public Map<IProject, List<IFile>> getProjectResources() {
-		return this.projectResources;
+		return projectResources;
 	}
 
 }

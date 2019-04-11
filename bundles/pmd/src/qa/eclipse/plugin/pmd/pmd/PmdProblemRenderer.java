@@ -47,7 +47,7 @@ class PmdProblemRenderer extends AbstractRenderer {
 
 	@Override
 	public void renderFileReport(final Report workerThreadReport) throws IOException {
-		this.problemReport.merge(workerThreadReport);
+		problemReport.merge(workerThreadReport);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ class PmdProblemRenderer extends AbstractRenderer {
 	}
 
 	public Report getProblemReport() {
-		return this.problemReport;
+		return problemReport;
 	}
 
 }

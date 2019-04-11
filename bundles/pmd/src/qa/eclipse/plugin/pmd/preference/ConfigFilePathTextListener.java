@@ -28,6 +28,12 @@ import org.eclipse.swt.widgets.Text;
 
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
+/**
+ *
+ *
+ * @author Christian Wulf
+ *
+ */
 class ConfigFilePathTextListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: the file path does not point to an existing file.";
@@ -42,14 +48,14 @@ class ConfigFilePathTextListener extends KeyAdapter {
 	@Override
 	public void keyReleased(final KeyEvent event) {
 		final Object source = event.getSource();
-		final Text textField = this.propertyPage.getRuleSetFilePathText();
+		final Text textField = propertyPage.getRuleSetFilePathText();
 		if (source != textField) {
 			return;
 		}
 
 		final String text = textField.getText();
 
-		final Label label = this.propertyPage.getRuleSetFilePathLabel();
+		final Label label = propertyPage.getRuleSetFilePathLabel();
 		final Path path;
 		try {
 			path = Paths.get(text);
@@ -66,7 +72,7 @@ class ConfigFilePathTextListener extends KeyAdapter {
 			return;
 		}
 
-		final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(this.propertyPage);
+		final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(propertyPage);
 		final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 		if (!Files.exists(absoluteConfigFilePath)) {

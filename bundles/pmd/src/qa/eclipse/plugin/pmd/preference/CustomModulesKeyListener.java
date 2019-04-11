@@ -29,6 +29,21 @@ import org.eclipse.swt.widgets.Text;
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
+/***************************************************************************
+ * Copyright (C) 2019
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ***************************************************************************/
 class CustomModulesKeyListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: at least one of the file paths does not point to an existing file.";
@@ -43,7 +58,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 	@Override
 	public void keyReleased(final KeyEvent event) {
 		final Object source = event.getSource();
-		final Text textField = this.propertyPage.getCustomJarFilePathsText();
+		final Text textField = propertyPage.getCustomJarFilePathsText();
 		if (source != textField) {
 			return;
 		}
@@ -52,7 +67,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 
 		final String[] filePaths = text.split(PreferencesUtil.BY_COMMA_AND_TRIM);
 
-		final Label label = this.propertyPage.getCustomJarFilePathsLabel();
+		final Label label = propertyPage.getCustomJarFilePathsLabel();
 		for (final String filePath : filePaths) {
 			final Path path;
 			try {
@@ -70,7 +85,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 				return;
 			}
 
-			final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(this.propertyPage);
+			final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(propertyPage);
 			final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 			if (!Files.exists(absoluteConfigFilePath)) {

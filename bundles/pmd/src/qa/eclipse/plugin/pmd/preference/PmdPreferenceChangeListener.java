@@ -19,6 +19,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdPreferenceChangeListener implements IPreferenceChangeListener {
 
 	private final IProject project;
@@ -33,9 +38,9 @@ class PmdPreferenceChangeListener implements IPreferenceChangeListener {
 			final String newEnabled = (String) event.getNewValue();
 			final Boolean enabled = Boolean.valueOf(newEnabled);
 			if (!enabled) { // remove all violation markers
-				final String jobName = String.format("Removing PMD violations for project '%s'...", this.project.getName());
+				final String jobName = String.format("Removing PMD violations for project '%s'...", project.getName());
 
-				PmdRemoveMarkersJob.start(jobName, this.project);
+				PmdRemoveMarkersJob.start(jobName, project);
 			}
 		}
 	}

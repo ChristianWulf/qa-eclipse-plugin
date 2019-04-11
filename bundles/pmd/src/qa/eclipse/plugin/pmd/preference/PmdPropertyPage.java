@@ -42,6 +42,12 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.osgi.service.prefs.BackingStoreException;
 
+/**
+ * Property page for PMD settings.
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdPropertyPage extends PropertyPage {
 
 	static final String RULE_SET_FILE_EXAMPLE_TEXT = "Example: conf/quality-config/pmd-ruleset.xml";
@@ -61,9 +67,9 @@ public class PmdPropertyPage extends PropertyPage {
 	}
 
 	private void addFirstSection(final Composite parent) {
-		final Composite composite = this.createDefaultComposite(parent, 1);
+		final Composite composite = createDefaultComposite(parent, 1);
 
-		final IResource resource = this.getElement().getAdapter(IResource.class);
+		final IResource resource = getElement().getAdapter(IResource.class);
 		final IProject project = resource.getProject();
 
 		// ensure that the properties displayed are in sync with the corresponding prefs
@@ -76,32 +82,32 @@ public class PmdPropertyPage extends PropertyPage {
 
 		final IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
 
-		this.enabledButton = new Button(composite, SWT.CHECK);
-		this.enabledButton.setText("PMD &enabled");
+		enabledButton = new Button(composite, SWT.CHECK);
+		enabledButton.setText("PMD &enabled");
 		final boolean selected = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
-		this.enabledButton.setSelection(selected);
+		enabledButton.setSelection(selected);
 
 		Label hintLabel = new Label(composite, SWT.NONE);
 		hintLabel.setText("Hint: Disabling PMD clears all violations.");
 		hintLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
-		this.addSeparator(composite);
+		addSeparator(composite);
 
 		// Label for path field
 		final Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Ruleset file path:");
 
-		Composite lineComposite = this.createDefaultComposite(composite, 2);
+		Composite lineComposite = createDefaultComposite(composite, 2);
 
 		final String ruleSetFilePath = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
 				PmdPreferences.INVALID_RULESET_FILE_PATH);
 		// Path text field
-		this.ruleSetFilePathText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
+		ruleSetFilePathText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData();
-		gd.widthHint = this.convertWidthInCharsToPixels(60);
-		this.ruleSetFilePathText.setLayoutData(gd);
-		this.ruleSetFilePathText.setText(ruleSetFilePath);
-		this.ruleSetFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		ruleSetFilePathText.setLayoutData(gd);
+		ruleSetFilePathText.setText(ruleSetFilePath);
+		ruleSetFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
 
 		final Button browseButton = new Button(lineComposite, SWT.NONE);
 		browseButton.setText("...");
@@ -109,7 +115,8 @@ public class PmdPropertyPage extends PropertyPage {
 			@Override
 			public void mouseUp(final MouseEvent e) {
 				final String message = "Select your rule set file for this project...";
-				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(), project, message);
+				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(),
+						project, message);
 				final int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
 					final Object[] selectedObjects = dialog.getResult();
@@ -119,7 +126,7 @@ public class PmdPropertyPage extends PropertyPage {
 						Display.getCurrent().asyncExec(new Runnable() {
 							@Override
 							public void run() {
-								PmdPropertyPage.this.ruleSetFilePathText.setText(projectRelativePath.toString());
+								ruleSetFilePathText.setText(projectRelativePath.toString());
 							}
 						});
 					}
@@ -127,22 +134,22 @@ public class PmdPropertyPage extends PropertyPage {
 			}
 		});
 
-		this.ruleSetFilePathLabel = new Label(composite, SWT.NONE);
-		this.ruleSetFilePathLabel.setText(PmdPropertyPage.RULE_SET_FILE_EXAMPLE_TEXT);
-		this.ruleSetFilePathLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
-		this.ruleSetFilePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		ruleSetFilePathLabel = new Label(composite, SWT.NONE);
+		ruleSetFilePathLabel.setText(PmdPropertyPage.RULE_SET_FILE_EXAMPLE_TEXT);
+		ruleSetFilePathLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		ruleSetFilePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		final Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
 
-		lineComposite = this.createDefaultComposite(composite, 2);
+		lineComposite = createDefaultComposite(composite, 2);
 
-		this.customJarFilePathsText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
+		customJarFilePathsText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData();
-		gd.widthHint = this.convertWidthInCharsToPixels(60);
-		this.customJarFilePathsText.setLayoutData(gd);
-		this.customJarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
-		this.customJarFilePathsText.addKeyListener(new CustomModulesKeyListener(this));
+		gd.widthHint = convertWidthInCharsToPixels(60);
+		customJarFilePathsText.setLayoutData(gd);
+		customJarFilePathsText.setText(preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, ""));
+		customJarFilePathsText.addKeyListener(new CustomModulesKeyListener(this));
 
 		// browseButton = new Button(lineComposite, SWT.NONE);
 		browseButton.setText("...");
@@ -150,7 +157,8 @@ public class PmdPropertyPage extends PropertyPage {
 			@Override
 			public void mouseUp(final MouseEvent e) {
 				final String message = "Select your custom rule jar file(s) for this project...";
-				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(), project, message);
+				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(),
+						project, message);
 				final int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
 					final Object[] selectedObjects = dialog.getResult();
@@ -169,28 +177,28 @@ public class PmdPropertyPage extends PropertyPage {
 					Display.getCurrent().asyncExec(new Runnable() {
 						@Override
 						public void run() {
-							PmdPropertyPage.this.customJarFilePathsText.setText(StringUtils.join(filePathNames, ','));
+							customJarFilePathsText.setText(StringUtils.join(filePathNames, ','));
 						}
 					});
 				}
 			}
 		});
 
-		this.customJarFilePathsLabel = new Label(composite, SWT.NONE);
-		this.customJarFilePathsLabel.setText(PmdPropertyPage.CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
-		this.customJarFilePathsLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
-		this.customJarFilePathsLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		customJarFilePathsLabel = new Label(composite, SWT.NONE);
+		customJarFilePathsLabel.setText(PmdPropertyPage.CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
+		customJarFilePathsLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		customJarFilePathsLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
 		final Label exampleLabel = new Label(composite, SWT.NONE);
 		exampleLabel.setText("To hide the violation flags in the (Package/Project) Explorer, " + System.lineSeparator()
-		+ "open Eclipse's global preferences and search for 'Label Decorations'.");
+				+ "open Eclipse's global preferences and search for 'Label Decorations'.");
 		// exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
-		this.addSeparator(composite);
+		addSeparator(composite);
 
 		hintLabel = new Label(composite, SWT.NONE);
 		// Image infoImage =
@@ -209,19 +217,19 @@ public class PmdPropertyPage extends PropertyPage {
 	}
 
 	Text getRuleSetFilePathText() {
-		return this.ruleSetFilePathText;
+		return ruleSetFilePathText;
 	}
 
 	Label getRuleSetFilePathLabel() {
-		return this.ruleSetFilePathLabel;
+		return ruleSetFilePathLabel;
 	}
 
 	Text getCustomJarFilePathsText() {
-		return this.customJarFilePathsText;
+		return customJarFilePathsText;
 	}
 
 	Label getCustomJarFilePathsLabel() {
-		return this.customJarFilePathsLabel;
+		return customJarFilePathsLabel;
 	}
 
 	/**
@@ -236,7 +244,7 @@ public class PmdPropertyPage extends PropertyPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 
-		this.addFirstSection(composite);
+		addFirstSection(composite);
 		return composite;
 	}
 
@@ -259,14 +267,14 @@ public class PmdPropertyPage extends PropertyPage {
 	protected void performDefaults() {
 		super.performDefaults();
 		// Populate the owner text field with the default value
-		this.ruleSetFilePathText.setText(PmdPreferences.INVALID_RULESET_FILE_PATH);
-		this.customJarFilePathsText.setText("");
-		this.enabledButton.setSelection(false);
+		ruleSetFilePathText.setText(PmdPreferences.INVALID_RULESET_FILE_PATH);
+		customJarFilePathsText.setText("");
+		enabledButton.setSelection(false);
 	}
 
 	@Override
 	public boolean performOk() {
-		final IResource resource = this.getElement().getAdapter(IResource.class);
+		final IResource resource = getElement().getAdapter(IResource.class);
 		final IEclipsePreferences preferences = PmdPreferences.INSTANCE
 				.getProjectScopedPreferences(resource.getProject());
 
@@ -276,9 +284,9 @@ public class PmdPropertyPage extends PropertyPage {
 		// // ignore
 		// }
 
-		preferences.put(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, this.ruleSetFilePathText.getText());
-		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, this.customJarFilePathsText.getText());
-		preferences.putBoolean(PmdPreferences.PROP_KEY_ENABLED, this.enabledButton.getSelection());
+		preferences.put(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH, ruleSetFilePathText.getText());
+		preferences.put(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, customJarFilePathsText.getText());
+		preferences.putBoolean(PmdPreferences.PROP_KEY_ENABLED, enabledButton.getSelection());
 
 		try {
 			preferences.flush();

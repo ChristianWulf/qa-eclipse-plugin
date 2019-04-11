@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd;
 
 import java.util.List;
@@ -23,7 +38,9 @@ import qa.eclipse.plugin.pmd.pmd.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
+ *
+ * @author Christian wulf
  */
 public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
 
@@ -38,7 +55,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	private PmdTool pmdTool;
 
 	/**
-	 * The constructor
+	 * The constructor.
 	 */
 	public PmdUIPlugin() {
 		// default constructor is required by Eclipse
@@ -46,14 +63,14 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
 	 * BundleContext)
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception { // NOCS
 		super.start(context);
-		plugin = this;
+		PmdUIPlugin.plugin = this;
 		this.context = context;
 		this.pmdTool = new PmdTool();
 
@@ -68,21 +85,22 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	@Override
 	// represents: analyze on save
-	public void resourceChanged(IResourceChangeEvent event) {
-		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
+	public void resourceChanged(final IResourceChangeEvent event) {
+		final ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
 		try {
 			event.getDelta().accept(resourceDeltaFileCollector);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
+		} catch (final CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on resource changed.", e);
 		}
 
-		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+		for (final Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+			this.pmdTool.startAsyncAnalysis(addedFiles.getValue());
 		}
 
-		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+		for (final Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles()
+				.entrySet()) {
+			this.pmdTool.startAsyncAnalysis(changedFiles.getValue());
 		}
 
 		// our view listens to marker changes and thus is indirectly notified about
@@ -91,14 +109,20 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 		return;
 	}
 
-	public void registerBuilder(IProject project) {
-		IProjectDescription desc;
+	/**
+	 * Register builder.
+	 *
+	 * @param project
+	 *            current project
+	 */
+	public void registerBuilder(final IProject project) {
+		final IProjectDescription desc;
 		try {
 			desc = project.getDescription();
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			throw new IllegalStateException(e);
 		}
-		ICommand[] commands = desc.getBuildSpec();
+		final ICommand[] commands = desc.getBuildSpec();
 		boolean found = false;
 
 		for (int i = 0; i < commands.length; ++i) {
@@ -110,9 +134,9 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 		if (!found) {
 			// add builder to project
-			ICommand command = desc.newCommand();
+			final ICommand command = desc.newCommand();
 			command.setBuilderName(IncrementalViolationMarkerBuilder.BUILDER_ID);
-			ICommand[] newCommands = new ICommand[commands.length + 1];
+			final ICommand[] newCommands = new ICommand[commands.length + 1];
 
 			// Add it before other builders.
 			System.arraycopy(commands, 0, newCommands, 1, commands.length);
@@ -120,7 +144,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 			desc.setBuildSpec(newCommands);
 			try {
 				project.setDescription(desc, null);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				throw new IllegalStateException(e);
 			}
 		}
@@ -128,18 +152,18 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+	public void stop(final BundleContext context) throws Exception { // NOCS context is API
+		PmdUIPlugin.plugin = null;
 		super.stop(context);
 	}
 
 	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
+	protected void initializeImageRegistry(final ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 
 		ImageRegistryKey.initialize(reg);
@@ -149,25 +173,39 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	 * @return the shared instance
 	 */
 	public static PmdUIPlugin getDefault() {
-		return plugin;
+		return PmdUIPlugin.plugin;
 	}
 
 	public BundleContext getContext() {
-		return context;
+		return this.context;
 	}
 
 	public PmdTool getPmdTool() {
-		return pmdTool;
+		return this.pmdTool;
 	}
 
-	public void logThrowable(String message, Throwable throwable) {
-		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
-		getLog().log(status);
+	/**
+	 * Log error message.
+	 *
+	 * @param message
+	 *            message
+	 * @param throwable
+	 *            associated throwable
+	 */
+	public void logThrowable(final String message, final Throwable throwable) {
+		final IStatus status = new Status(IStatus.ERROR, PmdUIPlugin.PLUGIN_ID, message, throwable);
+		this.getLog().log(status);
 	}
 
-	public void logWarning(String message) {
-		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
-		getLog().log(status);
+	/**
+	 * Log warning message.
+	 *
+	 * @param message
+	 *            message
+	 */
+	public void logWarning(final String message) {
+		final IStatus status = new Status(IStatus.WARNING, PmdUIPlugin.PLUGIN_ID, message);
+		this.getLog().log(status);
 	}
 
 }

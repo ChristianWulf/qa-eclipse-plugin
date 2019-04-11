@@ -46,7 +46,7 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
-		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
@@ -113,11 +113,12 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 		delta.accept(resourceDeltaFileCollector);
 
-		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
 			pmdTool.startAsyncAnalysis(addedFiles.getValue());
 		}
 
-		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles()
+				.entrySet()) {
 			pmdTool.startAsyncAnalysis(changedFiles.getValue());
 		}
 

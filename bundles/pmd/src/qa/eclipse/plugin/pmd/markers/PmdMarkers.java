@@ -36,11 +36,19 @@ public final class PmdMarkers {
 	/** marker to identify violation marker for the violations view. */
 	public static final String ABSTRACT_PMD_VIOLATION_MARKER = "qa.eclipse.plugin.pmd.markers.violation";
 	public static final String HIGH_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".high";
-	public static final String MEDIUMHIGH_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".mediumhigh";
+	public static final String MEDIUMHIGH_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER
+			+ ".mediumhigh";
 	public static final String MEDIUM_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".medium";
 	public static final String MEDIUMLOW_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".mediumlow";
 	public static final String LOW_PMD_VIOLATION_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".low";
 	public static final String PMD_ERROR_MARKER = PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER + ".error";
+
+	/**
+	 * @see {@link net.sourceforge.pmd.RulePriority}
+	 */
+	public static final String ATTR_KEY_PRIORITY = "pmd.priority";
+	public static final String ATTR_KEY_RULENAME = "pmd.rulename";
+	public static final String ATTR_KEY_RULESETNAME = "pmd.rulesetname";
 
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
@@ -55,13 +63,6 @@ public final class PmdMarkers {
 	private PmdMarkers() {
 		// utility class
 	}
-
-	/**
-	 * @see {@link net.sourceforge.pmd.RulePriority}
-	 */
-	public static final String ATTR_KEY_PRIORITY = "pmd.priority";
-	public static final String ATTR_KEY_RULENAME = "pmd.rulename";
-	public static final String ATTR_KEY_RULESETNAME = "pmd.rulesetname";
 
 	public static void appendViolationMarker(final IFile eclipseFile, final RuleViolation violation)
 			throws CoreException {
@@ -100,7 +101,8 @@ public final class PmdMarkers {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		final IMarker[] markers;
 		try {
-			markers = workspaceRoot.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
+			markers = workspaceRoot.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true,
+					IResource.DEPTH_INFINITE);
 		} catch (final CoreException e) {
 			throw new IllegalStateException(e);
 		}

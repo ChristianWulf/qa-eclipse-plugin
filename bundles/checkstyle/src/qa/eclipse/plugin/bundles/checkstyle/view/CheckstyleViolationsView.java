@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import static qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_NAME;
@@ -100,7 +115,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private final Map<Integer, String> verticalKeyByPriority = new HashMap<>();
 
 	public CheckstyleViolationsView() {
-		IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
+		final IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(PREF_SORT_DIRECTION, SWT.DOWN);
 		defaultPreferences.putInt(PREF_SORT_COLUMN_INDEX, SWT.DOWN);
 
@@ -120,13 +135,13 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		Composite composite = parent;
+	public void createPartControl(final Composite parent) {
+		final Composite composite = parent;
 		composite.setLayout(new GridLayout(1, false));
 
-		Composite firstLine = new Composite(composite, SWT.NONE);
+		final Composite firstLine = new Composite(composite, SWT.NONE);
 		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		GridLayout firstLineLayout = new GridLayout(5, false);
+		final GridLayout firstLineLayout = new GridLayout(5, false);
 		firstLineLayout.marginHeight = 0;
 		firstLineLayout.marginWidth = 0;
 		firstLine.setLayout(firstLineLayout);
@@ -134,26 +149,26 @@ public class CheckstyleViolationsView extends ViewPart
 		numViolationsLabel = new Label(firstLine, SWT.NONE);
 		numViolationsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
 
-		Button clearButton = new Button(firstLine, SWT.PUSH);
+		final Button clearButton = new Button(firstLine, SWT.PUSH);
 		clearButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
-		String symbolicName = "platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/clear.png";
+		final String symbolicName = "platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/clear.png";
 		// PlatformUI.getWorkbench().getSharedImages().getImage(symbolicName)
 		// AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
 		// "/icons/settings.png").createImage();
 		ImageDescriptor clearButtonImageDescriptor;
 		try {
 			clearButtonImageDescriptor = ImageDescriptor.createFromURL(new URL(symbolicName));
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			throw new IllegalStateException(e);
 		}
-		Image clearButtonImage = clearButtonImageDescriptor.createImage();
+		final Image clearButtonImage = clearButtonImageDescriptor.createImage();
 		clearButton.setImage(clearButtonImage);
 		clearButton.setBackground(firstLine.getBackground());
 		clearButton.addListener(SWT.Selection, new Listener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				@SuppressWarnings("unchecked")
-				List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) tableViewer
+				final List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) tableViewer
 						.getInput();
 				// CheckstyleMarkers.deleteMarkers(eclipseFile);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
@@ -162,20 +177,20 @@ public class CheckstyleViolationsView extends ViewPart
 		// clearButton.setText("Clear");
 		clearButton.setToolTipText("Clears all Checkstyle violations");
 
-		Label separatorLabel = new Label(firstLine, SWT.BORDER);
+		final Label separatorLabel = new Label(firstLine, SWT.BORDER);
 		separatorLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
-		Label filterLabel = new Label(firstLine, SWT.NONE);
+		final Label filterLabel = new Label(firstLine, SWT.NONE);
 		filterLabel.setText("Filters:");
 		filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 
-		TableCombo tableCombo = new TableCombo(firstLine, SWT.READ_ONLY | SWT.BORDER);
+		final TableCombo tableCombo = new TableCombo(firstLine, SWT.READ_ONLY | SWT.BORDER);
 		tableCombo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 		tableCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TableCombo source = (TableCombo) e.getSource();
-				int selectionIndex = source.getSelectionIndex();
+			public void widgetSelected(final SelectionEvent e) {
+				final TableCombo source = (TableCombo) e.getSource();
+				final int selectionIndex = source.getSelectionIndex();
 				filterBySelectionIndex(selectionIndex);
 				tableViewer.refresh(false);
 				viewPreferences.putInt(PREF_FILTER_PRIORITY, selectionIndex); // save filter setting
@@ -184,8 +199,8 @@ public class CheckstyleViolationsView extends ViewPart
 					@SuppressWarnings("unchecked")
 					@Override
 					public void run() {
-						Object input = tableViewer.getInput();
-						List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) input;
+						final Object input = tableViewer.getInput();
+						final List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) input;
 
 						updateTitleAndLabel(violationMarkers);
 					}
@@ -219,7 +234,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 		tableViewer.setFilters(viewerFilters);
 		// load filter settings
-		int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
+		final int loadSavedFilterPriority = loadSavedFilterPriority(tableCombo);
 		tableCombo.select(loadSavedFilterPriority);
 		filterBySelectionIndex(loadSavedFilterPriority);
 
@@ -233,7 +248,7 @@ public class CheckstyleViolationsView extends ViewPart
 		addToolBarButtons();
 
 		// Layout the viewer
-		GridData gridData = new GridData();
+		final GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
@@ -249,23 +264,23 @@ public class CheckstyleViolationsView extends ViewPart
 		updateView();
 	}
 
-	private void createTableComboItems(TableCombo tableCombo) {
+	private void createTableComboItems(final TableCombo tableCombo) {
 		String imageRegistryKey;
 		Image image;
 		TableItem ti;
 
-		SeverityLevel[] severityLevels = SeverityLevel.values().clone();
+		final SeverityLevel[] severityLevels = SeverityLevel.values().clone();
 
 		// highest priority (here: SeverityLevel.ERROR = 3) should be displayed as the
 		// top-most item
 		Arrays.sort(severityLevels, new Comparator<SeverityLevel>() {
 			@Override
-			public int compare(SeverityLevel o1, SeverityLevel o2) {
+			public int compare(final SeverityLevel o1, final SeverityLevel o2) {
 				return -1 * o1.compareTo(o2);
 			}
 		});
 
-		for (SeverityLevel severityLevel : severityLevels) {
+		for (final SeverityLevel severityLevel : severityLevels) {
 			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(severityLevel.ordinal());
 			image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
@@ -283,26 +298,26 @@ public class CheckstyleViolationsView extends ViewPart
 		// toolBar.add(action);
 	}
 
-	private int loadSavedFilterPriority(TableCombo tableCombo) {
+	private int loadSavedFilterPriority(final TableCombo tableCombo) {
 		final int DEFAULT_PRIORITY = SeverityLevel.IGNORE.ordinal();
 		int filterPriority = viewPreferences.getInt(PREF_FILTER_PRIORITY, DEFAULT_PRIORITY);
-		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
+		if ((filterPriority < 0) || (filterPriority >= tableCombo.getItemCount())) {
 			filterPriority = DEFAULT_PRIORITY;
 		}
 		return filterPriority;
 	}
 
 	private int loadSavedSortDirection() {
-		int savedSortDirection = viewPreferences.getInt(PREF_SORT_DIRECTION, SWT.NONE);
+		final int savedSortDirection = viewPreferences.getInt(PREF_SORT_DIRECTION, SWT.NONE);
 		return savedSortDirection;
 	}
 
 	private TableColumn loadSavedSortColumn() {
-		Integer columnIndex = viewPreferences.getInt(PREF_SORT_COLUMN_INDEX, 0);
+		final Integer columnIndex = viewPreferences.getInt(PREF_SORT_COLUMN_INDEX, 0);
 		TableColumn savedSortColumn;
 		try {
 			savedSortColumn = tableViewer.getTable().getColumn(columnIndex);
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			savedSortColumn = tableViewer.getTable().getColumn(0);
 		}
 		return savedSortColumn;
@@ -310,10 +325,10 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private int[] loadSavedColumnOrder() {
 		final int numColumns = tableViewer.getTable().getColumnCount();
-		int[] columnOrderIndices = new int[numColumns];
+		final int[] columnOrderIndices = new int[numColumns];
 
-		String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
-		String[] columnOrdersEncoded = columnOrderPreference.split(",");
+		final String columnOrderPreference = viewPreferences.get(PREF_COLUMN_ORDER, "");
+		final String[] columnOrdersEncoded = columnOrderPreference.split(",");
 
 		boolean reset = false;
 
@@ -321,10 +336,10 @@ public class CheckstyleViolationsView extends ViewPart
 			for (int i = 0; i < columnOrdersEncoded.length; i++) {
 				String columnOrderEncoded = columnOrdersEncoded[i];
 				columnOrderEncoded = columnOrderEncoded.trim();
-				int columnOrderIndex = Integer.parseInt(columnOrderEncoded);
+				final int columnOrderIndex = Integer.parseInt(columnOrderEncoded);
 				columnOrderIndices[i] = columnOrderIndex;
 			}
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			// if one of the encoded indices is an invalid number,
 			// use the default order 0,1,2,...
 			reset = true;
@@ -352,21 +367,21 @@ public class CheckstyleViolationsView extends ViewPart
 		// getSite().registerContextMenu(menuManager, tableViewer);
 		// getEditorSite().registerContextMenu(menuManager, tableViewer, false);
 
-		Menu contextMenu = new Menu(tableViewer.getTable());
+		final Menu contextMenu = new Menu(tableViewer.getTable());
 		tableViewer.getTable().setMenu(contextMenu);
 
-		for (TableColumn tableColumn : tableViewer.getTable().getColumns()) {
+		for (final TableColumn tableColumn : tableViewer.getTable().getColumns()) {
 			createMenuItem(contextMenu, tableColumn);
 		}
 	}
 
-	private void createMenuItem(Menu contextMenu, TableColumn tableColumn) {
+	private void createMenuItem(final Menu contextMenu, final TableColumn tableColumn) {
 		final MenuItem itemName = new MenuItem(contextMenu, SWT.CHECK);
 		itemName.setText(tableColumn.getText());
 		itemName.setSelection(tableColumn.getResizable());
 		itemName.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				if (itemName.getSelection()) {
 					tableColumn.setWidth(150);
 					tableColumn.setResizable(true);
@@ -387,12 +402,12 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void createColumns() {
-		Listener columnMovedListener = new Listener() {
+		final Listener columnMovedListener = new Listener() {
 			@Override
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (event.type == SWT.Move) {
-					int[] columnOrder = tableViewer.getTable().getColumnOrder();
-					String columnOrderEncoded = StringUtils.join(columnOrder, ',');
+					final int[] columnOrder = tableViewer.getTable().getColumnOrder();
+					final String columnOrderEncoded = StringUtils.join(columnOrder, ',');
 					viewPreferences.put(PREF_COLUMN_ORDER, columnOrderEncoded);
 				}
 			}
@@ -404,29 +419,29 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public Image getImage(Object element) {
-				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
-				int priority = violationMarker.getSeverityLevelIndex();
-				String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(priority);
-				Image image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
+			public Image getImage(final Object element) {
+				final CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
+				final int priority = violationMarker.getSeverityLevelIndex();
+				final String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(priority);
+				final Image image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
 
 			@Override
-			public String getText(Object element) {
+			public String getText(final Object element) {
 				return "";
 			}
 
 			@Override
-			public Image getToolTipImage(Object object) {
+			public Image getToolTipImage(final Object object) {
 				return getImage(object);
 			}
 
 			@Override
-			public String getToolTipText(Object element) {
-				CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
-				int severityLevelIndex = violationMarker.getSeverityLevelIndex();
-				SeverityLevel severityLevel = SeverityLevel.values()[severityLevelIndex];
+			public String getToolTipText(final Object element) {
+				final CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
+				final int severityLevelIndex = violationMarker.getSeverityLevelIndex();
+				final SeverityLevel severityLevel = SeverityLevel.values()[severityLevelIndex];
 				return severityLevel.name();
 			}
 		});
@@ -442,8 +457,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return marker.getCheckName();
 			}
 		});
@@ -459,8 +474,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return marker.getMessage();
 			}
 		});
@@ -476,8 +491,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return String.valueOf(marker.getProjectName());
 			}
 		});
@@ -493,8 +508,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return marker.getCheckPackageName();
 			}
 		});
@@ -511,8 +526,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return String.valueOf(marker.getLineNumer());
 			}
 		});
@@ -528,8 +543,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return marker.getDirectoryPath();
 			}
 		});
@@ -544,8 +559,8 @@ public class CheckstyleViolationsView extends ViewPart
 		tableViewerColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			public String getText(final Object element) {
+				final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 				return marker.getFileName();
 			}
 		});
@@ -564,7 +579,7 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		// do nothing when selecting (the event is not aware of left-click or
 		// right-click)
 	}
@@ -573,15 +588,15 @@ public class CheckstyleViolationsView extends ViewPart
 	 * @see <a href=
 	 *      "https://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2FresAdv_events.htm"
 	 *      >Link to type-based switch</a>
-	 * 
+	 *
 	 * @see <a href=
 	 *      "https://stackoverflow.com/questions/10501966/add-change-listener-on-marker">Link
 	 *      to findMarkerDeltas</a>
 	 */
 	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		IMarkerDelta[] markerDeltas = event.findMarkerDeltas(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER,
-				true);
+	public void resourceChanged(final IResourceChangeEvent event) {
+		final IMarkerDelta[] markerDeltas = event
+				.findMarkerDeltas(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true);
 		// do not unnecessarily collect all PMD markers again if no marker of this
 		// resource was changed
 		if (markerDeltas.length == 0) {
@@ -596,8 +611,8 @@ public class CheckstyleViolationsView extends ViewPart
 
 		final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
-		for (IMarker marker : updatedMarkers) {
-			CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
+		for (final IMarker marker : updatedMarkers) {
+			final CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
 			violationMarkers.add(violationMarker);
 		}
 
@@ -612,19 +627,20 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void updateTitleAndLabel(final List<?> violationMarkers) {
-		int numFilteredViolations = tableViewer.getTable().getItemCount();
-		int numViolations = violationMarkers.size();
+		final int numFilteredViolations = tableViewer.getTable().getItemCount();
+		final int numViolations = violationMarkers.size();
 		updateTabTitle(numFilteredViolations, numViolations);
 		updateNumViolationsLabel(numFilteredViolations, numViolations);
 	}
 
-	private void updateTabTitle(int numFilteredViolations, int numViolations) {
-		String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations, numViolations);
+	private void updateTabTitle(final int numFilteredViolations, final int numViolations) {
+		final String newPartName = String.format(FILTERED_PART_NAME_FORMAT_STRING, numFilteredViolations,
+				numViolations);
 		setPartName(newPartName);
 	}
 
-	private void updateNumViolationsLabel(int numFilteredViolations, int numViolations) {
-		String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations,
+	private void updateNumViolationsLabel(final int numFilteredViolations, final int numViolations) {
+		final String text = String.format(NUMBER_OF_CHECKSTYLE_VIOLATIONS_FORMAT_STRING, numFilteredViolations,
 				numViolations);
 		numViolationsLabel.setText(text);
 		numViolationsLabel.getParent().layout(); // update label
@@ -638,16 +654,16 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) selection.getFirstElement();
+	public void doubleClick(final DoubleClickEvent event) {
+		final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+		final CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) selection.getFirstElement();
 		if (violationMarker == null) {
 			return;
 		}
 
 		try {
 			IDE.openEditor(getSite().getPage(), violationMarker.getMarker());
-		} catch (PartInitException e) {
+		} catch (final PartInitException e) {
 			throw new IllegalStateException(e);
 		}
 	}
@@ -655,26 +671,26 @@ public class CheckstyleViolationsView extends ViewPart
 	private void flushSettings() {
 		try {
 			viewPreferences.flush();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// we do not want to hinder Eclipse to quit.
 			// So, we catch all exceptions here.
 		}
 	}
 
-	private void filterBySelectionIndex(int selectionIndex) {
-		CheckstylePriorityViewerFilter priorityFilter = (CheckstylePriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
+	private void filterBySelectionIndex(final int selectionIndex) {
+		final CheckstylePriorityViewerFilter priorityFilter = (CheckstylePriorityViewerFilter) viewerFilters[FILTER_INDEX_PRIORITY];
 		priorityFilter.setSelectionIndex(selectionIndex);
 
-		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getEclipseEditorPreferences();
+		final IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getEclipseEditorPreferences();
 		// highest priority (here: 3) should always be displayed
 		for (int i = 0; i <= selectionIndex; i++) {
-			int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
-			String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
+			final int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
+			final String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
 			preferences.putBoolean(key, true);
 		}
 		for (int i = selectionIndex + 1; i <= SeverityLevel.ERROR.ordinal(); i++) {
-			int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
-			String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
+			final int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - i;
+			final String key = verticalKeyByPriority.get(transformedSeverityLevelIndex);
 			preferences.putBoolean(key, false);
 		}
 	}

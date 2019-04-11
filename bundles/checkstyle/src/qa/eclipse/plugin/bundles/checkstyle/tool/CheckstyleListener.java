@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.tool;
 
 import java.util.Map;
@@ -18,61 +33,61 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 	private final Map<String, IFile> eclipseFileByFilePath;
 	private final SubMonitor monitor;
 
-	public CheckstyleListener(IProgressMonitor monitor, Map<String, IFile> eclipseFileByFilePath) {
+	public CheckstyleListener(final IProgressMonitor monitor, final Map<String, IFile> eclipseFileByFilePath) {
 		this.eclipseFileByFilePath = eclipseFileByFilePath;
-		int numFiles = eclipseFileByFilePath.size();
-		String taskName = String.format("Analyzing %d file(s)...", numFiles);
+		final int numFiles = eclipseFileByFilePath.size();
+		final String taskName = String.format("Analyzing %d file(s)...", numFiles);
 		this.monitor = SubMonitor.convert(monitor, taskName, numFiles);
 	}
 
 	@Override
-	public void auditStarted(AuditEvent arg0) {
+	public void auditStarted(final AuditEvent arg0) {
 		// do nothing
 	}
 
 	@Override
-	public boolean accept(String absoluteFilePath) {
-		monitor.split(1);
+	public boolean accept(final String absoluteFilePath) {
+		this.monitor.split(1);
 
-		IFile eclipseFile = eclipseFileByFilePath.get(absoluteFilePath);
+		final IFile eclipseFile = this.eclipseFileByFilePath.get(absoluteFilePath);
 		return eclipseFile.isAccessible();
 	}
 
 	@Override
-	public void fileStarted(AuditEvent event) {
+	public void fileStarted(final AuditEvent event) {
 		// do nothing
 	}
 
 	@Override
-	public void fileFinished(AuditEvent arg0) {
+	public void fileFinished(final AuditEvent arg0) {
 		// do nothing
 	}
 
 	@Override
-	public void auditFinished(AuditEvent arg0) {
+	public void auditFinished(final AuditEvent arg0) {
 		// do nothing
 	}
 
 	@Override
-	public void addError(AuditEvent violation) {
-		String violationFilename = violation.getFileName();
-		IFile eclipseFile = eclipseFileByFilePath.get(violationFilename);
+	public void addError(final AuditEvent violation) {
+		final String violationFilename = violation.getFileName();
+		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
 			CheckstyleMarkers.appendViolationMarker(eclipseFile, violation);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			// ignore if marker could not be created
 		}
 	}
 
 	@Override
-	public void addException(AuditEvent event, Throwable throwable) {
-//		Activator.getDefault().logThrowable(event.getMessage(), throwable);
-		
-		String violationFilename = event.getFileName();
-		IFile eclipseFile = eclipseFileByFilePath.get(violationFilename);
+	public void addException(final AuditEvent event, final Throwable throwable) {
+		// Activator.getDefault().logThrowable(event.getMessage(), throwable);
+
+		final String violationFilename = event.getFileName();
+		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
 			CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, throwable);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			// ignore if marker could not be created
 		}
 	}

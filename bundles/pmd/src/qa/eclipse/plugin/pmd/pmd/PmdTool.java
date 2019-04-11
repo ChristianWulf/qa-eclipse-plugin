@@ -29,24 +29,24 @@ public class PmdTool {
 
 	/**
 	 * All passed files must belong to the same project.
-	 * 
+	 *
 	 * @param eclipseFiles
 	 */
-	public void startAsyncAnalysis(List<IFile> eclipseFiles) {
+	public void startAsyncAnalysis(final List<IFile> eclipseFiles) {
 		if (eclipseFiles.isEmpty()) {
 			return;
 		}
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 
 		ISchedulingRule jobRule = null;
-		for (IFile eclipseFile : eclipseFiles) {
-			ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
+		for (final IFile eclipseFile : eclipseFiles) {
+			final ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
 			jobRule = MultiRule.combine(jobRule, fileRule);
 		}
 
-		Job job = new PmdWorkspaceJob("Analysis by PMD", eclipseFiles);
+		final Job job = new PmdWorkspaceJob("Analysis by PMD", eclipseFiles);
 		job.setRule(jobRule);
 		job.setUser(true);
 		job.schedule();

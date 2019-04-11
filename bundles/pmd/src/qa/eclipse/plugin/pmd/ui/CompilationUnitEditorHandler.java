@@ -32,7 +32,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.pmd.PmdTool;
 
-// used by, for example, 
+// used by, for example,
 //	popup:#CompilationUnitEditorContext
 public class CompilationUnitEditorHandler extends AbstractHandler {
 

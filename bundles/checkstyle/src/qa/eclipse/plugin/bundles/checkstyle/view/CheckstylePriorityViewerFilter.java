@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.view;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -13,23 +28,23 @@ class CheckstylePriorityViewerFilter extends ViewerFilter {
 	private int selectionIndex = SeverityLevel.ERROR.ordinal() - SeverityLevel.IGNORE.ordinal();
 
 	@Override
-	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-		int severityLevelIndex = marker.getSeverityLevelIndex();
+	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
+		final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+		final int severityLevelIndex = marker.getSeverityLevelIndex();
 
-		int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - severityLevelIndex;
+		final int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - severityLevelIndex;
 
 		// example: 3 means "at least IGNORE",
 		// so transformed severity must be less or equal selectionIndex
-		return transformedSeverityLevelIndex <= selectionIndex;
+		return transformedSeverityLevelIndex <= this.selectionIndex;
 	}
 
-	public void setSelectionIndex(int selectionIndex) {
+	public void setSelectionIndex(final int selectionIndex) {
 		this.selectionIndex = selectionIndex;
 	}
 
 	public int getLowestPriority() {
-		return selectionIndex;
+		return this.selectionIndex;
 	}
 
 }

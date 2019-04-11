@@ -36,55 +36,38 @@ import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
 class PmdWorkspaceJob extends WorkspaceJob {
 
-	private static class ConstantRuleSetFactory extends RuleSetFactory {
-		private final RuleSets ruleSets;
-
-		// ConstantRuleSetFactory(RuleSet ruleSet) {
-		// this.ruleSets = new RuleSets(ruleSet);
-		// }
-
-		ConstantRuleSetFactory(RuleSets ruleSets) {
-			this.ruleSets = ruleSets;
-		}
-
-		@Override
-		public synchronized RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
-			return ruleSets;
-		}
-	}
-
 	private static final int IMARKER_SEVERITY_OTHERS = 3;
 
 	// @Inject
 	// private final UISynchronize sync;
 	private final List<IFile> eclipseFiles;
 
-	public PmdWorkspaceJob(String name, List<IFile> eclipseFiles) {
+	public PmdWorkspaceJob(final String name, final List<IFile> eclipseFiles) {
 		super(name);
 		this.eclipseFiles = eclipseFiles;
 	}
 
 	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
 		final IResource someEclipseFile = eclipseFiles.get(0);
 		final IProject eclipseProject = someEclipseFile.getProject();
 		if (!eclipseProject.isAccessible()) { // if project has been closed
 			return Status.OK_STATUS;
 		}
 
-		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
-		boolean pmdEnabled = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
+		final IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
+		final boolean pmdEnabled = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
 		if (!pmdEnabled) { // if PMD is disabled for this project
 			return Status.OK_STATUS;
 		}
 
 		// collect data sources
 		final Map<String, IFile> eclipseFilesMap = new HashMap<>();
-		for (IFile eclipseFile : eclipseFiles) {
+		for (final IFile eclipseFile : eclipseFiles) {
 			try {
 				// also remove previous PMD markers on that file
 				PmdMarkers.deleteMarkers(eclipseFile);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}
 		}
@@ -92,27 +75,27 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// update explorer view so that the violation flag are not displayed anymore
 		FileIconDecorator.refresh();
 
-		String taskName = String.format("Analyzing %d file(s)...", eclipseFiles.size());
+		final String taskName = String.format("Analyzing %d file(s)...", eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
 
-		String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
+		final String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
 		try {
-			RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
+			final RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
 			final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
-			Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
-			PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
+			final Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
+			final PmdProblemRenderer problemRenderer = new PmdProblemRenderer();
 			final List<Renderer> collectingRenderers = Arrays.asList(progressRenderer, problemRenderer);
 
-			CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
+			final CancelablePmdProcessor pmdProcessor = new CancelablePmdProcessor(configuration, ruleSetFactory,
 					collectingRenderers);
 
 			final RuleContext context = new RuleContext();
 
 			pmdProcessor.onStarted();
-			for (IFile eclipseFile : eclipseFiles) {
+			for (final IFile eclipseFile : eclipseFiles) {
 				if (monitor.isCanceled()) {
 					// only stop the loop, not the whole method to finish reporting
 					break;
@@ -126,7 +109,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 				final DataSource dataSource = new FileDataSource(sourceCodeFile);
 
 				// map file name to eclipse file: necessary for adding markers at the end
-				String niceFileName = dataSource.getNiceFileName(false, "");
+				final String niceFileName = dataSource.getNiceFileName(false, "");
 				eclipseFilesMap.put(niceFileName, eclipseFile);
 
 				pmdProcessor.processFile(dataSource, context);
@@ -142,15 +125,16 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		return Status.OK_STATUS;
 	}
 
-	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap, PmdProblemRenderer problemRenderer) {
-		Report report = problemRenderer.getProblemReport();
+	private void displayViolationMarkers(final Map<String, IFile> eclipseFilesMap,
+			final PmdProblemRenderer problemRenderer) {
+		final Report report = problemRenderer.getProblemReport();
 		if (report.size() > 0) {
-			for (RuleViolation violation : report.getViolationTree()) {
-				String violationFilename = violation.getFilename();
-				IFile eclipseFile = eclipseFilesMap.get(violationFilename);
+			for (final RuleViolation violation : report.getViolationTree()) {
+				final String violationFilename = violation.getFilename();
+				final IFile eclipseFile = eclipseFilesMap.get(violationFilename);
 				try {
 					PmdMarkers.appendViolationMarker(eclipseFile, violation);
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					// ignore if marker could not be created
 				}
 			}
@@ -165,24 +149,47 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 
 		report.errors().forEachRemaining(error -> {
-			String errorFilename = error.getFile();
-			IFile eclipseFile = eclipseFilesMap.get(errorFilename);
+			final String errorFilename = error.getFile();
+			final IFile eclipseFile = eclipseFilesMap.get(errorFilename);
 			try {
 				appendProcessingErrorMarker(eclipseFile, error);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				// ignore if marker could not be created
 			}
 			// PmdUIPlugin.getDefault().logWarning(error.getMsg());
 		});
 	}
 
-	private void appendProcessingErrorMarker(IFile eclipseFile, ProcessingError error) throws CoreException {
-		IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
+	private void appendProcessingErrorMarker(final IFile eclipseFile, final ProcessingError error)
+			throws CoreException {
+		final IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
 		// whether it is displayed as error, warning, info or other in the Problems View
-		marker.setAttribute(IMarker.SEVERITY, IMARKER_SEVERITY_OTHERS);
+		marker.setAttribute(IMarker.SEVERITY, PmdWorkspaceJob.IMARKER_SEVERITY_OTHERS);
 		marker.setAttribute(IMarker.MESSAGE, error.getMsg());
 		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 		marker.setAttribute(IMarker.LOCATION, error.getFile());
+	}
+
+	/**
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
+	private static class ConstantRuleSetFactory extends RuleSetFactory {
+		private final RuleSets ruleSets;
+
+		// ConstantRuleSetFactory(RuleSet ruleSet) {
+		// this.ruleSets = new RuleSets(ruleSet);
+		// }
+
+		ConstantRuleSetFactory(final RuleSets ruleSets) {
+			this.ruleSets = ruleSets;
+		}
+
+		@Override
+		public synchronized RuleSets createRuleSets(final String referenceString) throws RuleSetNotFoundException {
+			return ruleSets;
+		}
 	}
 
 }

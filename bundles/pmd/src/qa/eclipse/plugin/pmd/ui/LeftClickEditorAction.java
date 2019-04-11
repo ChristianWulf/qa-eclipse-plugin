@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.ui;
 
 import java.util.Iterator;
@@ -31,7 +46,8 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
 
-	public LeftClickEditorAction(ResourceBundle bundle, String prefix, ITextEditor editor, IVerticalRulerInfo ruler) {
+	public LeftClickEditorAction(final ResourceBundle bundle, final String prefix, final ITextEditor editor,
+			final IVerticalRulerInfo ruler) {
 		super(bundle, prefix, editor, ruler);
 		this.ruler = ruler;
 	}
@@ -43,37 +59,37 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 	}
 
 	private void runAction() {
-		IDocument document = getDocument();
+		final IDocument document = getDocument();
 		if (document == null) {
 			return;
 		}
 
-		int activeLine = ruler.getLineOfLastMouseButtonActivity();
+		final int activeLine = ruler.getLineOfLastMouseButtonActivity();
 
-		IRegion lineRegion;
+		final IRegion lineRegion;
 		try {
 			lineRegion = document.getLineInformation(activeLine);
-		} catch (BadLocationException e) {
+		} catch (final BadLocationException e) {
 			return;
 		}
-		AbstractMarkerAnnotationModel annotationModel = getAnnotationModel();
-		Iterator<Annotation> annotations = annotationModel.getAnnotationIterator(lineRegion.getOffset(),
+		final AbstractMarkerAnnotationModel annotationModel = getAnnotationModel();
+		final Iterator<Annotation> annotations = annotationModel.getAnnotationIterator(lineRegion.getOffset(),
 				lineRegion.getLength() + 1, true, true);
 
 		while (annotations.hasNext()) {
-			Annotation annotation = annotations.next();
+			final Annotation annotation = annotations.next();
 			if (annotation.isMarkedDeleted()) {
 				break;
 			}
 
 			if (annotation instanceof MarkerAnnotation) {
-				MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
-				IMarker marker = markerAnnotation.getMarker();
+				final MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
+				final IMarker marker = markerAnnotation.getMarker();
 
-				String markerType;
+				final String markerType;
 				try {
 					markerType = marker.getType();
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					break;
 				}
 
@@ -85,22 +101,23 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 		}
 	}
 
-	private void openViolationView(IMarker marker) {
+	private void openViolationView(final IMarker marker) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+				final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				final IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
 
 				try {
 					// VIEW_ACTIVATE: focus view; VIEW_VISIBLE: do not focus view
-					IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
-					PmdViolationsView violationView = (PmdViolationsView) viewPart;
+					final IViewPart viewPart = activePage.showView(PmdViolationsView.ID, null,
+							IWorkbenchPage.VIEW_VISIBLE);
+					final PmdViolationsView violationView = (PmdViolationsView) viewPart;
 
-					Object input = new PmdViolationMarker(marker);
-					ISelection selection = new StructuredSelection(input);
+					final Object input = new PmdViolationMarker(marker);
+					final ISelection selection = new StructuredSelection(input);
 					violationView.getTableViewer().setSelection(selection, true);
-				} catch (PartInitException ex) {
+				} catch (final PartInitException ex) {
 					throw new IllegalStateException(ex);
 				}
 			}

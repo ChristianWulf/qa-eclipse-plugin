@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -65,12 +64,12 @@ public class ExplorerHandler extends AbstractHandler {
 			final Iterator<?> iter = structuredSelection.iterator();
 			while (iter.hasNext()) {
 				final Object selectedObject = iter.next();
-				this.collectElement(selectedObject, resourceCollector);
+				collectElement(selectedObject, resourceCollector);
 			}
 
 			final Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();
 
-			PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+			final PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 			for (final Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
 				pmdTool.startAsyncAnalysis(entry.getValue());
 			}
@@ -97,7 +96,7 @@ public class ExplorerHandler extends AbstractHandler {
 			final int depth = (true) ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE;
 
 			try {
-				resource.accept(resourceCollector, depth, IContainer.NONE);
+				resource.accept(resourceCollector, depth, IResource.NONE);
 			} catch (final CoreException e) {
 				throw new IllegalStateException(e);
 			}

@@ -29,7 +29,7 @@ class CustomPMDConfiguration extends PMDConfiguration {
 		// default language version
 		final LanguageVersion defaultLanguageVersion = CustomPMDConfiguration.PMD_JAVA.getVersion(compilerCompliance);
 		if (defaultLanguageVersion != null) {
-			this.setDefaultLanguageVersion(defaultLanguageVersion);
+			setDefaultLanguageVersion(defaultLanguageVersion);
 		}
 
 		// IProject project = null;

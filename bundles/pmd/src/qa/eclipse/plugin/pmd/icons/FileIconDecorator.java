@@ -42,7 +42,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	private final ImageRegistry imageRegistry;
 
 	public FileIconDecorator() {
-		this.imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
+		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		ImageDescriptor imageDescriptor = null;
 		try {
-			imageDescriptor = this.getImageDescriptor(resource);
+			imageDescriptor = getImageDescriptor(resource);
 		} catch (final CoreException e) {
 			PmdUIPlugin.getDefault().logThrowable("Error on decorating element.", e);
 		}
@@ -108,7 +108,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		final int lowestAllowedPriority = 5;
 		if (highestPriority <= lowestAllowedPriority) {
 			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
-			imageDescriptor = this.imageRegistry.getDescriptor(imageRegistryKey);
+			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		}
 
 		return imageDescriptor;

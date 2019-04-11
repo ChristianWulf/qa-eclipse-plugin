@@ -32,53 +32,53 @@ public class PmdViolationMarker {
 	 * @return the line number or 0 otherwise.
 	 */
 	public int getLineNumer() {
-		return this.marker.getAttribute(IMarker.LINE_NUMBER, 0);
+		return marker.getAttribute(IMarker.LINE_NUMBER, 0);
 	}
 
 	/**
 	 * @return the priority (1 highest to 5 lowest) or 0 otherwise.
 	 */
 	public int getPriority() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY, 0);
+		return marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY, 0);
 	}
 
 	/**
 	 * @return the violation message or the empty string otherwise.
 	 */
 	public String getMessage() {
-		return this.marker.getAttribute(IMarker.MESSAGE, "");
+		return marker.getAttribute(IMarker.MESSAGE, "");
 	}
 
 	public String getProjectName() {
-		return this.marker.getResource().getProject().getName();
+		return marker.getResource().getProject().getName();
 	}
 
 	public String getDirectoryPath() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
+		final File file = marker.getResource().getRawLocation().toFile();
 		return file.getParent();
 	}
 
 	public String getFileName() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
+		final File file = marker.getResource().getRawLocation().toFile();
 		return file.getName();
 	}
 
 	public String getRuleName() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_RULENAME, "unknown");
+		return marker.getAttribute(PmdMarkers.ATTR_KEY_RULENAME, "unknown");
 	}
 
 	public String getRuleSetName() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_RULESETNAME, "unknown");
+		return marker.getAttribute(PmdMarkers.ATTR_KEY_RULESETNAME, "unknown");
 	}
 
 	public IMarker getMarker() {
-		return this.marker;
+		return marker;
 	}
 
 	@SuppressWarnings("unchecked")
 	public Comparable<Object> getAttribute(final String markerAttributeKey) {
 		try {
-			return (Comparable<Object>) this.marker.getAttribute(markerAttributeKey);
+			return (Comparable<Object>) marker.getAttribute(markerAttributeKey);
 		} catch (final CoreException e) {
 			throw new IllegalStateException(e);
 		}
@@ -88,7 +88,7 @@ public class PmdViolationMarker {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((this.marker == null) ? 0 : this.marker.hashCode());
+		result = (prime * result) + ((marker == null) ? 0 : marker.hashCode());
 		return result;
 	}
 
@@ -104,11 +104,11 @@ public class PmdViolationMarker {
 			return false;
 		}
 		final PmdViolationMarker other = (PmdViolationMarker) obj;
-		if (this.marker == null) {
+		if (marker == null) {
 			if (other.marker != null) {
 				return false;
 			}
-		} else if (!this.marker.equals(other.marker)) {
+		} else if (!marker.equals(other.marker)) {
 			return false;
 		}
 		return true;

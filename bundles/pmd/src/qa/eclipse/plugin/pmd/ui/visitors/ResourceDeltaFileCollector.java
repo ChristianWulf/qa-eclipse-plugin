@@ -52,10 +52,10 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 	public boolean visit(final IResourceDelta delta) throws CoreException {
 		switch (delta.getResource().getType()) {
 		case IResource.PROJECT: {
-			return this.shouldVisitChildren(delta.getResource());
+			return shouldVisitChildren(delta.getResource());
 		}
 		case IResource.FILE: {
-			this.addFileIfApplicable(delta);
+			addFileIfApplicable(delta);
 			return false;
 		}
 		default: {
@@ -95,7 +95,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		}
 
 		// TODO use exclude patterns instead to be independent of java in this class
-		final Set<IPath> outputFolderPaths = this.javaUtil.getDefaultBuildOutputFolderPaths(project);
+		final Set<IPath> outputFolderPaths = javaUtil.getDefaultBuildOutputFolderPaths(project);
 		for (final IPath outputFolderPath : outputFolderPaths) {
 			if (outputFolderPath.isPrefixOf(file.getFullPath())) {
 				return;
@@ -104,7 +104,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
 		switch (delta.getKind()) {
 		case IResourceDelta.ADDED: {
-			this.addFileToProjectMap(file, project, this.addedFiles);
+			addFileToProjectMap(file, project, addedFiles);
 			break;
 		}
 		// case IResourceDelta.REMOVED: {
@@ -118,7 +118,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 				break;
 			}
 
-			this.addFileToProjectMap(file, project, this.changedFiles);
+			addFileToProjectMap(file, project, changedFiles);
 			break;
 		}
 		default: {
@@ -140,11 +140,11 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 	}
 
 	public Map<IProject, List<IFile>> getAddedFiles() {
-		return this.addedFiles;
+		return addedFiles;
 	}
 
 	public Map<IProject, List<IFile>> getChangedFiles() {
-		return this.changedFiles;
+		return changedFiles;
 	}
 
 	// public Map<IProject, List<IFile>> getRemovedFiles() {

@@ -29,7 +29,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
-	 * @param pmdPriority priority value
+	 * @param pmdPriority
+	 *            priority value
 	 * @return "pmdPriority"-decorator
 	 */
 	public static String getFileDecoratorKeyByPriority(final int pmdPriority) {
@@ -37,7 +38,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
-	 * @param pmdPriority priority value
+	 * @param pmdPriority
+	 *            priority value
 	 * @return "pmdPriority"-annotation
 	 */
 	public static String getAnnotationKeyByPriority(final int pmdPriority) {
@@ -45,7 +47,8 @@ public final class ImageRegistryKey {
 	}
 
 	/**
-	 * @param pmdPriority priority value
+	 * @param pmdPriority
+	 *            priority value
 	 * @return "pmdPriority"-annotation (yes, same as for annotations)
 	 */
 	public static String getPriorityColumnKeyByPriority(final int pmdPriority) {
@@ -57,7 +60,8 @@ public final class ImageRegistryKey {
 			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(priority);
 			final String imageFilePath = "/icons/priority" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS, imageFilePath);
+			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS,
+					imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 
@@ -65,7 +69,8 @@ public final class ImageRegistryKey {
 			final String imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
 			final String imageFilePath = "/icons/pmd" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS, imageFilePath);
+			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS,
+					imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 	}

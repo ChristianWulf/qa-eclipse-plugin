@@ -44,7 +44,7 @@ public class PmdProgressRenderer extends AbstractRenderer {
 
 	@Override
 	public void startFileAnalysis(final DataSource dataSource) {
-		this.subMonitor.split(1);
+		subMonitor.split(1);
 	}
 
 	@Override
