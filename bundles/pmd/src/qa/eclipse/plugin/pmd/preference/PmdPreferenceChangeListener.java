@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.preference;
 
 import org.eclipse.core.resources.IProject;
@@ -8,19 +23,19 @@ class PmdPreferenceChangeListener implements IPreferenceChangeListener {
 
 	private final IProject project;
 
-	public PmdPreferenceChangeListener(IProject project) {
+	public PmdPreferenceChangeListener(final IProject project) {
 		this.project = project;
 	}
 
 	@Override
-	public void preferenceChange(PreferenceChangeEvent event) {
+	public void preferenceChange(final PreferenceChangeEvent event) {
 		if (event.getKey() == PmdPreferences.PROP_KEY_ENABLED) {
-			String newEnabled = (String) event.getNewValue();
-			Boolean enabled = Boolean.valueOf(newEnabled);
+			final String newEnabled = (String) event.getNewValue();
+			final Boolean enabled = Boolean.valueOf(newEnabled);
 			if (!enabled) { // remove all violation markers
-				String jobName = String.format("Removing PMD violations for project '%s'...", project.getName());
+				final String jobName = String.format("Removing PMD violations for project '%s'...", this.project.getName());
 
-				PmdRemoveMarkersJob.start(jobName, project);
+				PmdRemoveMarkersJob.start(jobName, this.project);
 			}
 		}
 	}

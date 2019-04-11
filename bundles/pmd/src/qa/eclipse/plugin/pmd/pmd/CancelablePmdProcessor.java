@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.pmd;
 
 import java.io.IOException;
@@ -21,7 +36,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * This implementation uses parts of
  * {@link net.sourceforge.pmd.processor.AbstractPMDProcessor} and
  * {@link net.sourceforge.pmd.processor.MonoThreadProcessor}.
- * 
+ *
  * @author Christian Wulf (chw)
  *
  */
@@ -33,8 +48,8 @@ class CancelablePmdProcessor {
 	private final SourceCodeProcessor processor;
 	private final List<Renderer> renderers;
 
-	public CancelablePmdProcessor(PMDConfiguration configuration, RuleSetFactory ruleSetFactory,
-			List<Renderer> renderers) {
+	public CancelablePmdProcessor(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
+			final List<Renderer> renderers) {
 		this.configuration = configuration;
 		this.ruleSetFactory = ruleSetFactory;
 		this.renderers = renderers;
@@ -43,27 +58,27 @@ class CancelablePmdProcessor {
 	}
 
 	public void onStarted() {
-		RuleSets rs = createRuleSets(ruleSetFactory);
-		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+		final RuleSets rs = this.createRuleSets(this.ruleSetFactory);
+		this.configuration.getAnalysisCache().checkValidity(rs, this.configuration.getClassLoader());
 	}
 
-	public void processFile(DataSource dataSource, RuleContext context) {
-		String niceFileName = filenameFrom(dataSource);
+	public void processFile(final DataSource dataSource, final RuleContext context) {
+		final String niceFileName = this.filenameFrom(dataSource);
 
-		PmdRunnable pmdRunnable = new PmdRunnable(configuration, dataSource, niceFileName, renderers, context,
-				ruleSetFactory, processor);
+		final PmdRunnable pmdRunnable = new PmdRunnable(this.configuration, dataSource, niceFileName, this.renderers, context,
+				this.ruleSetFactory, this.processor);
 
-		Report resultReport = pmdRunnable.call();
+		final Report resultReport = pmdRunnable.call();
 
-		reports.add(resultReport);
+		this.reports.add(resultReport);
 	}
 
 	public void onFinished() {
-		collectReports(renderers);
+		this.collectReports(this.renderers);
 	}
 
-	private String filenameFrom(DataSource dataSource) {
-		return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
+	private String filenameFrom(final DataSource dataSource) {
+		return dataSource.getNiceFileName(this.configuration.isReportShortNames(), this.configuration.getInputPaths());
 	}
 
 	/**
@@ -75,16 +90,16 @@ class CancelablePmdProcessor {
 	 * @param factory
 	 * @return the rules within a rulesets
 	 */
-	private RuleSets createRuleSets(RuleSetFactory factory) {
-		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
+	private RuleSets createRuleSets(final RuleSetFactory factory) {
+		return RulesetsFactoryUtils.getRuleSets(this.configuration.getRuleSets(), factory);
 	}
 
-	private void collectReports(List<Renderer> renderers) {
-		for (Report report : reports) {
-			for (Renderer r : renderers) {
+	private void collectReports(final List<Renderer> localRenderers) {
+		for (final Report report : this.reports) {
+			for (final Renderer r : localRenderers) {
 				try {
 					r.renderFileReport(report);
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// on exception: ignore specific renderer
 				}
 			}
