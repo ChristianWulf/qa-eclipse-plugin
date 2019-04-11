@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.ui;
 
 //architectural hint: may use eclipse packages
@@ -9,7 +24,6 @@ import java.util.Map.Entry;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -28,10 +42,10 @@ import qa.eclipse.plugin.pmd.ui.visitors.ResourceCollector;
 public class ExplorerHandler extends AbstractHandler {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage activePage = window.getActivePage();
-		ISelection selection = activePage.getSelection();
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+		final IWorkbenchPage activePage = window.getActivePage();
+		final ISelection selection = activePage.getSelection();
 
 		// if (selection instanceof ITreeSelection) {
 		// TreePath[] treePaths = ((ITreeSelection) selection).getPaths();
@@ -43,20 +57,20 @@ public class ExplorerHandler extends AbstractHandler {
 		// }
 
 		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-			ResourceCollector resourceCollector = new ResourceCollector();
+			final ResourceCollector resourceCollector = new ResourceCollector();
 			// TODO consider to put it into a job, too. Use jobfinishedlistener afterwards.
-			Iterator<?> iter = structuredSelection.iterator();
+			final Iterator<?> iter = structuredSelection.iterator();
 			while (iter.hasNext()) {
-				Object selectedObject = iter.next();
+				final Object selectedObject = iter.next();
 				collectElement(selectedObject, resourceCollector);
 			}
 
-			Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();
+			final Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();
 
-			PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
-			for (Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
+			final PmdTool pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+			for (final Entry<IProject, List<IFile>> entry : projectResources.entrySet()) {
 				pmdTool.startAsyncAnalysis(entry.getValue());
 			}
 		}
@@ -64,9 +78,9 @@ public class ExplorerHandler extends AbstractHandler {
 		return null;
 	}
 
-	private void collectElement(Object selectedObject, ResourceCollector resourceCollector) {
+	private void collectElement(final Object selectedObject, final ResourceCollector resourceCollector) {
 		if (selectedObject instanceof IAdaptable) {
-			IResource resource = ((IAdaptable) selectedObject).getAdapter(IResource.class);
+			final IResource resource = ((IAdaptable) selectedObject).getAdapter(IResource.class);
 
 			// IWorkbenchWindow activeWorkbenchWindow =
 			// PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -79,11 +93,11 @@ public class ExplorerHandler extends AbstractHandler {
 			// }
 
 			// TODO determine depth based on the package presentation: flat or hierarchical
-			int depth = (true) ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE;
+			final int depth = (true) ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE;
 
 			try {
-				resource.accept(resourceCollector, depth, IContainer.NONE);
-			} catch (CoreException e) {
+				resource.accept(resourceCollector, depth, IResource.NONE);
+			} catch (final CoreException e) {
 				throw new IllegalStateException(e);
 			}
 		}

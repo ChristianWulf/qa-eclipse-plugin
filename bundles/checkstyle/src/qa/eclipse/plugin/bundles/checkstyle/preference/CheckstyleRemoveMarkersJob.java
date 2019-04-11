@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.preference;
 
 import org.eclipse.core.resources.IProject;
@@ -19,17 +34,17 @@ class CheckstyleRemoveMarkersJob extends Job {
 
 	private final IProject project;
 
-	private CheckstyleRemoveMarkersJob(String name, IProject project) {
+	private CheckstyleRemoveMarkersJob(final String name, final IProject project) {
 		super(name);
 		this.project = project;
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus run(final IProgressMonitor monitor) {
 		try {
-			CheckstyleMarkers.deleteMarkers(project);
-		} catch (CoreException e) {
-			String message = String.format("Could not delete all markers for project '%s'", project);
+			CheckstyleMarkers.deleteMarkers(this.project);
+		} catch (final CoreException e) {
+			final String message = String.format("Could not delete all markers for project '%s'", this.project);
 			Activator.getDefault().logThrowable(message, e);
 		}
 
@@ -38,12 +53,12 @@ class CheckstyleRemoveMarkersJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	public static void start(String jobName, IProject project) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
-		ISchedulingRule projectRule = ruleFactory.markerRule(project);
+	public static void start(final String jobName, final IProject project) {
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+		final ISchedulingRule projectRule = ruleFactory.markerRule(project);
 
-		Job job = new CheckstyleRemoveMarkersJob(jobName, project);
+		final Job job = new CheckstyleRemoveMarkersJob(jobName, project);
 		job.setRule(projectRule);
 		job.setUser(true);
 		job.schedule();

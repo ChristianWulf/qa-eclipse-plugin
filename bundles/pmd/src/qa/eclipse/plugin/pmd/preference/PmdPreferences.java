@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.preference;
 
 import java.io.File;
@@ -19,10 +34,13 @@ import net.sourceforge.pmd.RuleSets;
 import qa.eclipse.plugin.bundles.common.FileUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
-public class PmdPreferences {
-
-	/** split pattern */
-	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
+/**
+ * Preferences for PMD.
+ *
+ * @author Christian Wulf
+ *
+ */
+public final class PmdPreferences {
 
 	public static final String INVALID_RULESET_FILE_PATH = "invalid/ruleset/file/path";
 
@@ -32,6 +50,9 @@ public class PmdPreferences {
 	public static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
 	public static final String PROP_KEY_ENABLED = "enabled";
 
+	/** split pattern */
+	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
+
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 	private final RuleSetFileLoader ruleSetFileLoader = new RuleSetFileLoader();
 
@@ -39,19 +60,19 @@ public class PmdPreferences {
 
 	private URLClassLoader osgiClassLoaderWithCustomRules;
 
-	private PmdPreferences(String node) {
+	private PmdPreferences(final String node) {
 		// private singleton constructor
 		this.node = node;
-		this.osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
+		osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
 	}
 
 	public IEclipsePreferences getDefaultPreferences() {
-		IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(node);
+		final IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(node);
 		return preferences;
 	}
 
 	public IEclipsePreferences getEclipseScopedPreferences() {
-		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(node);
+		final IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(node);
 		return preferences;
 	}
 
@@ -59,10 +80,10 @@ public class PmdPreferences {
 		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
 	}
 
-	public synchronized IEclipsePreferences getProjectScopedPreferences(IProject project) {
-		IEclipsePreferences preferences;
+	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) {
+		final IEclipsePreferences preferences;
 
-		IScopeContext projectPref;
+		final IScopeContext projectPref;
 		if (projectScopeByProject.containsKey(project)) {
 			projectPref = projectScopeByProject.get(project);
 			preferences = projectPref.getNode(node);
@@ -77,43 +98,45 @@ public class PmdPreferences {
 		return preferences;
 	}
 
-	public RuleSets loadRuleSetFrom(IProject project) {
-		IScopeContext projectPref = projectScopeByProject.get(project);
-		IEclipsePreferences preferences = projectPref.getNode(node);
-		File eclipseProjectPath = ProjectUtil.getProjectPath(project);
-		RuleSets ruleSets = loadUpdatedRuleSet(preferences, eclipseProjectPath);
+	public RuleSets loadRuleSetFrom(final IProject project) {
+		final IScopeContext projectPref = projectScopeByProject.get(project);
+		final IEclipsePreferences preferences = projectPref.getNode(node);
+		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
+		final RuleSets ruleSets = loadUpdatedRuleSet(preferences, project, eclipseProjectPath);
 		return ruleSets;
 	}
 
-	private RuleSets loadUpdatedRuleSet(IEclipsePreferences preferences, File eclipseProjectPath) {
-		URL[] urls;
+	private RuleSets loadUpdatedRuleSet(final IEclipsePreferences preferences, final IProject project,
+			final File eclipseProjectPath) {
+		final URL[] urls;
 
 		// load custom rules into a new class loader
-		final String customRulesJarsValue = preferences.get(PROP_KEY_CUSTOM_RULES_JARS, "");
+		final String customRulesJarsValue = preferences.get(PmdPreferences.PROP_KEY_CUSTOM_RULES_JARS, "");
 		if (customRulesJarsValue.trim().isEmpty()) {
 			urls = new URL[0];
 		} else {
-			String[] customRulesJars = customRulesJarsValue.split(BY_COMMA_AND_TRIM);
+			final String[] customRulesJars = customRulesJarsValue.split(PmdPreferences.BY_COMMA_AND_TRIM);
 			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
 			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}
 
-		ClassLoader parentClassLoader;
+		final ClassLoader parentClassLoader;
 		// parentClassLoader = Thread.currentThread().getContextClassLoader();
-		parentClassLoader = getClass().getClassLoader(); // equinox class loader with jars from the lib folder
+		parentClassLoader = this.getClass().getClassLoader(); // equinox class loader with jars from the lib folder
 		osgiClassLoaderWithCustomRules = new URLClassLoader(urls, parentClassLoader);
 
-		String ruleSetFilePathValue = preferences.get(PROP_KEY_RULE_SET_FILE_PATH, INVALID_RULESET_FILE_PATH);
-		File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
-		String ruleSetFilePath = ruleSetFile.toString();
+		final String ruleSetFilePathValue = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
+				PmdPreferences.INVALID_RULESET_FILE_PATH);
+		final File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
+		final String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
-		return ruleSetFileLoader.load(ruleSetFilePath, osgiClassLoaderWithCustomRules);
+		return ruleSetFileLoader.load(ruleSetFilePath, project, osgiClassLoaderWithCustomRules);
 	}
 
 	public void close() {
 		try {
 			osgiClassLoaderWithCustomRules.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}

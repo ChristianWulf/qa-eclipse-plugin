@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.builder;
 
 import java.util.List;
@@ -31,23 +46,33 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
-		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		IBuildContext buildContext = getContext();
-		IBuildConfiguration[] allReferencedBuildConfigs = buildContext.getAllReferencedBuildConfigs();
-		IBuildConfiguration[] allReferencingBuildConfigs = buildContext.getAllReferencingBuildConfigs();
-		IBuildConfiguration[] requestedConfigs = buildContext.getRequestedConfigs();
+	protected IProject[] build(final int kind, final Map<String, String> args, final IProgressMonitor monitor) {
+		final IBuildContext buildContext = getContext();
+		final IBuildConfiguration[] allReferencedBuildConfigs = buildContext.getAllReferencedBuildConfigs();
+		final IBuildConfiguration[] allReferencingBuildConfigs = buildContext.getAllReferencingBuildConfigs();
+		final IBuildConfiguration[] requestedConfigs = buildContext.getRequestedConfigs();
 
+		try {
+			buildByKind(kind, monitor);
+		} catch (final CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on building by kind.", e);
+		}
+
+		return IncrementalViolationMarkerBuilder.EMPTY_PROJECT_ARRAY;
+	}
+
+	private void buildByKind(final int kind, final IProgressMonitor monitor) throws CoreException {
 		switch (kind) {
 		case IncrementalProjectBuilder.FULL_BUILD: {
 			fullBuild(monitor);
 			break;
 		}
 		case IncrementalProjectBuilder.AUTO_BUILD: {
-			IResourceDelta delta = getDelta(getProject());
+			final IResourceDelta delta = getDelta(getProject());
 			if (delta == null) {
 				fullBuild(monitor);
 			} else {
@@ -56,7 +81,7 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 			break;
 		}
 		case IncrementalProjectBuilder.INCREMENTAL_BUILD: {
-			IResourceDelta delta = getDelta(getProject());
+			final IResourceDelta delta = getDelta(getProject());
 			if (delta == null) {
 				fullBuild(monitor);
 			} else {
@@ -70,35 +95,30 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 		default:
 			break;
 		}
-
-		return EMPTY_PROJECT_ARRAY;
 	}
 
 	@Override
-	public ISchedulingRule getRule(int kind, Map<String, String> args) {
+	public ISchedulingRule getRule(final int kind, final Map<String, String> args) {
 		return null; // This builder starts a job. Thus, we do not need to lock resources for the
-						// builder itself.
+		// builder itself.
 	}
 
-	private void fullBuild(IProgressMonitor monitor) {
+	private void fullBuild(final IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
 
 	}
 
-	private void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) {
-		ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
+	private void incrementalBuild(final IResourceDelta delta, final IProgressMonitor monitor) throws CoreException {
+		final ResourceDeltaFileCollector resourceDeltaFileCollector = new ResourceDeltaFileCollector();
 
-		try {
-			delta.accept(resourceDeltaFileCollector);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
+		delta.accept(resourceDeltaFileCollector);
 
-		for (Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
 			pmdTool.startAsyncAnalysis(addedFiles.getValue());
 		}
 
-		for (Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles().entrySet()) {
+		for (final Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles()
+				.entrySet()) {
 			pmdTool.startAsyncAnalysis(changedFiles.getValue());
 		}
 

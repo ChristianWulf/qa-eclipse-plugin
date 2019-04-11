@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.icons;
 
 import org.eclipse.core.resources.IMarker;
@@ -31,47 +46,53 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	}
 
 	@Override
-	public boolean isLabelProperty(Object element, String property) {
+	public boolean isLabelProperty(final Object element, final String property) {
 		// update if property "xx" of element has been updated
 		// update if pmd has run for the file represented by the element
 		return true;
 	}
 
 	@Override
-	public void decorate(Object element, IDecoration decoration) {
+	public void decorate(final Object element, final IDecoration decoration) {
 		if (!(element instanceof IResource)) {
 			return;
 		}
 
-		IResource resource = (IResource) element;
+		final IResource resource = (IResource) element;
 		// do not decorate if the project has been closed
 		if (!resource.isAccessible()) {
 			return;
 		}
 
-		int depth = IResource.DEPTH_INFINITE;
+		ImageDescriptor imageDescriptor = null;
+		try {
+			imageDescriptor = getImageDescriptor(resource);
+		} catch (final CoreException e) {
+			PmdUIPlugin.getDefault().logThrowable("Error on decorating element.", e);
+		}
+
+		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
+	}
+
+	private ImageDescriptor getImageDescriptor(final IResource resource) throws CoreException {
+		final int depth = IResource.DEPTH_INFINITE;
 		// if (resource instanceof IFolder) {
 		// depth = IResource.DEPTH_INFINITE;
 		// } else if (resource instanceof IFile) {
 		// depth = IResource.DEPTH_ZERO;
 		// }
 
-		IMarker[] markers;
-		try {
-			markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
-		} catch (CoreException e) {
-			throw new IllegalStateException(e);
-		}
+		final IMarker[] markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
 
 		// do not display any file decorator if there are no markers
 		if (markers.length == 0) {
-			return;
+			return null;
 		}
 
 		int highestPriority = RulePriority.LOW.getPriority();
-		for (IMarker marker : markers) {
-			PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
-			int priority = violationMarker.getPriority();
+		for (final IMarker marker : markers) {
+			final PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
+			final int priority = violationMarker.getPriority();
 			// 1 is the highest priority, so compare with '<'
 			if (priority < highestPriority) {
 				highestPriority = priority;
@@ -84,20 +105,20 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		// apply filter
 		ImageDescriptor imageDescriptor = null;
-		int lowestAllowedPriority = 5;
+		final int lowestAllowedPriority = 5;
 		if (highestPriority <= lowestAllowedPriority) {
-			String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
+			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
 			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
 		}
 
-		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);
+		return imageDescriptor;
 	}
 
 	public static void refresh() {
-		IDecoratorManager manager = PlatformUI.getWorkbench().getDecoratorManager();
-		IBaseLabelProvider decorator = manager.getBaseLabelProvider(FileIconDecorator.ID);
+		final IDecoratorManager manager = PlatformUI.getWorkbench().getDecoratorManager();
+		final IBaseLabelProvider decorator = manager.getBaseLabelProvider(FileIconDecorator.ID);
 		if (decorator != null) { // decorator is enabled
-			ILabelProviderListener listener = (ILabelProviderListener) manager;
+			final ILabelProviderListener listener = (ILabelProviderListener) manager;
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {

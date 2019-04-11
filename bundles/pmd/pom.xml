@@ -2,19 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>chw.experimental</groupId>
+		<artifactId>qa.eclipse.plugin.bundles</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
 	<artifactId>qa.eclipse.plugin.bundles.pmd</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+
 	<packaging>eclipse-plugin</packaging>
 	
 	<name>Eclipse Plugins for QA Tools - PMD Plugin</name>
-
-	<!-- Link to the parent pom -->
-	<parent>
-		<groupId>chw.experimental</groupId>
-		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../releng/pmd.eclipse.plugin.configuration</relativePath>
-	</parent>
 
 	<build>
 		<pluginManagement>
@@ -22,12 +20,12 @@
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-packaging-plugin</artifactId>
-					<version>${tycho.version}</version>
+					<version>${tychoVersion}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.eclipse.tycho.extras</groupId>
 							<artifactId>tycho-buildtimestamp-jgit</artifactId>
-							<version>${tycho-extras.version}</version>
+							<version>${tychoVersion}</version>
 						</dependency>
 					</dependencies>
 					<configuration>

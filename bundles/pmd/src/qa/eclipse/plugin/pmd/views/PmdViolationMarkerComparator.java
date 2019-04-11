@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.views;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -21,16 +36,16 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 	private int selectedSortProperty;
 
 	@Override
-	public int compare(Viewer viewer, Object e1, Object e2) {
-		TableViewer tableViewer = (TableViewer) viewer;
-		Table table = tableViewer.getTable();
-		int sortDirection = table.getSortDirection();
+	public int compare(final Viewer viewer, final Object e1, final Object e2) {
+		final TableViewer tableViewer = (TableViewer) viewer;
+		final Table table = tableViewer.getTable();
+		final int sortDirection = table.getSortDirection();
 		if (sortDirection == SWT.NONE) {
 			return 0;
 		}
 
-		PmdViolationMarker marker1 = (PmdViolationMarker) e1;
-		PmdViolationMarker marker2 = (PmdViolationMarker) e2;
+		final PmdViolationMarker marker1 = (PmdViolationMarker) e1;
+		final PmdViolationMarker marker2 = (PmdViolationMarker) e2;
 
 		int compareResult;
 		switch (selectedSortProperty) {
@@ -60,8 +75,8 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 		}
 		default: {
 			compareResult = 0;
-			String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
-			String message = String.format(messageFormatString, selectedSortProperty);
+			final String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
+			final String message = String.format(messageFormatString, selectedSortProperty);
 			PmdUIPlugin.getDefault().logWarning(message);
 		}
 		}
@@ -75,49 +90,49 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 		return compareResult;
 	}
 
-	public void setSelectedSortProperty(int selectedSortProperty) {
+	public void setSelectedSortProperty(final int selectedSortProperty) {
 		this.selectedSortProperty = selectedSortProperty;
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int comparePriority(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int comparePriority(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return -1 * Integer.compare(marker1.getPriority(), marker2.getPriority());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareRuleName(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int compareRuleName(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return marker1.getRuleName().compareToIgnoreCase(marker2.getRuleName());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareLineNumber(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int compareLineNumber(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareRuleSet(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int compareRuleSet(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return marker1.getRuleSetName().compareToIgnoreCase(marker2.getRuleSetName());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareProjectName(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int compareProjectName(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
 	}
 
 	/**
 	 * Assumed sort order is SWT.UP.
 	 */
-	private int compareViolationMessage(PmdViolationMarker marker1, PmdViolationMarker marker2) {
+	private int compareViolationMessage(final PmdViolationMarker marker1, final PmdViolationMarker marker2) {
 		return marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
 	}
 }

@@ -1,21 +1,25 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>chw.experimental</groupId>
 	<artifactId>qa.eclipse.plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
 
-	<!-- Link to the parent pom -->
-	<parent>
-		<groupId>chw.experimental</groupId>
-		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>./releng/pmd.eclipse.plugin.configuration</relativePath>
-	</parent>
+	<name>Eclipse Plugins for QA Tools</name>
 
 	<properties>
-		<maven.deploy.skip>false</maven.deploy.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<checkstyle.config.location>cs-conf.xml</checkstyle.config.location>
+		<tychoVersion>1.3.0</tychoVersion>
+
+		<eclipseRepoUrl>http://download.eclipse.org/releases/oxygen</eclipseRepoUrl>
+		<pmd.version>5.8.1</pmd.version>
+		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
+		<!-- maven.deploy.skip>true</maven.deploy.skip -->
 	</properties>
 
 	<modules>
@@ -24,5 +28,133 @@
 		<module>releng</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>${eclipseRepoUrl}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<configuration>
+					<compilerArgs>
+						<arg>-err:-forbidden,-discouraged</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<executions>
+					<execution>
+						<id>source-feature</id>
+						<phase>package</phase>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<executions>
+					<execution>
+						<id>attach-p2-metadata</id>
+						<phase>package</phase>
+						<goals>
+							<goal>p2-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tychoVersion}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+					<executionEnvironment>JavaSE-1.8</executionEnvironment>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!-- checkstyle plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>3.0.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>8.17</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<linkXRef>true</linkXRef>
+						<propertyExpansion>config_loc=${workspace}</propertyExpansion>
+						<configLocation>cs-conf.xml</configLocation>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
 

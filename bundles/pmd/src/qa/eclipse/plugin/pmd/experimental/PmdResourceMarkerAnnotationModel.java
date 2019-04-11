@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.experimental;
 
 import org.eclipse.core.resources.IMarker;
@@ -8,21 +23,21 @@ import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
 class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
-	private int maxPriority = 1;
+	private final int maxPriority = 1;
 
-	public PmdResourceMarkerAnnotationModel(IResource resource) {
+	public PmdResourceMarkerAnnotationModel(final IResource resource) {
 		super(resource);
 	}
 
 	@Override
-	protected boolean isAcceptable(IMarker marker) {
-		boolean isAcceptable = super.isAcceptable(marker);
+	protected boolean isAcceptable(final IMarker marker) {
+		final boolean isAcceptable = super.isAcceptable(marker);
 		if (!isAcceptable) {
 			return false;
 		}
 
-		PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
-		int priority = pmdViolationMarker.getPriority();
+		final PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
+		final int priority = pmdViolationMarker.getPriority();
 		return (maxPriority >= priority);
 	}
 

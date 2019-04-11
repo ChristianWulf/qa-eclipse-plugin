@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.preference;
 
 import java.util.ArrayList;
@@ -27,6 +42,12 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.osgi.service.prefs.BackingStoreException;
 
+/**
+ * Property page for PMD settings.
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdPropertyPage extends PropertyPage {
 
 	static final String RULE_SET_FILE_EXAMPLE_TEXT = "Example: conf/quality-config/pmd-ruleset.xml";
@@ -45,25 +66,25 @@ public class PmdPropertyPage extends PropertyPage {
 		super();
 	}
 
-	private void addFirstSection(Composite parent) {
-		Composite composite = createDefaultComposite(parent, 1);
+	private void addFirstSection(final Composite parent) {
+		final Composite composite = createDefaultComposite(parent, 1);
 
-		IResource resource = getElement().getAdapter(IResource.class);
-		IProject project = resource.getProject();
+		final IResource resource = getElement().getAdapter(IResource.class);
+		final IProject project = resource.getProject();
 
 		// ensure that the properties displayed are in sync with the corresponding prefs
 		// file
 		try {
 			project.getFolder(".settings").refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			// ignore
 		}
 
-		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
+		final IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(project);
 
 		enabledButton = new Button(composite, SWT.CHECK);
 		enabledButton.setText("PMD &enabled");
-		boolean selected = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
+		final boolean selected = preferences.getBoolean(PmdPreferences.PROP_KEY_ENABLED, false);
 		enabledButton.setSelection(selected);
 
 		Label hintLabel = new Label(composite, SWT.NONE);
@@ -73,12 +94,12 @@ public class PmdPropertyPage extends PropertyPage {
 		addSeparator(composite);
 
 		// Label for path field
-		Label pathLabel = new Label(composite, SWT.NONE);
+		final Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Ruleset file path:");
 
 		Composite lineComposite = createDefaultComposite(composite, 2);
 
-		String ruleSetFilePath = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
+		final String ruleSetFilePath = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
 				PmdPreferences.INVALID_RULESET_FILE_PATH);
 		// Path text field
 		ruleSetFilePathText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
@@ -88,19 +109,20 @@ public class PmdPropertyPage extends PropertyPage {
 		ruleSetFilePathText.setText(ruleSetFilePath);
 		ruleSetFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
 
-		Button browseButton = new Button(lineComposite, SWT.NONE);
+		final Button browseButton = new Button(lineComposite, SWT.NONE);
 		browseButton.setText("...");
 		browseButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseUp(MouseEvent e) {
-				String message = "Select your rule set file for this project...";
-				ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), project, message);
-				int returnCode = dialog.open();
+			public void mouseUp(final MouseEvent e) {
+				final String message = "Select your rule set file for this project...";
+				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(),
+						project, message);
+				final int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
-					Object[] selectedObjects = dialog.getResult();
+					final Object[] selectedObjects = dialog.getResult();
 					if (selectedObjects.length > 0) {
-						IFile selectedFilePath = (IFile) selectedObjects[0];
-						IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
+						final IFile selectedFilePath = (IFile) selectedObjects[0];
+						final IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
 						Display.getCurrent().asyncExec(new Runnable() {
 							@Override
 							public void run() {
@@ -113,11 +135,11 @@ public class PmdPropertyPage extends PropertyPage {
 		});
 
 		ruleSetFilePathLabel = new Label(composite, SWT.NONE);
-		ruleSetFilePathLabel.setText(RULE_SET_FILE_EXAMPLE_TEXT);
+		ruleSetFilePathLabel.setText(PmdPropertyPage.RULE_SET_FILE_EXAMPLE_TEXT);
 		ruleSetFilePathLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 		ruleSetFilePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
-		Label label = new Label(composite, SWT.NONE);
+		final Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom rule sets (comma separated):");
 
 		lineComposite = createDefaultComposite(composite, 2);
@@ -133,21 +155,22 @@ public class PmdPropertyPage extends PropertyPage {
 		browseButton.setText("...");
 		browseButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseUp(MouseEvent e) {
-				String message = "Select your custom rule jar file(s) for this project...";
-				ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), project, message);
-				int returnCode = dialog.open();
+			public void mouseUp(final MouseEvent e) {
+				final String message = "Select your custom rule jar file(s) for this project...";
+				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(PmdPropertyPage.this.getShell(),
+						project, message);
+				final int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
-					Object[] selectedObjects = dialog.getResult();
+					final Object[] selectedObjects = dialog.getResult();
 					if (selectedObjects.length == 0) {
 						return;
 					}
 
-					List<String> filePathNames = new ArrayList<>();
-					for (Object selectedObject : selectedObjects) {
-						IFile selectedFilePath = (IFile) selectedObject;
-						IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
-						String filePathName = projectRelativePath.toString();
+					final List<String> filePathNames = new ArrayList<>();
+					for (final Object selectedObject : selectedObjects) {
+						final IFile selectedFilePath = (IFile) selectedObject;
+						final IPath projectRelativePath = selectedFilePath.getProjectRelativePath();
+						final String filePathName = projectRelativePath.toString();
 						filePathNames.add(filePathName);
 					}
 
@@ -162,13 +185,13 @@ public class PmdPropertyPage extends PropertyPage {
 		});
 
 		customJarFilePathsLabel = new Label(composite, SWT.NONE);
-		customJarFilePathsLabel.setText(CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
+		customJarFilePathsLabel.setText(PmdPropertyPage.CUSTOM_JAR_PATHS_EXAMPLE_TEXT);
 		customJarFilePathsLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 		customJarFilePathsLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
 		new Label(composite, SWT.NONE); // serves as newline
 
-		Label exampleLabel = new Label(composite, SWT.NONE);
+		final Label exampleLabel = new Label(composite, SWT.NONE);
 		exampleLabel.setText("To hide the violation flags in the (Package/Project) Explorer, " + System.lineSeparator()
 				+ "open Eclipse's global preferences and search for 'Label Decorations'.");
 		// exampleLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -185,9 +208,9 @@ public class PmdPropertyPage extends PropertyPage {
 		hintLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 	}
 
-	private void addSeparator(Composite parent) {
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridData gridData = new GridData();
+	private void addSeparator(final Composite parent) {
+		final Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		final GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		separator.setLayoutData(gridData);
@@ -213,11 +236,11 @@ public class PmdPropertyPage extends PropertyPage {
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+	protected Control createContents(final Composite parent) {
+		final Composite composite = new Composite(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
-		GridData data = new GridData(GridData.FILL);
+		final GridData data = new GridData(GridData.FILL);
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 
@@ -225,14 +248,14 @@ public class PmdPropertyPage extends PropertyPage {
 		return composite;
 	}
 
-	private Composite createDefaultComposite(Composite parent, int numColumns) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
+	private Composite createDefaultComposite(final Composite parent, final int numColumns) {
+		final Composite composite = new Composite(parent, SWT.NULL);
+		final GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
 		layout.numColumns = numColumns;
 		composite.setLayout(layout);
 
-		GridData data = new GridData();
+		final GridData data = new GridData();
 		data.verticalAlignment = GridData.FILL;
 		data.horizontalAlignment = GridData.FILL;
 		composite.setLayoutData(data);
@@ -251,8 +274,9 @@ public class PmdPropertyPage extends PropertyPage {
 
 	@Override
 	public boolean performOk() {
-		IResource resource = getElement().getAdapter(IResource.class);
-		IEclipsePreferences preferences = PmdPreferences.INSTANCE.getProjectScopedPreferences(resource.getProject());
+		final IResource resource = getElement().getAdapter(IResource.class);
+		final IEclipsePreferences preferences = PmdPreferences.INSTANCE
+				.getProjectScopedPreferences(resource.getProject());
 
 		// try {
 		// preferences.sync();
@@ -266,7 +290,7 @@ public class PmdPropertyPage extends PropertyPage {
 
 		try {
 			preferences.flush();
-		} catch (BackingStoreException e) {
+		} catch (final BackingStoreException e) {
 			return false;
 		}
 

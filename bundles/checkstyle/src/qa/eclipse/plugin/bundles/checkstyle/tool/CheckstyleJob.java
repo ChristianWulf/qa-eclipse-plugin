@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.tool;
 
 import java.util.HashMap;
@@ -23,40 +38,41 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.Logger;
 
-public class CheckstyleJob extends WorkspaceJob {
+public final class CheckstyleJob extends WorkspaceJob {
 
 	private final List<IFile> eclipseFiles;
 
-	private CheckstyleJob(String name, List<IFile> eclipseFiles) {
+	private CheckstyleJob(final String name, final List<IFile> eclipseFiles) {
 		super(name);
 		this.eclipseFiles = eclipseFiles;
 	}
 
 	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-		final IResource someEclipseFile = eclipseFiles.get(0);
+	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
+		final IResource someEclipseFile = this.eclipseFiles.get(0);
 		final IProject eclipseProject = someEclipseFile.getProject();
 		if (!eclipseProject.isAccessible()) { // if project has been closed
 			return Status.OK_STATUS;
 		}
 
-		IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
-		boolean enabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
+		final IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(eclipseProject);
+		final boolean enabled = preferences.getBoolean(CheckstylePreferences.PROP_KEY_ENABLED, false);
 		if (!enabled) { // if Checkstyle is disabled for this project
 			return Status.OK_STATUS;
 		}
 
 		final Map<String, IFile> eclipseFileByFilePath = new HashMap<>();
 		// collect data sources
-		for (IFile eclipseFile : eclipseFiles) {
-			String key = eclipseFile.getLocation().toFile().getAbsolutePath();
+		for (final IFile eclipseFile : this.eclipseFiles) {
+			final String key = eclipseFile.getLocation().toFile().getAbsolutePath();
 			eclipseFileByFilePath.put(key, eclipseFile);
 
 			try {
 				// also remove previous markers on that file
 				CheckstyleMarkers.deleteMarkers(eclipseFile);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				// ignore if resource does not exist anymore or has been closed
 			}
 		}
@@ -64,34 +80,39 @@ public class CheckstyleJob extends WorkspaceJob {
 		// update explorer view so that the violation flags are not displayed anymore
 		FileIconDecorator.refresh();
 
-		CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
+		final CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
 
-		CheckstyleTool checkstyleTool = new CheckstyleTool();
-		checkstyleTool.startAsyncAnalysis(eclipseFiles, checkstyleListener);
+		final CheckstyleTool checkstyleTool = new CheckstyleTool();
+		try {
+			checkstyleTool.startAsyncAnalysis(this.eclipseFiles, checkstyleListener);
+		} catch (final Exception e) {
+			Logger.logThrowable("Exception while analyzing with Checkstyle.", e);
+			return Status.CANCEL_STATUS;
+		}
 
 		return Status.OK_STATUS;
 	}
 
 	/**
 	 * All passed files must belong to the same project.
-	 * 
+	 *
 	 * @param eclipseFiles
 	 */
-	public static void startAsyncAnalysis(List<IFile> eclipseFiles) {
+	public static void startAsyncAnalysis(final List<IFile> eclipseFiles) {
 		if (eclipseFiles.isEmpty()) {
 			return;
 		}
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 
 		ISchedulingRule jobRule = null;
-		for (IFile eclipseFile : eclipseFiles) {
-			ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
+		for (final IFile eclipseFile : eclipseFiles) {
+			final ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
 			jobRule = MultiRule.combine(jobRule, fileRule);
 		}
 
-		Job job = new CheckstyleJob("Analysis by Checkstyle", eclipseFiles);
+		final Job job = new CheckstyleJob("Analysis by Checkstyle", eclipseFiles);
 		job.setRule(jobRule);
 		job.setUser(true);
 		job.schedule();

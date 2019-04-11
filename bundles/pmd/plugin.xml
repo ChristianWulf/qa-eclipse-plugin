@@ -8,7 +8,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
          <command
-               commandId="pmd.eclipse.plugin.ui.command.packageexplorer"
+               commandId="qa.eclipse.plugin.pmd.ui.command.packageexplorer"
                icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
@@ -46,7 +46,7 @@
             allPopups="true"
             locationURI="popup:org.eclipse.jdt.ui.CompilationUnitEditor.EditorContext?after=additions">
          <command
-               commandId="pmd.eclipse.plugin.ui.command.compilationuniteditor"
+               commandId="qa.eclipse.plugin.pmd.ui.command.compilationuniteditor"
                icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
@@ -57,7 +57,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
          <command
-               commandId="pmd.eclipse.plugin.ui.command.projectexplorer"
+               commandId="qa.eclipse.plugin.pmd.ui.command.projectexplorer"
                icon="icons/pmd-icon-16.gif"
                label="Run PMD"
                style="push">
@@ -87,7 +87,7 @@
           allPopups="false"
           locationURI="popup:#AbstractTextEditorContext">
        <command
-             commandId="pmd.eclipse.plugin.ui.command.compilationuniteditor"
+             commandId="qa.eclipse.plugin.pmd.ui.command.compilationuniteditor"
              icon="icons/pmd-icon-16.gif"
              label="Run PMD"
              style="push">
@@ -127,24 +127,24 @@
       <command
             categoryId="org.eclipse.ui.category.file"
             defaultHandler="qa.eclipse.plugin.pmd.ui.ExplorerHandler"
-            id="pmd.eclipse.plugin.ui.command.packageexplorer"
+            id="qa.eclipse.plugin.pmd.ui.command.packageexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
             defaultHandler="qa.eclipse.plugin.pmd.ui.ExplorerHandler"
-            id="pmd.eclipse.plugin.ui.command.projectexplorer"
+            id="qa.eclipse.plugin.pmd.ui.command.projectexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
             defaultHandler="qa.eclipse.plugin.pmd.ui.CompilationUnitEditorHandler"
-            id="pmd.eclipse.plugin.ui.command.compilationuniteditor"
+            id="qa.eclipse.plugin.pmd.ui.command.compilationuniteditor"
             name="Run PMD">
       </command>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation"
+         id="qa.eclipse.plugin.pmd.markers.violation"
          name="Abstract PMD Violation Marker"
          point="org.eclipse.core.resources.markers">
       <attribute
@@ -157,7 +157,7 @@
             value="true">
       </persistent>
       <super
-            type="pmd.eclipse.plugin.markers.common">
+            type="qa.eclipse.plugin.pmd.markers.common">
       </super>
    </extension>
    <extension
@@ -231,23 +231,23 @@
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
-            markerType="pmd.eclipse.plugin.markers.violation.high"
+            markerType="qa.eclipse.plugin.pmd.markers.violation.high"
             name="qa.eclipse.plugin.pmd.annotationtype.high">
       </type>
       <type
-            markerType="pmd.eclipse.plugin.markers.violation.medium"
+            markerType="qa.eclipse.plugin.pmd.markers.violation.medium"
             name="qa.eclipse.plugin.pmd.annotationtype.medium">
       </type>
       <type
-            markerType="pmd.eclipse.plugin.markers.violation.mediumlow"
+            markerType="qa.eclipse.plugin.pmd.markers.violation.mediumlow"
             name="qa.eclipse.plugin.pmd.annotationtype.mediumlow">
       </type>
       <type
-            markerType="pmd.eclipse.plugin.markers.violation.low"
+            markerType="qa.eclipse.plugin.pmd.markers.violation.low"
             name="qa.eclipse.plugin.pmd.annotationtype.low">
       </type>
       <type
-            markerType="pmd.eclipse.plugin.markers.violation.mediumhigh"
+            markerType="qa.eclipse.plugin.pmd.markers.violation.mediumhigh"
             name="qa.eclipse.plugin.pmd.annotationtype.mediumhigh">
       </type>
    </extension>
@@ -257,7 +257,7 @@
             category="qa.eclipse.plugin.category.qa"
             class="qa.eclipse.plugin.pmd.views.PmdViolationsView"
             icon="icons/pmd-icon-16.gif"
-            id="pmd.eclipse.plugin.views.PmdViolationsView"
+            id="qa.eclipse.plugin.pmd.views.PmdViolationsView"
             name="PMD Violations"
             restorable="true">
       </view>
@@ -266,7 +266,7 @@
    <extension point="org.eclipse.jdt.ui.javaEditorTextHovers">
    	 <hover
             class="qa.eclipse.plugin.pmd.ui.PmdAnnotationHover"
-            id="pmd.eclipse.plugin.ui.PmdAnnotationHover">
+            id="qa.eclipse.plugin.pmd.ui.PmdAnnotationHover">
 	</hover>
    </extension>
    <extension
@@ -303,66 +303,66 @@
       </factory>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.high"
+         id="qa.eclipse.plugin.pmd.markers.violation.high"
          name="PMD High Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.violation">
+            type="qa.eclipse.plugin.pmd.markers.violation">
       </super>
       <persistent
             value="true">
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.mediumhigh"
+         id="qa.eclipse.plugin.pmd.markers.violation.mediumhigh"
          name="PMD Medium High Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.violation">
+            type="qa.eclipse.plugin.pmd.markers.violation">
       </super>
       <persistent
             value="true">
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.medium"
+         id="qa.eclipse.plugin.pmd.markers.violation.medium"
          name="PMD Medium Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.violation">
+            type="qa.eclipse.plugin.pmd.markers.violation">
       </super>
       <persistent
             value="true">
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.mediumlow"
+         id="qa.eclipse.plugin.pmd.markers.violation.mediumlow"
          name="PMD Medium Low Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.violation">
+            type="qa.eclipse.plugin.pmd.markers.violation">
       </super>
       <persistent
             value="true">
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.low"
+         id="qa.eclipse.plugin.pmd.markers.violation.low"
          name="PMD Low Violation Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.violation">
+            type="qa.eclipse.plugin.pmd.markers.violation">
       </super>
       <persistent
             value="true">
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.violation.error"
+         id="qa.eclipse.plugin.pmd.markers.violation.error"
          name="PMD Error Marker"
          point="org.eclipse.core.resources.markers">
       <super
-            type="pmd.eclipse.plugin.markers.common">
+            type="qa.eclipse.plugin.pmd.markers.common">
       </super>
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -372,7 +372,7 @@
       </persistent>
    </extension>
    <extension
-         id="pmd.eclipse.plugin.markers.common"
+         id="qa.eclipse.plugin.pmd.markers.common"
          name="Abstract PMD Common Marker"
          point="org.eclipse.core.resources.markers">
       <persistent
@@ -387,7 +387,7 @@
 
       <!--
       <command
-            id="pmd.eclipse.plugin.ui.ruler.click"
+            id="qa.eclipse.plugin.pmd.ui.ruler.click"
             name="Jump to Violations View">
       </command>
       -->
@@ -395,16 +395,16 @@
           <!--
     <menuContribution
           allPopups="false"
-          class="pmd.eclipse.plugin.experimental.MyMenuContribution"
+          class="qa.eclipse.plugin.pmd.experimental.MyMenuContribution"
           locationURI="toolbar:org.eclipse.jdt.ui.CompilationUnitEditor">
        <command
              style="push">
        </command>
        <dynamic
              class="org.eclipse.ui.ExtensionFactory:showInContribution"
-             id="pmd.eclipse.plugin.ui.dynamic2">
+             id="qa.eclipse.plugin.pmd.ui.dynamic2">
           <class
-                class="pmd.eclipse.plugin.experimental.MyExecutableExtension">
+                class="qa.eclipse.plugin.pmd.experimental.MyExecutableExtension">
           </class>
        </dynamic>
     </menuContribution>
@@ -415,8 +415,8 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="pmd.eclipse.plugin.experimental.JumpToViolationsView"
-            commandId="pmd.eclipse.plugin.ui.ruler.click">
+            class="qa.eclipse.plugin.pmd.experimental.JumpToViolationsView"
+            commandId="qa.eclipse.plugin.pmd.ui.ruler.click">
          <activeWhen>
          	<and>
 	            <with
@@ -438,12 +438,12 @@
    -->
          <!--
    <extension
-         id="pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder"
+         id="qa.eclipse.plugin.pmd.builder.IncrementalViolationMarkerBuilder"
          name="PMD Violation Marker Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="pmd.eclipse.plugin.builder.IncrementalViolationMarkerBuilder">
+               class="qa.eclipse.plugin.pmd.builder.IncrementalViolationMarkerBuilder">
          </run></builder>
    </extension>
 	-->

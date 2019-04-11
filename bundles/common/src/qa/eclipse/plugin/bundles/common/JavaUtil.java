@@ -23,7 +23,7 @@ public class JavaUtil {
 	 * @return a (possibly empty) read-only set of output folder paths
 	 * @throws JavaModelException
 	 */
-	public Set<IPath> getDefaultBuildOutputFolderPaths(IProject project) throws JavaModelException {
+	public Set<IPath> getDefaultBuildOutputFolderPaths(final IProject project) throws JavaModelException {
 		if (!project.isAccessible()) {
 			return Collections.emptySet();
 		}
@@ -37,16 +37,16 @@ public class JavaUtil {
 			if (!project.hasNature(JavaCore.NATURE_ID)) {
 				return Collections.emptySet();
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			return Collections.emptySet();
 		}
 
-		Set<IPath> outputFolderPaths = new HashSet<>();
+		final Set<IPath> outputFolderPaths = new HashSet<>();
 
-		IJavaProject jProject = getAssociatedCachedJavaProject(project);
-		for (IClasspathEntry entry : jProject.getRawClasspath()) {
+		final IJavaProject jProject = getAssociatedCachedJavaProject(project);
+		for (final IClasspathEntry entry : jProject.getRawClasspath()) {
 			if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				IPath outputLocation = entry.getOutputLocation();
+				final IPath outputLocation = entry.getOutputLocation();
 				if (outputLocation != null) {
 					outputFolderPaths.add(outputLocation);
 				}
@@ -61,7 +61,7 @@ public class JavaUtil {
 		return outputFolderPaths;
 	}
 
-	private IJavaProject getAssociatedCachedJavaProject(IProject project) {
+	private IJavaProject getAssociatedCachedJavaProject(final IProject project) {
 		IJavaProject jProject;
 		if (javaProjectByIProject.containsKey(project)) {
 			jProject = javaProjectByIProject.get(project);
