@@ -44,14 +44,17 @@ The "prefs" file is intended to be uploaded to your repository to share your con
 
 ## Install
 - via Eclipse Updatesite:
-  - Snapshot version: https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/
+  - Snapshot version: https://maui.se.informatik.uni-kiel.de/repo/qa/snapshot/
   - Release version: not yet available
 
 ## Build
-- via Maven 3.3 or above (necessary for pom-less building):
+- via Maven 3.6 or above
 ```
-mvn clean package
+mvn clean package -s settings.xml -DupdateSiteUrl=URL -Dkeystore=KEY
 ```
+- You need to specify two variable to publish the packages
+  - URL = an sftp url, e.g., sftp://user@host/repo
+  - KEY = filename of a private key used to login on the ssh server hosting your repo
 
 ## Local Development
 1. Build *qa.eclipse.plugin* via `mvn clean package`
