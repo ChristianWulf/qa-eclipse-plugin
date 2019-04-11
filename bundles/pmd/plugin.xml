@@ -99,7 +99,7 @@
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
-            class="pmd.eclipse.plugin.icons.FileIconDecorator"
+            class="qa.eclipse.plugin.pmd.icons.FileIconDecorator"
             id="pmd-eclipse-plugin.decorator"
             label="PMD Violation Decorator"
             lightweight="true"
@@ -126,19 +126,19 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.ExplorerHandler"
+            defaultHandler="qa.eclipse.plugin.pmd.ui.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.packageexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.ExplorerHandler"
+            defaultHandler="qa.eclipse.plugin.pmd.ui.ExplorerHandler"
             id="pmd.eclipse.plugin.ui.command.projectexplorer"
             name="Run PMD">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="pmd.eclipse.plugin.ui.CompilationUnitEditorHandler"
+            defaultHandler="qa.eclipse.plugin.pmd.ui.CompilationUnitEditorHandler"
             id="pmd.eclipse.plugin.ui.command.compilationuniteditor"
             name="Run PMD">
       </command>
@@ -255,7 +255,7 @@
          point="org.eclipse.ui.views">
       <view
             category="qa.eclipse.plugin.category.qa"
-            class="pmd.eclipse.plugin.views.PmdViolationsView"
+            class="qa.eclipse.plugin.pmd.views.PmdViolationsView"
             icon="icons/pmd-icon-16.gif"
             id="pmd.eclipse.plugin.views.PmdViolationsView"
             name="PMD Violations"
@@ -265,7 +265,7 @@
 
    <extension point="org.eclipse.jdt.ui.javaEditorTextHovers">
    	 <hover
-            class="pmd.eclipse.plugin.ui.PmdAnnotationHover"
+            class="qa.eclipse.plugin.pmd.ui.PmdAnnotationHover"
             id="pmd.eclipse.plugin.ui.PmdAnnotationHover">
 	</hover>
    </extension>
@@ -276,7 +276,7 @@
             targetID="org.eclipse.jdt.ui.CompilationUnitEditor">
          <action
                actionID="RulerClick"
-               class="pmd.eclipse.plugin.ui.LeftClickEditorActionDelegate"
+               class="qa.eclipse.plugin.pmd.ui.LeftClickEditorActionDelegate"
                id="qa.eclipse.plugin.pmd.rulerClick"
                label="PMD Left Click"
                style="push">
@@ -285,7 +285,7 @@
    </extension>
    <extension point="org.eclipse.ui.propertyPages">
       <page
-            class="pmd.eclipse.plugin.preference.PmdPropertyPage"
+            class="qa.eclipse.plugin.pmd.preference.PmdPropertyPage"
             icon="icons/pmd-icon-16.gif"
             id="qa.eclipse.plugin.checkstyle.preference.propertyPage"
             name="PMD Settings">
@@ -299,7 +299,7 @@
    <extension
          point="org.eclipse.core.filebuffers.annotationModelCreation">
       <factory
-            class="pmd.eclipse.plugin.experimental.PmdAnnotationModelFactory">
+            class="qa.eclipse.plugin.pmd.experimental.PmdAnnotationModelFactory">
       </factory>
    </extension>
    <extension

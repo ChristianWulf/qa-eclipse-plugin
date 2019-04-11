@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets.tablecombo;bundle-version="1.0.0",
  qa.eclipse.plugin.bundles.common;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Activator: pmd.eclipse.plugin.PmdUIPlugin
+Bundle-Activator: qa.eclipse.plugin.pmd.PmdUIPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/pmd-core-5.8.1.jar,
