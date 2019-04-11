@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/qa.eclipse.plugin.pmd_1.0.0.qualifier.jar" id="qa.eclipse.plugin.pmd" version="1.0.0.qualifier">
+      <category name="qa.eclipse.plugin"/>
+   </feature>
+   <feature url="features/qa.eclipse.plugin.checkstyle_1.0.0.qualifier.jar" id="qa.eclipse.plugin.checkstyle" version="1.0.0.qualifier">
+      <category name="qa.eclipse.plugin"/>
+   </feature>
+   <category-def name="qa.eclipse.plugin" label="Eclipse Plugins for QA Tools"/>
+</site>
