@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.preference;
 
 import java.io.File;
@@ -39,19 +54,19 @@ public class PmdPreferences {
 
 	private URLClassLoader osgiClassLoaderWithCustomRules;
 
-	private PmdPreferences(String node) {
+	private PmdPreferences(final String node) {
 		// private singleton constructor
 		this.node = node;
 		this.osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
 	}
 
 	public IEclipsePreferences getDefaultPreferences() {
-		IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(node);
+		final IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(this.node);
 		return preferences;
 	}
 
 	public IEclipsePreferences getEclipseScopedPreferences() {
-		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(node);
+		final IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(this.node);
 		return preferences;
 	}
 
@@ -59,18 +74,18 @@ public class PmdPreferences {
 		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
 	}
 
-	public synchronized IEclipsePreferences getProjectScopedPreferences(IProject project) {
-		IEclipsePreferences preferences;
+	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) {
+		final IEclipsePreferences preferences;
 
-		IScopeContext projectPref;
-		if (projectScopeByProject.containsKey(project)) {
-			projectPref = projectScopeByProject.get(project);
-			preferences = projectPref.getNode(node);
+		final IScopeContext projectPref;
+		if (this.projectScopeByProject.containsKey(project)) {
+			projectPref = this.projectScopeByProject.get(project);
+			preferences = projectPref.getNode(this.node);
 		} else {
 			projectPref = new ProjectScope(project);
-			projectScopeByProject.put(project, projectPref);
+			this.projectScopeByProject.put(project, projectPref);
 
-			preferences = projectPref.getNode(node);
+			preferences = projectPref.getNode(this.node);
 			preferences.addPreferenceChangeListener(new PmdPreferenceChangeListener(project));
 		}
 

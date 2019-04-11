@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.ui.visitors;
 
 import java.util.ArrayList;
@@ -16,18 +31,18 @@ public class ResourceCollector implements IResourceVisitor {
 	private final Map<IProject, List<IFile>> projectResources = new HashMap<>();
 
 	@Override
-	public boolean visit(IResource resource) throws CoreException {
-		int resourceType = resource.getType();
+	public boolean visit(final IResource resource) throws CoreException {
+		final int resourceType = resource.getType();
 		switch (resourceType) {
 		case IResource.FILE: {
-			IProject project = resource.getProject();
-			List<IFile> files = projectResources.get(project);
+			final IProject project = resource.getProject();
+			List<IFile> files = this.projectResources.get(project);
 			if (files == null) {
 				files = new ArrayList<>();
-				projectResources.put(project, files);
+				this.projectResources.put(project, files);
 			}
 
-			IFile file = (IFile) resource;
+			final IFile file = (IFile) resource;
 			files.add(file);
 			return false;
 		}
@@ -47,7 +62,7 @@ public class ResourceCollector implements IResourceVisitor {
 	}
 
 	public Map<IProject, List<IFile>> getProjectResources() {
-		return projectResources;
+		return this.projectResources;
 	}
 
 }

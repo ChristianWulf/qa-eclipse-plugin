@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019 Christian Wulf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.ui.visitors;
 
 import java.util.ArrayList;
@@ -21,7 +36,7 @@ import qa.eclipse.plugin.bundles.common.JavaUtil;
  * Represents an IResourceDeltaVisitor which collects all IFiles that have been
  * added or changed. Removed files and marker deltas are ignored. Hence, this
  * visitor focus on deltas at the file system, not within Eclipse.
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -34,13 +49,13 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 	private final JavaUtil javaUtil = new JavaUtil();
 
 	@Override
-	public boolean visit(IResourceDelta delta) throws CoreException {
+	public boolean visit(final IResourceDelta delta) throws CoreException {
 		switch (delta.getResource().getType()) {
 		case IResource.PROJECT: {
-			return shouldVisitChildren(delta.getResource());
+			return this.shouldVisitChildren(delta.getResource());
 		}
 		case IResource.FILE: {
-			addFileIfApplicable(delta);
+			this.addFileIfApplicable(delta);
 			return false;
 		}
 		default: {
@@ -49,7 +64,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		}
 	}
 
-	private boolean shouldVisitChildren(IResource resource) {
+	private boolean shouldVisitChildren(final IResource resource) {
 		if (!resource.isAccessible()) {
 			return false;
 		}
@@ -60,28 +75,28 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		return true;
 	}
 
-	private void addFileIfApplicable(IResourceDelta delta) throws JavaModelException {
-		IFile file = (IFile) delta.getResource();
+	private void addFileIfApplicable(final IResourceDelta delta) throws JavaModelException {
+		final IFile file = (IFile) delta.getResource();
 		// TODO make configurable
-		boolean isHidden = file.isHidden();
+		final boolean isHidden = file.isHidden();
 		if (isHidden) {
 			return;
 		}
 
 		// TODO make configurable
-		boolean isDerived = file.isDerived();
+		final boolean isDerived = file.isDerived();
 		if (isDerived) {
 			return;
 		}
 
-		IProject project = file.getProject();
+		final IProject project = file.getProject();
 		if (!project.isAccessible()) {
 			return;
 		}
 
 		// TODO use exclude patterns instead to be independent of java in this class
-		Set<IPath> outputFolderPaths = javaUtil.getDefaultBuildOutputFolderPaths(project);
-		for (IPath outputFolderPath : outputFolderPaths) {
+		final Set<IPath> outputFolderPaths = this.javaUtil.getDefaultBuildOutputFolderPaths(project);
+		for (final IPath outputFolderPath : outputFolderPaths) {
 			if (outputFolderPath.isPrefixOf(file.getFullPath())) {
 				return;
 			}
@@ -89,7 +104,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
 		switch (delta.getKind()) {
 		case IResourceDelta.ADDED: {
-			addFileToProjectMap(file, project, addedFiles);
+			this.addFileToProjectMap(file, project, this.addedFiles);
 			break;
 		}
 		// case IResourceDelta.REMOVED: {
@@ -103,7 +118,7 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 				break;
 			}
 
-			addFileToProjectMap(file, project, changedFiles);
+			this.addFileToProjectMap(file, project, this.changedFiles);
 			break;
 		}
 		default: {
@@ -112,8 +127,9 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 		}
 	}
 
-	private void addFileToProjectMap(IFile file, IProject project, Map<IProject, List<IFile>> projectMap) {
-		List<IFile> files;
+	private void addFileToProjectMap(final IFile file, final IProject project,
+			final Map<IProject, List<IFile>> projectMap) {
+		final List<IFile> files;
 		if (projectMap.containsKey(project)) {
 			files = projectMap.get(project);
 		} else {
@@ -124,11 +140,11 @@ public class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 	}
 
 	public Map<IProject, List<IFile>> getAddedFiles() {
-		return addedFiles;
+		return this.addedFiles;
 	}
 
 	public Map<IProject, List<IFile>> getChangedFiles() {
-		return changedFiles;
+		return this.changedFiles;
 	}
 
 	// public Map<IProject, List<IFile>> getRemovedFiles() {

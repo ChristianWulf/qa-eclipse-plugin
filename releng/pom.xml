@@ -2,19 +2,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>qa.eclipse.plugin.releng</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-
-	<!-- Link to the parent pom -->
 	<parent>
 		<groupId>chw.experimental</groupId>
-		<artifactId>pmd.eclipse.plugin.configuration</artifactId>
+		<artifactId>qa.eclipse.plugin</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../releng/pmd.eclipse.plugin.configuration</relativePath>
 	</parent>
 
-    <modules>
-        <module>pmd.eclipse.plugin.updatesite</module>
-    </modules>
+	<artifactId>qa.eclipse.plugin.releng</artifactId>
+
+	<packaging>pom</packaging>
+
+	<name>Eclipse Plugins for QA Tools - Release Engineering</name>
+
+	<modules>
+	        <module>qa.eclipse.plugin.updatesite</module>
+	</modules>
 </project>
