@@ -82,7 +82,7 @@
 				<executions>
 					<execution>
 						<id>upload-repo</id>
-						<phase>package</phase>
+						<phase>deploy</phase>
 						<goals>
 							<goal>upload</goal>
 						</goals>
