@@ -25,19 +25,19 @@ pipeline {
 			}
 		}
 
-//		stage('Check') {
-//			steps {
-//				sh 'mvn --batch-mode checkstyle:checkstyle' // pmd:pmd spotbugs:spotbugs
-//			}
-//			post {
-//            			always {
-//					recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
-//					recordIssues enabledForFailure: true, tool: checkStyle()
+		stage('Check') {
+			steps {
+				sh 'export PWD=`pwd` ; cd bundles ; mvn --batch-mode checkstyle:checkstyle -Dworkspace="${PWD}"' // pmd:pmd spotbugs:spotbugs
+			}
+			post {
+            			always {
+					recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+					recordIssues enabledForFailure: true, tool: checkStyle()
 //					recordIssues enabledForFailure: true, tool: spotBugs()
 //					recordIssues enabledForFailure: true, tool: pmdParser()
-//            			}
-//          		}
-//		}
+            			}
+          		}
+		}
 
 		stage('Package') {
 			steps {
