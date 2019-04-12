@@ -6,8 +6,10 @@ pipeline {
 
 	stages {
 		stage ('Checkout') {
-			timeout(time: 3, unit: 'MINUTES') {	// typically finished in under 1 min.
-				checkout scm
+			steps {
+				timeout(time: 3, unit: 'MINUTES') {	// typically finished in under 1 min.
+					checkout scm
+				}
 			}
 		}
 
