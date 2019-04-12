@@ -27,7 +27,7 @@ pipeline {
 
 		stage('Check') {
 			steps {
-				sh 'export PWD=".." ; cd bundles ; mvn --batch-mode checkstyle:checkstyle -Dworkspace="${PWD}"' // pmd:pmd spotbugs:spotbugs
+				sh 'cd bundles ; mvn --batch-mode checkstyle:checkstyle -Dworkspace="${env.WORKSPACE}"' // pmd:pmd spotbugs:spotbugs
 			}
 			post {
             			always {
