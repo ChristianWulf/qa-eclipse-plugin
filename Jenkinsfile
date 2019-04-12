@@ -27,16 +27,16 @@ pipeline {
 
 		stage('Check') {
 			steps {
-				sh 'cd bundles ; mvn --batch-mode compile checkstyle:checkstyle -Dworkspace=${env.WORKSPACE}' // pmd:pmd spotbugs:spotbugs
+				sh 'cd bundles ; mvn --batch-mode compile checkstyle:checkstyle -Dworkspace=' + env.WORKSPACE // pmd:pmd spotbugs:spotbugs
 			}
 			post {
-            			always {
+				always {
 					recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
 					recordIssues enabledForFailure: true, tool: checkStyle()
 //					recordIssues enabledForFailure: true, tool: spotBugs()
 //					recordIssues enabledForFailure: true, tool: pmdParser()
-            			}
-          		}
+				}
+			}
 		}
 
 		stage('Package') {
