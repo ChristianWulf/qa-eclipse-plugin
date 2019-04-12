@@ -1,23 +1,59 @@
-#!groovy
-
 ID = "kdt-jenkins"
 UPDATE_SITE_URL = "sftp://repo@repo.se.internal/var/www/html/qa"
 
-node {
-	stage ('Checkout') {
-		timeout(time: 3, unit: 'MINUTES') {	// typically finished in under 1 min.
-			checkout scm
+pipeline {
+	agent 'any'
+
+	stages {
+		stage ('Checkout') {
+			steps {
+				timeout(time: 3, unit: 'MINUTES') {	// typically finished in under 1 min.
+					checkout scm
+				}
+			}
 		}
-	}
 
-	stage ('Prepare') {
-		sh 'cd ' + env.WORKSPACE + '; wget http://www.gutscheine.org/mirror/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz ; tar -xzpf apache-maven-3.6.0-bin.tar.gz'
-		sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -s settings.xml -B clean'
-	}
+		stage('Build') {
+			steps {
+				sh 'mvn --batch-mode compile'
+			}
+		}
 
-	stage ('Compile and Deploy') {
-		withCredentials([file(credentialsId: ID, variable: 'key_file')]) {
-			sh 'cd ' + env.WORKSPACE + '; apache-maven-3.6.0/bin/mvn -X -s settings.xml -B package -Dkeystore=${key_file} -DupdateSiteUrl=' + UPDATE_SITE_URL
+		stage('test') {
+			steps {
+				sh 'mvn --batch-mode test'
+			}
+		}
+
+//		stage('Check') {
+//			steps {
+//				sh 'mvn --batch-mode checkstyle:checkstyle' // pmd:pmd spotbugs:spotbugs
+//			}
+//			post {
+//            			always {
+//					recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+//					recordIssues enabledForFailure: true, tool: checkStyle()
+//					recordIssues enabledForFailure: true, tool: spotBugs()
+//					recordIssues enabledForFailure: true, tool: pmdParser()
+//            			}
+//          		}
+//		}
+
+		stage('Package') {
+			steps {
+				sh 'mvn --batch-mode package'
+			}
+		}
+
+		stage ('Deploy') {
+			when{
+				branch 'master'
+			}
+			steps {
+				withCredentials([file(credentialsId: ID, variable: 'key_file')]) {
+					sh 'mvn -X -s settings.xml -B install -Dkeystore=${key_file} -DupdateSiteUrl=' + UPDATE_SITE_URL
+				}
+			}
 		}
 	}
 }
