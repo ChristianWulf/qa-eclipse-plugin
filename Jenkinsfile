@@ -48,7 +48,7 @@ pipeline {
 		stage ('Deploy') {
 			steps {
 				withCredentials([file(credentialsId: ID, variable: 'key_file')]) {
-					sh 'mvn -X -s settings.xml -B deploy -Dkeystore=${key_file} -DupdateSiteUrl=' + UPDATE_SITE_URL
+					sh 'mvn -X -s settings.xml -B install -Dkeystore=${key_file} -DupdateSiteUrl=' + UPDATE_SITE_URL
 				}
 			}
 		}
