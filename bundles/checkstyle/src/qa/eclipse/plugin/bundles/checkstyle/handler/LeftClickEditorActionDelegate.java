@@ -29,6 +29,13 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class LeftClickEditorActionDelegate extends AbstractRulerActionDelegate {
 
+	/**
+	 * Default constructor.
+	 */
+	public LeftClickEditorActionDelegate() {
+		super();
+	}
+
 	@Override
 	protected IAction createAction(final ITextEditor editor, final IVerticalRulerInfo rulerInfo) {
 		final ResourceBundle bundle = ResourceBundle.getBundle(CheckstyleMessages.getBundleName());

@@ -79,7 +79,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
 			CheckstyleMarkers.appendViolationMarker(eclipseFile, violation);
-		} catch (final CoreException e) {
+		} catch (final CoreException e) { // NOPMD ignore empty block
 			// ignore if marker could not be created
 		}
 	}
@@ -92,7 +92,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
 			CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, throwable);
-		} catch (final CoreException e) {
+		} catch (final CoreException e) { // NOPMD ignore empty block
 			// ignore if marker could not be created
 		}
 	}

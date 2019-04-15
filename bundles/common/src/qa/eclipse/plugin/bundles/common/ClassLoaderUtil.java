@@ -31,8 +31,7 @@ public final class ClassLoaderUtil {
 	}
 
 	public static URLClassLoader newClassLoader(final URL[] urls, final ClassLoader parentClassLoader) {
-		final URLClassLoader osgiClassLoaderWithUrls = new URLClassLoader(urls, parentClassLoader);
-		return osgiClassLoaderWithUrls;
+		return new URLClassLoader(urls, parentClassLoader);
 	}
 
 	public static <T> T executeWithContextClassLoader(final ClassLoader classLoader, final Supplier<T> function) {

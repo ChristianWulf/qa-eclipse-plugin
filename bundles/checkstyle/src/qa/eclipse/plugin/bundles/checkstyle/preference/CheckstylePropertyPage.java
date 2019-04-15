@@ -64,8 +64,7 @@ public class CheckstylePropertyPage extends PropertyPage {
 		// file
 		try {
 			project.getFolder(".settings").refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (final CoreException e) {
-			// ignore
+		} catch (final CoreException e) { // NOPMD ignore empty block
 		}
 
 		final IEclipsePreferences preferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(project);

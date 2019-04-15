@@ -25,7 +25,7 @@ import org.junit.Test;
  * @author Christian Wulf
  *
  */
-public class SplitTest {
+public class SplitTest { // NOPMD test class no constructor
 
 	@Test
 	public void splitByWhitespaceCommaWhitespace() throws Exception {

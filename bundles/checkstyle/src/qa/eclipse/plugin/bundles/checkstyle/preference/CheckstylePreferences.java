@@ -15,8 +15,8 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.preference;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -39,10 +39,10 @@ public final class CheckstylePreferences {
 	public static final String INVALID_CONFIG_FILE_PATH = "invalid/config/file/path";
 	public static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
 
-	/** split pattern */
+	/** split pattern. */
 	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
-	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
+	private final Map<IProject, IScopeContext> projectScopeByProject = new ConcurrentHashMap<>();
 
 	private final String node;
 
@@ -52,13 +52,11 @@ public final class CheckstylePreferences {
 	}
 
 	public IEclipsePreferences getDefaultPreferences() {
-		final IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(this.node);
-		return preferences;
+		return DefaultScope.INSTANCE.getNode(this.node);
 	}
 
 	public IEclipsePreferences getEclipseScopedPreferences() {
-		final IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(this.node);
-		return preferences;
+		return InstanceScope.INSTANCE.getNode(this.node);
 	}
 
 	public IEclipsePreferences getEclipseEditorPreferences() {

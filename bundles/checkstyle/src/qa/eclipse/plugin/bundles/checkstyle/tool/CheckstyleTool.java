@@ -40,7 +40,7 @@ import com.puppycrawl.tools.checkstyle.ThreadModeSettings;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatform;
+import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatformUtil;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.FileUtil;
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
@@ -75,9 +75,7 @@ public class CheckstyleTool {
 
 		try {
 			this.checker.setCharset(project.getDefaultCharset());
-		} catch (final UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
-		} catch (final CoreException e) {
+		} catch (final UnsupportedEncodingException | CoreException e) {
 			throw new IllegalStateException(e);
 		}
 
@@ -85,7 +83,7 @@ public class CheckstyleTool {
 				.getProjectScopedPreferences(project);
 		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 
-		final Locale platformLocale = EclipsePlatform.getLocale();
+		final Locale platformLocale = EclipsePlatformUtil.getLocale();
 		this.checker.setLocaleLanguage(platformLocale.getLanguage());
 		this.checker.setLocaleCountry(platformLocale.getCountry());
 

@@ -391,13 +391,13 @@ public class PmdViolationsView extends ViewPart
 				if (event.type == SWT.Move) {
 					final int[] columnOrder = PmdViolationsView.this.tableViewer.getTable().getColumnOrder();
 					final String columnOrderEncoded = StringUtils.join(columnOrder, ',');
-					PmdViolationsView.this.viewPreferences.put(PmdViolationsView.PREF_COLUMN_ORDER, columnOrderEncoded);
+					PmdViolationsView.this.viewPreferences.put(PmdViolationsView.PREF_COLUMN_ORDER,
+							columnOrderEncoded);
 				}
 			}
 		};
 
 		TableViewerColumn tableViewerColumn;
-		TableColumn column;
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -428,15 +428,7 @@ public class PmdViolationsView extends ViewPart
 				return pmdRulePriority.toString();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Priority"); // only icon; hover shows explanation (HIGH, LOW, ...)
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_PRIORITY));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Priority", 50, PmdViolationMarkerComparator.SORT_PROP_PRIORITY, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -446,15 +438,7 @@ public class PmdViolationsView extends ViewPart
 				return marker.getRuleName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Rule name");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_RULENAME));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Rule name", 200, PmdViolationMarkerComparator.SORT_PROP_RULENAME, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -464,15 +448,7 @@ public class PmdViolationsView extends ViewPart
 				return marker.getMessage();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Violation message");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(400);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_VIOLATION_MSG));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Violation message", 400, PmdViolationMarkerComparator.SORT_PROP_VIOLATION_MSG, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -482,15 +458,7 @@ public class PmdViolationsView extends ViewPart
 				return String.valueOf(marker.getProjectName());
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Project");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Project", 100, PmdViolationMarkerComparator.SORT_PROP_PROJECTNAME, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -500,15 +468,7 @@ public class PmdViolationsView extends ViewPart
 				return String.valueOf(marker.getLineNumer());
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Line");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_LINENUMBER));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Line", 50, PmdViolationMarkerComparator.SORT_PROP_LINENUMBER, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -518,15 +478,7 @@ public class PmdViolationsView extends ViewPart
 				return marker.getRuleSetName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Rule set");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				PmdViolationMarkerComparator.SORT_PROP_RULESET));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Rule set", 100, PmdViolationMarkerComparator.SORT_PROP_RULESET, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -536,13 +488,7 @@ public class PmdViolationsView extends ViewPart
 				return marker.getDirectoryPath();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Directory path");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
-		column.addListener(SWT.Move, columnMovedListener);
+		this.createColumn(tableViewerColumn, "Directory path", 200, columnMovedListener);
 
 		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -552,12 +498,47 @@ public class PmdViolationsView extends ViewPart
 				return marker.getFileName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("File name");
+		this.createColumn(tableViewerColumn, "File name", 200, columnMovedListener);
+	}
+
+	/**
+	 * Create a column with a selection listener.
+	 *
+	 * @param tableViewerColumn
+	 * @param label
+	 * @param width
+	 * @param selectedSortProperty
+	 * @param columnMovedListener
+	 */
+	private void createColumn(final TableViewerColumn tableViewerColumn, final String label, final int width, final int selectedSortProperty,
+			final Listener columnMovedListener) {
+		final TableColumn column = tableViewerColumn.getColumn();
+		column.setText(label); // only icon; hover shows explanation (HIGH, LOW, ...)
 		column.setResizable(true);
 		column.setMoveable(true);
 		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
+		column.setWidth(width);
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				selectedSortProperty));
+		column.addListener(SWT.Move, columnMovedListener);
+	}
+
+	/**
+	 * Create a column without a selection listener.
+	 *
+	 * @param tableViewerColumn
+	 * @param label
+	 * @param width
+	 * @param columnMovedListener
+	 */
+	private void createColumn(final TableViewerColumn tableViewerColumn, final String label, final int width,
+			final Listener columnMovedListener) {
+		final TableColumn column = tableViewerColumn.getColumn();
+		column.setText(label); // only icon; hover shows explanation (HIGH, LOW, ...)
+		column.setResizable(true);
+		column.setMoveable(true);
+		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
+		column.setWidth(width);
 		column.addListener(SWT.Move, columnMovedListener);
 	}
 

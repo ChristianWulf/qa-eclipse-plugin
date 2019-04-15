@@ -40,6 +40,10 @@ import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
  */
 public class CompilationUnitEditorHandler extends AbstractHandler {
 
+	public CompilationUnitEditorHandler() {
+		super();
+	}
+
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);

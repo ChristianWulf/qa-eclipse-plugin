@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -40,7 +40,7 @@ public final class SplitUtils {
 	public static ISplitResult split(final String text) {
 		return new SplitResultImpl(text);
 	}
-	
+
 	/**
 	 * @param text
 	 *            to be split.
@@ -150,7 +150,7 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public ISeparatorResult at(final char separator) { // NOCS works like a setter
+		public ISeparatorResult at(final char separator) { // NOCS works like a setter, NOPMD internal DSL
 			this.separator = separator;
 			return this;
 		}
@@ -168,17 +168,17 @@ public final class SplitUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Christian Wulf
 	 *
 	 */
 	public static interface IQuantityResult {
 
-		public ISeparatorResult at(char separator);
+		public ISeparatorResult at(char separator); // NOPMD internal DSL
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Christian Wulf
 	 *
 	 */
@@ -197,7 +197,7 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public ISeparatorResult at(final char separator) {
+		public ISeparatorResult at(final char separator) { // NOPMD internal DSL
 			return new SeparatorResultImpl(this.text, this.splitQuantity, separator);
 		}
 	}

@@ -25,9 +25,9 @@ import org.eclipse.core.runtime.Platform;
  * @author Christian Wulf
  *
  */
-public final class EclipsePlatform {
+public final class EclipsePlatformUtil {
 
-	private EclipsePlatform() {
+	private EclipsePlatformUtil() {
 		// utility class
 	}
 

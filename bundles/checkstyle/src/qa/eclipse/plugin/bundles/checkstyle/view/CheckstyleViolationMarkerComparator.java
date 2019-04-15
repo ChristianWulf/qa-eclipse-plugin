@@ -25,7 +25,7 @@ import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
 /**
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -39,6 +39,10 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	public static final int SORT_PROP_VIOLATION_MSG = 5;
 
 	private int selectedSortProperty;
+
+	public CheckstyleViolationMarkerComparator() {
+		super();
+	}
 
 	@Override
 	public int compare(final Viewer viewer, final Object e1, final Object e2) {

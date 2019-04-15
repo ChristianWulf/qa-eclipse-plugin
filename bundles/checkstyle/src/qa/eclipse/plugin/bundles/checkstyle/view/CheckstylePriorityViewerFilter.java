@@ -29,8 +29,12 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
  */
 class CheckstylePriorityViewerFilter extends ViewerFilter {
 
-	/** default value is 3 from 0..3 */
+	/** default value is 3 from the range 0..3. */
 	private int selectionIndex = SeverityLevel.ERROR.ordinal() - SeverityLevel.IGNORE.ordinal();
+
+	public CheckstylePriorityViewerFilter() {
+		super();
+	}
 
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {

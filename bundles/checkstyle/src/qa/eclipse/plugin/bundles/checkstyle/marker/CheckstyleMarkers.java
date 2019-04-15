@@ -15,9 +15,9 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.marker;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -32,7 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
 
 /**
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -54,10 +54,10 @@ public final class CheckstyleMarkers {
 	public static final String ATTR_KEY_PRIORITY = "checkstyle.priority";
 	public static final String ATTR_KEY_CHECK_PACKAGE = "checkstyle.check_package";
 	public static final String ATTR_KEY_CHECK_NAME = "checkstyle.check_name";
-	
+
 	private static final int IMARKER_SEVERITY_OTHERS = 3;
-	
-	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
+
+	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<Integer, String>();
 
 	static {
 		CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.ERROR.ordinal(), CheckstyleMarkers.ERROR_CHECKSTYLE_VIOLATION_MARKER);

@@ -35,7 +35,7 @@ import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 /**
  * The activator class controls the plug-in life cycle.
- * 
+ *
  * @author Christian Wulf
  */
 public class Activator extends AbstractUIPlugin implements IResourceChangeListener {
@@ -50,6 +50,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 * The constructor.
 	 */
 	public Activator() {
+		// nothing to do here
 	}
 
 	/*
@@ -74,7 +75,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		Activator.plugin = null;
+		Activator.plugin = null; // NOPMD necessary in context of plugins
 		super.stop(context);
 	}
 
@@ -94,9 +95,11 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 
 	/**
 	 * Log message to view including the associated exception.
-	 * 
-	 * @param message message to display
-	 * @param throwable exception
+	 *
+	 * @param message
+	 *            message to display
+	 * @param throwable
+	 *            exception
 	 */
 	public void logThrowable(final String message, final Throwable throwable) {
 		final IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, throwable);
@@ -105,8 +108,9 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 
 	/**
 	 * Log a warning message to the checkstyle summary view.
-	 * 
-	 * @param message the message to display
+	 *
+	 * @param message
+	 *            the message to display
 	 */
 	public void logWarning(final String message) {
 		final IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, message);
@@ -134,7 +138,5 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 
 		// our view listens to marker changes and thus is indirectly notified about
 		// removed resource
-
-		return;
 	}
 }
