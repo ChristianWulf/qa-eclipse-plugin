@@ -17,7 +17,8 @@
 		<tychoVersion>1.3.0</tychoVersion>
 
 		<eclipseRepoUrl>http://download.eclipse.org/releases/oxygen</eclipseRepoUrl>
-		<pmd.version>5.8.1</pmd.version>
+		<pmdVersion>6.13.0</pmdVersion>
+		<checkstyleVersion>8.17</checkstyleVersion>
 		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
 		<!-- maven.deploy.skip>true</maven.deploy.skip -->
 	</properties>
@@ -144,7 +145,7 @@
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
 							<artifactId>checkstyle</artifactId>
-							<version>8.17</version>
+							<version>${checkstyleVersion}</version>
 						</dependency>
 					</dependencies>
 					<configuration>
@@ -152,6 +153,29 @@
 						<propertyExpansion>config_loc=${workspace}</propertyExpansion>
 						<configLocation>cs-conf.xml</configLocation>
 						<failsOnError>false</failsOnError>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>3.11.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>net.sourceforge.pmd</groupId>
+							<artifactId>pmd-core</artifactId>
+							<version>${pmdVersion}</version>
+						</dependency>
+						<dependency>
+							<groupId>net.sourceforge.pmd</groupId>
+							<artifactId>pmd-java</artifactId>
+							<version>${pmdVersion}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<rulesets>
+							<ruleset>${workspace}/pmdrules.xml</ruleset>
+						</rulesets>
+						<printFailingErrors>true</printFailingErrors>
 					</configuration>
 				</plugin>
 			</plugins>
