@@ -19,6 +19,12 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.Platform;
 
+/**
+ * Utility class to identify the correct language and locale settings.
+ * 
+ * @author Christian Wulf
+ *
+ */
 public final class EclipsePlatform {
 
 	private EclipsePlatform() {

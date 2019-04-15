@@ -28,6 +28,11 @@ import org.eclipse.swt.widgets.Text;
 
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class ConfigFilePathTextListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: the file path does not point to an existing file.";

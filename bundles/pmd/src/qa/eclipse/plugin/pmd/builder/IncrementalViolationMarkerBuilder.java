@@ -33,6 +33,11 @@ import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.pmd.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder {
 
 	// reference impl:
@@ -46,18 +51,18 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
-		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
 	protected IProject[] build(final int kind, final Map<String, String> args, final IProgressMonitor monitor) {
-		final IBuildContext buildContext = getContext();
+		final IBuildContext buildContext = this.getContext();
 		final IBuildConfiguration[] allReferencedBuildConfigs = buildContext.getAllReferencedBuildConfigs();
 		final IBuildConfiguration[] allReferencingBuildConfigs = buildContext.getAllReferencingBuildConfigs();
 		final IBuildConfiguration[] requestedConfigs = buildContext.getRequestedConfigs();
 
 		try {
-			buildByKind(kind, monitor);
+			this.buildByKind(kind, monitor);
 		} catch (final CoreException e) {
 			PmdUIPlugin.getDefault().logThrowable("Error on building by kind.", e);
 		}
@@ -68,24 +73,24 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 	private void buildByKind(final int kind, final IProgressMonitor monitor) throws CoreException {
 		switch (kind) {
 		case IncrementalProjectBuilder.FULL_BUILD: {
-			fullBuild(monitor);
+			this.fullBuild(monitor);
 			break;
 		}
 		case IncrementalProjectBuilder.AUTO_BUILD: {
-			final IResourceDelta delta = getDelta(getProject());
+			final IResourceDelta delta = this.getDelta(this.getProject());
 			if (delta == null) {
-				fullBuild(monitor);
+				this.fullBuild(monitor);
 			} else {
-				incrementalBuild(delta, monitor);
+				this.incrementalBuild(delta, monitor);
 			}
 			break;
 		}
 		case IncrementalProjectBuilder.INCREMENTAL_BUILD: {
-			final IResourceDelta delta = getDelta(getProject());
+			final IResourceDelta delta = this.getDelta(this.getProject());
 			if (delta == null) {
-				fullBuild(monitor);
+				this.fullBuild(monitor);
 			} else {
-				incrementalBuild(delta, monitor);
+				this.incrementalBuild(delta, monitor);
 			}
 			break;
 		}
@@ -114,12 +119,12 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 		delta.accept(resourceDeltaFileCollector);
 
 		for (final Entry<IProject, List<IFile>> addedFiles : resourceDeltaFileCollector.getAddedFiles().entrySet()) {
-			pmdTool.startAsyncAnalysis(addedFiles.getValue());
+			this.pmdTool.startAsyncAnalysis(addedFiles.getValue());
 		}
 
 		for (final Entry<IProject, List<IFile>> changedFiles : resourceDeltaFileCollector.getChangedFiles()
 				.entrySet()) {
-			pmdTool.startAsyncAnalysis(changedFiles.getValue());
+			this.pmdTool.startAsyncAnalysis(changedFiles.getValue());
 		}
 
 		// your view listens to marker changes and thus is indirectly notified about

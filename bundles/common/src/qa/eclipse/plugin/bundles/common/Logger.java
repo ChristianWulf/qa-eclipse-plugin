@@ -19,6 +19,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class Logger {
 
 	private static final String PLUGIN_ID = Activator.PLUGIN_ID;

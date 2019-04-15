@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.pmd.pmd;
 
 import java.io.File;
@@ -34,6 +49,11 @@ import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdWorkspaceJob extends WorkspaceJob {
 
 	private static final int IMARKER_SEVERITY_OTHERS = 3;
@@ -49,7 +69,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 	@Override
 	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
-		final IResource someEclipseFile = eclipseFiles.get(0);
+		final IResource someEclipseFile = this.eclipseFiles.get(0);
 		final IProject eclipseProject = someEclipseFile.getProject();
 		if (!eclipseProject.isAccessible()) { // if project has been closed
 			return Status.OK_STATUS;
@@ -63,7 +83,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 		// collect data sources
 		final Map<String, IFile> eclipseFilesMap = new HashMap<>();
-		for (final IFile eclipseFile : eclipseFiles) {
+		for (final IFile eclipseFile : this.eclipseFiles) {
 			try {
 				// also remove previous PMD markers on that file
 				PmdMarkers.deleteMarkers(eclipseFile);
@@ -75,8 +95,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// update explorer view so that the violation flag are not displayed anymore
 		FileIconDecorator.refresh();
 
-		final String taskName = String.format("Analyzing %d file(s)...", eclipseFiles.size());
-		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, eclipseFiles.size());
+		final String taskName = String.format("Analyzing %d file(s)...", this.eclipseFiles.size());
+		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, this.eclipseFiles.size());
 
 		final String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
@@ -95,7 +115,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			final RuleContext context = new RuleContext();
 
 			pmdProcessor.onStarted();
-			for (final IFile eclipseFile : eclipseFiles) {
+			for (final IFile eclipseFile : this.eclipseFiles) {
 				if (monitor.isCanceled()) {
 					// only stop the loop, not the whole method to finish reporting
 					break;
@@ -116,7 +136,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			}
 			pmdProcessor.onFinished();
 
-			displayViolationMarkers(eclipseFilesMap, problemRenderer);
+			this.displayViolationMarkers(eclipseFilesMap, problemRenderer);
 
 		} finally {
 			PmdPreferences.INSTANCE.close();
@@ -152,7 +172,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			final String errorFilename = error.getFile();
 			final IFile eclipseFile = eclipseFilesMap.get(errorFilename);
 			try {
-				appendProcessingErrorMarker(eclipseFile, error);
+				this.appendProcessingErrorMarker(eclipseFile, error);
 			} catch (final CoreException e) {
 				// ignore if marker could not be created
 			}
@@ -188,7 +208,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 		@Override
 		public synchronized RuleSets createRuleSets(final String referenceString) throws RuleSetNotFoundException {
-			return ruleSets;
+			return this.ruleSets;
 		}
 	}
 

@@ -21,6 +21,11 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CustomPMDConfiguration extends PMDConfiguration {
 
 	private static final Language PMD_JAVA = LanguageRegistry.getLanguage(JavaLanguageModule.NAME);
@@ -29,7 +34,7 @@ class CustomPMDConfiguration extends PMDConfiguration {
 		// default language version
 		final LanguageVersion defaultLanguageVersion = CustomPMDConfiguration.PMD_JAVA.getVersion(compilerCompliance);
 		if (defaultLanguageVersion != null) {
-			setDefaultLanguageVersion(defaultLanguageVersion);
+			this.setDefaultLanguageVersion(defaultLanguageVersion);
 		}
 
 		// IProject project = null;

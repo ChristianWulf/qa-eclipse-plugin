@@ -24,6 +24,11 @@ import org.eclipse.swt.widgets.Table;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdViolationMarkerComparator extends ViewerComparator {
 
 	public static final int SORT_PROP_PRIORITY = 0;
@@ -48,35 +53,35 @@ class PmdViolationMarkerComparator extends ViewerComparator {
 		final PmdViolationMarker marker2 = (PmdViolationMarker) e2;
 
 		int compareResult;
-		switch (selectedSortProperty) {
+		switch (this.selectedSortProperty) {
 		case SORT_PROP_PRIORITY: {
-			compareResult = comparePriority(marker1, marker2);
+			compareResult = this.comparePriority(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_RULENAME: {
-			compareResult = compareRuleName(marker1, marker2);
+			compareResult = this.compareRuleName(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_LINENUMBER: {
-			compareResult = compareLineNumber(marker1, marker2);
+			compareResult = this.compareLineNumber(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_RULESET: {
-			compareResult = compareRuleSet(marker1, marker2);
+			compareResult = this.compareRuleSet(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_PROJECTNAME: {
-			compareResult = compareProjectName(marker1, marker2);
+			compareResult = this.compareProjectName(marker1, marker2);
 			break;
 		}
 		case SORT_PROP_VIOLATION_MSG: {
-			compareResult = compareViolationMessage(marker1, marker2);
+			compareResult = this.compareViolationMessage(marker1, marker2);
 			break;
 		}
 		default: {
 			compareResult = 0;
 			final String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
-			final String message = String.format(messageFormatString, selectedSortProperty);
+			final String message = String.format(messageFormatString, this.selectedSortProperty);
 			PmdUIPlugin.getDefault().logWarning(message);
 		}
 		}

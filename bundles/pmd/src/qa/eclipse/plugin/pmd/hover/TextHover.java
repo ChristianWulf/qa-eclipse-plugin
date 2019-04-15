@@ -24,7 +24,13 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class TextHover extends DefaultTextHover implements ITextHoverExtension {
+
 	public TextHover(final ISourceViewer sourceViewer) {
 		super(sourceViewer);
 	}

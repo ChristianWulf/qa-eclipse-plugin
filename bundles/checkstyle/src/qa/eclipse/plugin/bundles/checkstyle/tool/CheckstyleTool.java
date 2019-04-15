@@ -46,6 +46,11 @@ import qa.eclipse.plugin.bundles.common.FileUtil;
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class CheckstyleTool {
 
 	private final Checker checker;
@@ -76,7 +81,8 @@ public class CheckstyleTool {
 			throw new IllegalStateException(e);
 		}
 
-		final IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE.getProjectScopedPreferences(project);
+		final IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE
+				.getProjectScopedPreferences(project);
 		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
 
 		final Locale platformLocale = EclipsePlatform.getLocale();
@@ -118,7 +124,7 @@ public class CheckstyleTool {
 
 		final IgnoredModulesOptions ignoredModulesOptions = IgnoredModulesOptions.OMIT;
 		final ThreadModeSettings threadModeSettings = ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
-		Configuration configuration;
+		final Configuration configuration;
 		try {
 			configuration = ConfigurationLoader.loadConfiguration(absoluteConfigFilePath, propertyResolver,
 					ignoredModulesOptions, threadModeSettings);

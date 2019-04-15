@@ -39,6 +39,11 @@ import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.pmd.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceCollector;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class ExplorerHandler extends AbstractHandler {
 
 	@Override
@@ -64,7 +69,7 @@ public class ExplorerHandler extends AbstractHandler {
 			final Iterator<?> iter = structuredSelection.iterator();
 			while (iter.hasNext()) {
 				final Object selectedObject = iter.next();
-				collectElement(selectedObject, resourceCollector);
+				this.collectElement(selectedObject, resourceCollector);
 			}
 
 			final Map<IProject, List<IFile>> projectResources = resourceCollector.getProjectResources();

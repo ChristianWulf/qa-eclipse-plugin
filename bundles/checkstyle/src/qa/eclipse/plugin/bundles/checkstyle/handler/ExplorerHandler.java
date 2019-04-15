@@ -37,6 +37,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class ExplorerHandler extends AbstractHandler {
 
 	@Override

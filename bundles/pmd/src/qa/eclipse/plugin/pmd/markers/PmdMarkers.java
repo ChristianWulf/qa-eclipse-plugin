@@ -29,6 +29,11 @@ import org.eclipse.core.runtime.CoreException;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class PmdMarkers {
 
 	/** marker to delete violation and error markers */

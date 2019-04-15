@@ -20,6 +20,11 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CheckstyleProjectNameViewerFilter extends ViewerFilter {
 
 	private String projectName;

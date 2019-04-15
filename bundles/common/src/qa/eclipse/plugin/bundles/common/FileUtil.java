@@ -20,6 +20,11 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class FileUtil {
 
 	private FileUtil() {
@@ -39,7 +44,7 @@ public final class FileUtil {
 		for (int i = 0; i < jarFilePaths.length; i++) {
 			final File jarFile = FileUtil.makeAbsoluteFile(jarFilePaths[i], parentFile);
 
-			URL fileUrl;
+			final URL fileUrl;
 			try {
 				fileUrl = jarFile.toURI().toURL();
 			} catch (final MalformedURLException e) {

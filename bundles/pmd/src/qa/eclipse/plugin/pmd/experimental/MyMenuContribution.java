@@ -20,6 +20,11 @@ import org.eclipse.ui.menus.AbstractContributionFactory;
 import org.eclipse.ui.menus.IContributionRoot;
 import org.eclipse.ui.services.IServiceLocator;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class MyMenuContribution extends AbstractContributionFactory {
 
 	public MyMenuContribution() {

@@ -23,6 +23,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.osgi.service.prefs.Preferences;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CompareOnSelectListener extends SelectionAdapter {
 
 	private final StructuredViewer structuredViewer;

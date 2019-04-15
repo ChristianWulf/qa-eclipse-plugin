@@ -33,6 +33,11 @@ import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 
 // used by, for example,
 //	popup:#CompilationUnitEditorContext
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class CompilationUnitEditorHandler extends AbstractHandler {
 
 	@Override

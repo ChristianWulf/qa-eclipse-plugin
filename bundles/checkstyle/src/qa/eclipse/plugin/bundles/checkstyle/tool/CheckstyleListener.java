@@ -28,6 +28,11 @@ import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 
 	private final Map<String, IFile> eclipseFileByFilePath;

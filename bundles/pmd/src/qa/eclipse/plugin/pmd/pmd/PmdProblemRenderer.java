@@ -21,6 +21,11 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdProblemRenderer extends AbstractRenderer {
 
 	private final Report problemReport = new Report();
@@ -47,7 +52,7 @@ class PmdProblemRenderer extends AbstractRenderer {
 
 	@Override
 	public void renderFileReport(final Report workerThreadReport) throws IOException {
-		problemReport.merge(workerThreadReport);
+		this.problemReport.merge(workerThreadReport);
 	}
 
 	@Override
@@ -56,7 +61,7 @@ class PmdProblemRenderer extends AbstractRenderer {
 	}
 
 	public Report getProblemReport() {
-		return problemReport;
+		return this.problemReport;
 	}
 
 }

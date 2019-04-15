@@ -15,6 +15,11 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle;
 
+/**
+ * 
+ * @author Christian Wulf
+ *
+ */
 public final class StringUtils {
 
 	/**
@@ -47,7 +52,7 @@ public final class StringUtils {
 	 * StringUtils.join([1, 2, 3], null) = "123"
 	 * </pre>
 	 *
-	 * @param array
+	 * @param numbers
 	 *            the array of values to join together, may be null
 	 * @param separator
 	 *            the separator character to use

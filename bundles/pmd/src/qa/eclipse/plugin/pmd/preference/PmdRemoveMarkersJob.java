@@ -30,6 +30,11 @@ import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 final class PmdRemoveMarkersJob extends Job {
 
 	private final IProject project;
@@ -42,9 +47,9 @@ final class PmdRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		try {
-			PmdMarkers.deleteMarkers(project);
+			PmdMarkers.deleteMarkers(this.project);
 		} catch (final CoreException e) {
-			final String message = String.format("Could not delete all markers for project '%s'", project);
+			final String message = String.format("Could not delete all markers for project '%s'", this.project);
 			PmdUIPlugin.getDefault().logThrowable(message, e);
 		}
 

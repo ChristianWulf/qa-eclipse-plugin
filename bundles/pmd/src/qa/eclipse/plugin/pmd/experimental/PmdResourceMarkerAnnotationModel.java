@@ -21,6 +21,11 @@ import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
 	private final int maxPriority = 1;
@@ -38,7 +43,7 @@ class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
 		final PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
 		final int priority = pmdViolationMarker.getPriority();
-		return (maxPriority >= priority);
+		return (this.maxPriority >= priority);
 	}
 
 }

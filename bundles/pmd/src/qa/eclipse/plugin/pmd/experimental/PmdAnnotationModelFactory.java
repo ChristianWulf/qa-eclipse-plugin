@@ -22,6 +22,11 @@ import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModelFactory;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 // extension point: org.eclipse.core.filebuffers.annotationModelCreation
 public class PmdAnnotationModelFactory extends ResourceMarkerAnnotationModelFactory {
 

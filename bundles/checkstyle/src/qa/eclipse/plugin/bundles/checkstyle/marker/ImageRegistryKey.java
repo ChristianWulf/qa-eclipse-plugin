@@ -20,6 +20,11 @@ import org.eclipse.jface.resource.ImageRegistry;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class ImageRegistryKey {
 
 	private static final int MIN_PRIORITY = 0;
@@ -62,7 +67,8 @@ public final class ImageRegistryKey {
 			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(priority);
 			final String imageFilePath = "/icons/" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS, imageFilePath);
+			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS,
+					imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 
@@ -70,7 +76,8 @@ public final class ImageRegistryKey {
 			final String imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
 			final String imageFilePath = "/icons/" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
-			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS, imageFilePath);
+			final ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(ImageRegistryKey.ACTIVATOR_CLASS,
+					imageFilePath);
 			reg.put(imageRegistryKey, imageDescriptor);
 		}
 	}

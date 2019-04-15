@@ -92,11 +92,22 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 		ImageRegistryKey.initialize(reg);
 	}
 
+	/**
+	 * Log message to view including the associated exception.
+	 * 
+	 * @param message message to display
+	 * @param throwable exception
+	 */
 	public void logThrowable(final String message, final Throwable throwable) {
 		final IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, throwable);
 		this.getLog().log(status);
 	}
 
+	/**
+	 * Log a warning message to the checkstyle summary view.
+	 * 
+	 * @param message the message to display
+	 */
 	public void logWarning(final String message) {
 		final IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, message);
 		this.getLog().log(status);

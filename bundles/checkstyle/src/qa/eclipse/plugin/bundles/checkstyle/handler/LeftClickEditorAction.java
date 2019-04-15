@@ -42,11 +42,17 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
 
-	public LeftClickEditorAction(final ResourceBundle bundle, final String prefix, final ITextEditor editor, final IVerticalRulerInfo ruler) {
+	public LeftClickEditorAction(final ResourceBundle bundle, final String prefix, final ITextEditor editor,
+			final IVerticalRulerInfo ruler) {
 		super(bundle, prefix, editor, ruler);
 		this.ruler = ruler;
 	}
