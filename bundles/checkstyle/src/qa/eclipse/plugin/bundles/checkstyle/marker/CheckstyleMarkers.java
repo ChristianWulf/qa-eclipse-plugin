@@ -31,9 +31,12 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
 
+/**
+ * 
+ * @author Christian Wulf
+ *
+ */
 public final class CheckstyleMarkers {
-
-	private static final int IMARKER_SEVERITY_OTHERS = 3;
 
 	/** marker to delete violation and error markers */
 	public static final String ABSTRACT_CHECKSTYLE_COMMON_MARKER = "qa.eclipse.plugin.checkstyle.markers.common";
@@ -45,6 +48,15 @@ public final class CheckstyleMarkers {
 	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".ignore";
 	public static final String EXCEPTION_CHECKSTYLE_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".exception";
 
+	/**
+	 * @see {@link com.puppycrawl.tools.checkstyle.api.SeverityLevel}
+	 */
+	public static final String ATTR_KEY_PRIORITY = "checkstyle.priority";
+	public static final String ATTR_KEY_CHECK_PACKAGE = "checkstyle.check_package";
+	public static final String ATTR_KEY_CHECK_NAME = "checkstyle.check_name";
+	
+	private static final int IMARKER_SEVERITY_OTHERS = 3;
+	
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new HashMap<Integer, String>();
 
 	static {
@@ -57,13 +69,6 @@ public final class CheckstyleMarkers {
 	private CheckstyleMarkers() {
 		// utility class
 	}
-
-	/**
-	 * @see {@link com.puppycrawl.tools.checkstyle.api.SeverityLevel}
-	 */
-	public static final String ATTR_KEY_PRIORITY = "checkstyle.priority";
-	public static final String ATTR_KEY_CHECK_PACKAGE = "checkstyle.check_package";
-	public static final String ATTR_KEY_CHECK_NAME = "checkstyle.check_name";
 
 	public static void appendViolationMarker(final IFile eclipseFile, final AuditEvent violation) throws CoreException {
 		final int priority = violation.getSeverityLevel().ordinal();

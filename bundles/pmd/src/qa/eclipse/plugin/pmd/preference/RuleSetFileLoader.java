@@ -29,6 +29,11 @@ import net.sourceforge.pmd.RuleSets;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class RuleSetFileLoader {
 
 	// TODO load only once at the start, i.e., make this field static
@@ -45,7 +50,7 @@ public class RuleSetFileLoader {
 		Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 		try {
 			registeredRuleSets = factory.getRegisteredRuleSets();
-		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
+		} catch (RuleSetNotFoundException | RuntimeException e) { // NOCS RuntimeException: if rule class was not found
 			throw new IllegalStateException(e);
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedContextClassLoader);

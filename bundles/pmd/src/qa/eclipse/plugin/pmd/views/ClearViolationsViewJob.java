@@ -35,6 +35,11 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 final class ClearViolationsViewJob extends WorkspaceJob {
 
 	private final List<PmdViolationMarker> violationMarkers;
@@ -48,7 +53,7 @@ final class ClearViolationsViewJob extends WorkspaceJob {
 	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
 		final SubMonitor subMonitor = SubMonitor.convert(monitor);
 
-		for (final PmdViolationMarker violationMarker : violationMarkers) {
+		for (final PmdViolationMarker violationMarker : this.violationMarkers) {
 			final IMarker marker = violationMarker.getMarker();
 
 			subMonitor.split(1);

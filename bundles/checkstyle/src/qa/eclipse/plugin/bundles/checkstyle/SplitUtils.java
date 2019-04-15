@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 
+ * @author Christian Wulf
+ *
+ */
 public final class SplitUtils {
 
 	private SplitUtils() {
@@ -35,125 +40,7 @@ public final class SplitUtils {
 	public static ISplitResult split(final String text) {
 		return new SplitResultImpl(text);
 	}
-
-	public static interface ISplitResult {
-
-		public IQuantityResult once();
-
-		public IQuantityResult always();
-	}
-
-	static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
-
-		private final String text;
-		private SplitQuantity splitQuantity;
-		private char separator;
-
-		public SplitResultImpl(final String text) {
-			this.text = text;
-		}
-
-		@Override
-		public IQuantityResult once() {
-			// return new QuantityResultImpl(text, SplitQuantity.ONCE);
-			this.splitQuantity = SplitQuantity.ONCE;
-			return this;
-		}
-
-		@Override
-		public IQuantityResult always() {
-			// return new QuantityResultImpl(text, SplitQuantity.ALWAYS);
-			this.splitQuantity = SplitQuantity.ALWAYS;
-			return this;
-		}
-
-		@Override
-		public ISeparatorResult at(final char separator) {
-			this.separator = separator;
-			return this;
-		}
-
-		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
-		}
-
-		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
-		}
-
-	}
-
-	public static interface IQuantityResult {
-
-		public ISeparatorResult at(char separator);
-	}
-
-	public static enum SplitQuantity {
-		ONCE, ALWAYS
-	}
-
-	static class QuantityResultImpl implements IQuantityResult {
-
-		private final String text;
-		private final SplitQuantity splitQuantity;
-
-		public QuantityResultImpl(final String text, final SplitQuantity splitQuantity) {
-			this.text = text;
-			this.splitQuantity = splitQuantity;
-		}
-
-		@Override
-		public ISeparatorResult at(final char separator) {
-			return new SeparatorResultImpl(this.text, this.splitQuantity, separator);
-		}
-	}
-
-	public static interface ISeparatorResult {
-		/**
-		 * This is a terminal operation.
-		 *
-		 * @return the text parts separated at the separator position(s); or a newly
-		 *         allocated empty list otherwise. The text parts are sorted according
-		 *         to the order of occurrence in passed the text (from left to right).
-		 */
-		public List<String> fromTheRight();
-
-		/**
-		 * This is a terminal operation.
-		 *
-		 * @return the text parts separated at the separator position(s); or a newly
-		 *         allocated empty list otherwise. The text parts are sorted according
-		 *         to the order of occurrence in the passed text (from left to right).
-		 */
-		public List<String> fromTheLeft();
-	}
-
-	static class SeparatorResultImpl implements ISeparatorResult {
-
-		private final String text;
-		private final SplitQuantity splitQuantity;
-		private final char separator;
-
-		public SeparatorResultImpl(final String text, final SplitQuantity splitQuantity, final char separator) {
-			this.text = text;
-			this.splitQuantity = splitQuantity;
-			this.separator = separator;
-		}
-
-		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
-		}
-
-		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
-		}
-
-	}
-
+	
 	/**
 	 * @param text
 	 *            to be split.
@@ -230,4 +117,133 @@ public final class SplitUtils {
 
 		return textParts;
 	}
+
+	public static interface ISplitResult {
+
+		public IQuantityResult once();
+
+		public IQuantityResult always();
+	}
+
+	static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
+
+		private final String text;
+		private SplitQuantity splitQuantity;
+		private char separator;
+
+		public SplitResultImpl(final String text) {
+			this.text = text;
+		}
+
+		@Override
+		public IQuantityResult once() {
+			// return new QuantityResultImpl(text, SplitQuantity.ONCE);
+			this.splitQuantity = SplitQuantity.ONCE;
+			return this;
+		}
+
+		@Override
+		public IQuantityResult always() {
+			// return new QuantityResultImpl(text, SplitQuantity.ALWAYS);
+			this.splitQuantity = SplitQuantity.ALWAYS;
+			return this;
+		}
+
+		@Override
+		public ISeparatorResult at(final char separator) { // NOCS works like a setter
+			this.separator = separator;
+			return this;
+		}
+
+		@Override
+		public List<String> fromTheRight() {
+			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		}
+
+		@Override
+		public List<String> fromTheLeft() {
+			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @author Christian Wulf
+	 *
+	 */
+	public static interface IQuantityResult {
+
+		public ISeparatorResult at(char separator);
+	}
+
+	/**
+	 * 
+	 * @author Christian Wulf
+	 *
+	 */
+	public static enum SplitQuantity {
+		ONCE, ALWAYS
+	}
+
+	static class QuantityResultImpl implements IQuantityResult {
+
+		private final String text;
+		private final SplitQuantity splitQuantity;
+
+		public QuantityResultImpl(final String text, final SplitQuantity splitQuantity) {
+			this.text = text;
+			this.splitQuantity = splitQuantity;
+		}
+
+		@Override
+		public ISeparatorResult at(final char separator) {
+			return new SeparatorResultImpl(this.text, this.splitQuantity, separator);
+		}
+	}
+
+	public static interface ISeparatorResult {
+		/**
+		 * This is a terminal operation.
+		 *
+		 * @return the text parts separated at the separator position(s); or a newly
+		 *         allocated empty list otherwise. The text parts are sorted according
+		 *         to the order of occurrence in passed the text (from left to right).
+		 */
+		public List<String> fromTheRight();
+
+		/**
+		 * This is a terminal operation.
+		 *
+		 * @return the text parts separated at the separator position(s); or a newly
+		 *         allocated empty list otherwise. The text parts are sorted according
+		 *         to the order of occurrence in the passed text (from left to right).
+		 */
+		public List<String> fromTheLeft();
+	}
+
+	static class SeparatorResultImpl implements ISeparatorResult {
+
+		private final String text;
+		private final SplitQuantity splitQuantity;
+		private final char separator;
+
+		public SeparatorResultImpl(final String text, final SplitQuantity splitQuantity, final char separator) {
+			this.text = text;
+			this.splitQuantity = splitQuantity;
+			this.separator = separator;
+		}
+
+		@Override
+		public List<String> fromTheRight() {
+			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		}
+
+		@Override
+		public List<String> fromTheLeft() {
+			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		}
+
+	}
+
 }

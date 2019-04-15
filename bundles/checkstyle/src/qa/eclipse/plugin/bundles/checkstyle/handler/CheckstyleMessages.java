@@ -17,6 +17,11 @@ package qa.eclipse.plugin.bundles.checkstyle.handler;
 
 import org.eclipse.osgi.util.NLS;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class CheckstyleMessages extends NLS {
 
 	private static final String BUNDLE_NAME = CheckstyleMessages.class.getName();

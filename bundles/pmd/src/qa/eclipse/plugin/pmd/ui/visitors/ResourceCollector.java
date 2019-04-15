@@ -26,6 +26,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class ResourceCollector implements IResourceVisitor {
 
 	private final Map<IProject, List<IFile>> projectResources = new HashMap<>();
@@ -36,10 +41,10 @@ public class ResourceCollector implements IResourceVisitor {
 		switch (resourceType) {
 		case IResource.FILE: {
 			final IProject project = resource.getProject();
-			List<IFile> files = projectResources.get(project);
+			List<IFile> files = this.projectResources.get(project);
 			if (files == null) {
 				files = new ArrayList<>();
-				projectResources.put(project, files);
+				this.projectResources.put(project, files);
 			}
 
 			final IFile file = (IFile) resource;
@@ -62,7 +67,7 @@ public class ResourceCollector implements IResourceVisitor {
 	}
 
 	public Map<IProject, List<IFile>> getProjectResources() {
-		return projectResources;
+		return this.projectResources;
 	}
 
 }

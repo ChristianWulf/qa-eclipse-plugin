@@ -20,6 +20,11 @@ import org.eclipse.jface.resource.ImageRegistry;
 
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class ImageRegistryKey {
 
 	private static final Class<?> ACTIVATOR_CLASS = PmdUIPlugin.class;

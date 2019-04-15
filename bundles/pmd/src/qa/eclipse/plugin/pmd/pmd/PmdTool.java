@@ -25,6 +25,11 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdTool {
 
 	/**

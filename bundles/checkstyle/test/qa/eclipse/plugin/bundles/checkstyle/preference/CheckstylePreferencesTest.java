@@ -25,58 +25,64 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test checkstyle preferences.
+ * 
+ * @author Christian Wulf
+ *
+ */
 public class CheckstylePreferencesTest {
 
 	private IEclipsePreferences preferences;
 
 	@Before
 	public void before() {
-		preferences = DefaultScope.INSTANCE.getNode("test node");
-		preferences.put("empty", "");
-		preferences.put("single", "path/to/jar");
-		preferences.put("multiple", "path/to/jar  ,  path/to/another/jar");
+		this.preferences = DefaultScope.INSTANCE.getNode("test node");
+		this.preferences.put("empty", "");
+		this.preferences.put("single", "path/to/jar");
+		this.preferences.put("multiple", "path/to/jar  ,  path/to/another/jar");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void putNull() throws Exception {
-		preferences.put("null", null);
+		this.preferences.put("null", null);
 	}
 
 	@Test
 	public void splitNullValue() throws Exception {
-		String propertyValue = preferences.get("null", null);
+		final String propertyValue = this.preferences.get("null", null);
 
 		assertThat(propertyValue, is(nullValue()));
 	}
 
 	@Test
 	public void splitDefaultStringValue() throws Exception {
-		String propertyValue = preferences.get("null", "");
-		String[] propertyValueParts = propertyValue.split(",");
+		final String propertyValue = this.preferences.get("null", "");
+		final String[] propertyValueParts = propertyValue.split(",");
 
 		assertThat(propertyValueParts, is(instanceOf(String[].class)));
 	}
 
 	@Test
 	public void splitEmptyValue() throws Exception {
-		String propertyValue = preferences.get("empty", null);
-		String[] propertyValueParts = propertyValue.split(",");
+		final String propertyValue = this.preferences.get("empty", null);
+		final String[] propertyValueParts = propertyValue.split(",");
 
 		assertThat(propertyValueParts, is(instanceOf(String[].class)));
 	}
 
 	@Test
 	public void splitSingleValue() throws Exception {
-		String propertyValue = preferences.get("single", null);
-		String[] propertyValueParts = propertyValue.split(",");
+		final String propertyValue = this.preferences.get("single", null);
+		final String[] propertyValueParts = propertyValue.split(",");
 
 		assertThat(propertyValueParts, is(instanceOf(String[].class)));
 	}
 
 	@Test
 	public void splitMultiValue() throws Exception {
-		String propertyValue = preferences.get("multiple", null);
-		String[] propertyValueParts = propertyValue.split(",");
+		final String propertyValue = this.preferences.get("multiple", null);
+		final String[] propertyValueParts = propertyValue.split(",");
 
 		assertThat(propertyValueParts, is(instanceOf(String[].class)));
 	}

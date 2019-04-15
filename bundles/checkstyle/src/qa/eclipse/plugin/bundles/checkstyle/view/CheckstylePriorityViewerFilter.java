@@ -22,6 +22,11 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CheckstylePriorityViewerFilter extends ViewerFilter {
 
 	/** default value is 3 from 0..3 */

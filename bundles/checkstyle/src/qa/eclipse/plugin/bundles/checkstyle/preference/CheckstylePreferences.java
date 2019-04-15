@@ -25,10 +25,12 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class CheckstylePreferences {
-
-	/** split pattern */
-	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	public static final CheckstylePreferences INSTANCE = new CheckstylePreferences("qa.eclipse.plugin.checkstyle");
 
@@ -36,6 +38,9 @@ public final class CheckstylePreferences {
 	public static final String PROP_KEY_CONFIG_FILE_PATH = "configFilePath";
 	public static final String INVALID_CONFIG_FILE_PATH = "invalid/config/file/path";
 	public static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
+
+	/** split pattern */
+	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
 
@@ -83,8 +88,9 @@ public final class CheckstylePreferences {
 	 * @return a new array containing zero or more jar paths
 	 */
 	public String[] loadCustomModuleJarPaths(final IEclipsePreferences preferences) {
-		final String customModulesJarPathsValue = preferences.get(PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
-		final String[] customRulesJarPaths = customModulesJarPathsValue.split(BY_COMMA_AND_TRIM);
+		final String customModulesJarPathsValue = preferences
+				.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
+		final String[] customRulesJarPaths = customModulesJarPathsValue.split(CheckstylePreferences.BY_COMMA_AND_TRIM);
 
 		// FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath,
 		// customRulesJars);
@@ -99,7 +105,8 @@ public final class CheckstylePreferences {
 	 *         string.
 	 */
 	public String loadConfigFilePath(final IEclipsePreferences preferences) {
-		return preferences.get(CheckstylePreferences.PROP_KEY_CONFIG_FILE_PATH, CheckstylePreferences.INVALID_CONFIG_FILE_PATH);
+		return preferences.get(CheckstylePreferences.PROP_KEY_CONFIG_FILE_PATH,
+				CheckstylePreferences.INVALID_CONFIG_FILE_PATH);
 	}
 
 }

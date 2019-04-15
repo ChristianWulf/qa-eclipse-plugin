@@ -35,6 +35,11 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 final class ClearViolationsViewJob extends WorkspaceJob {
 
 	private final List<CheckstyleViolationMarker> violationMarkers;

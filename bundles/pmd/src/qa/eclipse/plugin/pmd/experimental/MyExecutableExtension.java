@@ -19,6 +19,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class MyExecutableExtension implements IExecutableExtension {
 
 	@Override

@@ -20,6 +20,11 @@ import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdSaveParticipant implements ISaveParticipant {
 
 	@Override

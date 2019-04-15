@@ -17,6 +17,11 @@ package qa.eclipse.plugin.pmd.ui;
 
 import org.eclipse.osgi.util.NLS;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class PmdMessages extends NLS {
 
 	private static final String BUNDLE_NAME = PmdMessages.class.getName();

@@ -42,6 +42,11 @@ import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.views.PmdViolationsView;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
@@ -55,16 +60,16 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 	@Override
 	public void run() {
 		super.run();
-		runAction();
+		this.runAction();
 	}
 
 	private void runAction() {
-		final IDocument document = getDocument();
+		final IDocument document = this.getDocument();
 		if (document == null) {
 			return;
 		}
 
-		final int activeLine = ruler.getLineOfLastMouseButtonActivity();
+		final int activeLine = this.ruler.getLineOfLastMouseButtonActivity();
 
 		final IRegion lineRegion;
 		try {
@@ -72,7 +77,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 		} catch (final BadLocationException e) {
 			return;
 		}
-		final AbstractMarkerAnnotationModel annotationModel = getAnnotationModel();
+		final AbstractMarkerAnnotationModel annotationModel = this.getAnnotationModel();
 		final Iterator<Annotation> annotations = annotationModel.getAnnotationIterator(lineRegion.getOffset(),
 				lineRegion.getLength() + 1, true, true);
 
@@ -94,7 +99,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 				}
 
 				if (markerType.startsWith(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER)) {
-					openViolationView(marker);
+					this.openViolationView(marker);
 				}
 			}
 

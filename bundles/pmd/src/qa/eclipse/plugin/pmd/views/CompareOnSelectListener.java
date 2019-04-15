@@ -23,6 +23,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.osgi.service.prefs.Preferences;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CompareOnSelectListener extends SelectionAdapter {
 
 	private final StructuredViewer structuredViewer;
@@ -46,12 +51,13 @@ class CompareOnSelectListener extends SelectionAdapter {
 		table.setSortDirection(sortOrder);
 		table.setSortColumn(selectedColumn);
 
-		preferences.putInt(PmdViolationsView.PREF_SORT_DIRECTION, sortOrder);
-		preferences.putInt(PmdViolationsView.PREF_SORT_COLUMN_INDEX, (Integer) table.getSortColumn().getData());
+		this.preferences.putInt(PmdViolationsView.PREF_SORT_DIRECTION, sortOrder);
+		this.preferences.putInt(PmdViolationsView.PREF_SORT_COLUMN_INDEX, (Integer) table.getSortColumn().getData());
 
-		final PmdViolationMarkerComparator comparator = (PmdViolationMarkerComparator) structuredViewer.getComparator();
-		comparator.setSelectedSortProperty(selectedSortProperty);
-		structuredViewer.refresh();
+		final PmdViolationMarkerComparator comparator = (PmdViolationMarkerComparator) this.structuredViewer
+				.getComparator();
+		comparator.setSelectedSortProperty(this.selectedSortProperty);
+		this.structuredViewer.refresh();
 	}
 
 }

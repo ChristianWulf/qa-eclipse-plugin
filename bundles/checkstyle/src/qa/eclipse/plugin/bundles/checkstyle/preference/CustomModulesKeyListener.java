@@ -29,6 +29,11 @@ import org.eclipse.swt.widgets.Text;
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CustomModulesKeyListener extends KeyAdapter {
 
 	private static final String NON_EXISTING_FILE_TEXT = "Attention: at least one of the file paths does not point to an existing file.";

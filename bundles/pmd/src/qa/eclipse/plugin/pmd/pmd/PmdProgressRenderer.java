@@ -23,6 +23,11 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdProgressRenderer extends AbstractRenderer {
 
 	private final SubMonitor subMonitor;
@@ -44,7 +49,7 @@ public class PmdProgressRenderer extends AbstractRenderer {
 
 	@Override
 	public void startFileAnalysis(final DataSource dataSource) {
-		subMonitor.split(1);
+		this.subMonitor.split(1);
 	}
 
 	@Override

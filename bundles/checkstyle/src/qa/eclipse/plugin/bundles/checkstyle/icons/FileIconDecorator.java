@@ -37,6 +37,11 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
 	public static final String ID = "qa.eclipse.plugin.bundles.checkstyle.decorator";
@@ -77,7 +82,8 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		// depth = IResource.DEPTH_ZERO;
 		// }
 
-		final IMarker[] markers = resource.findMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, depth);
+		final IMarker[] markers = resource.findMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
+				depth);
 
 		// do not display any file decorator if there are no markers
 		if (markers.length == 0) {

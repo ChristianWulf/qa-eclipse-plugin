@@ -1,3 +1,18 @@
+/***************************************************************************
+ * Copyright (C) 2019
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package qa.eclipse.plugin.bundles.common;
 
 import java.util.Collections;
@@ -14,6 +29,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class JavaUtil {
 
 	private final Map<IProject, IJavaProject> javaProjectByIProject = new HashMap<>();
@@ -43,7 +63,7 @@ public class JavaUtil {
 
 		final Set<IPath> outputFolderPaths = new HashSet<>();
 
-		final IJavaProject jProject = getAssociatedCachedJavaProject(project);
+		final IJavaProject jProject = this.getAssociatedCachedJavaProject(project);
 		for (final IClasspathEntry entry : jProject.getRawClasspath()) {
 			if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 				final IPath outputLocation = entry.getOutputLocation();
@@ -62,12 +82,10 @@ public class JavaUtil {
 	}
 
 	private IJavaProject getAssociatedCachedJavaProject(final IProject project) {
-		IJavaProject jProject;
-		if (javaProjectByIProject.containsKey(project)) {
-			jProject = javaProjectByIProject.get(project);
+		if (this.javaProjectByIProject.containsKey(project)) {
+			return this.javaProjectByIProject.get(project);
 		} else {
-			jProject = JavaCore.create(project);
+			return JavaCore.create(project);
 		}
-		return jProject;
 	}
 }

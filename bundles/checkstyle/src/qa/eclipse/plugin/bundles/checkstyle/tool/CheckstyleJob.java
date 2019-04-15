@@ -40,6 +40,12 @@ import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.Logger;
 
+/**
+ * Workspace job for checkstyle analysis.
+ * 
+ * @author Christian Wulf
+ *
+ */
 public final class CheckstyleJob extends WorkspaceJob {
 
 	private final List<IFile> eclipseFiles;
@@ -85,7 +91,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 		final CheckstyleTool checkstyleTool = new CheckstyleTool();
 		try {
 			checkstyleTool.startAsyncAnalysis(this.eclipseFiles, checkstyleListener);
-		} catch (final Exception e) {
+		} catch (final Exception e) { // NOCS used to catch all not handled exceptions
 			Logger.logThrowable("Exception while analyzing with Checkstyle.", e);
 			return Status.CANCEL_STATUS;
 		}

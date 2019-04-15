@@ -18,16 +18,22 @@ package qa.eclipse.plugin.bundles.common;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Common functionality activator.
+ *
+ * @author Christian Wulf
+ *
+ */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
+	/** The plug-in ID. */
 	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.common"; //$NON-NLS-1$
 
-	// The shared instance
+	/** The shared instance */
 	private static Activator plugin;
 
 	/**
-	 * The constructor
+	 * The constructor.
 	 */
 	public Activator() {
 	}

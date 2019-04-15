@@ -19,6 +19,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class CheckstylePreferenceChangeListener implements IPreferenceChangeListener {
 
 	private final IProject project;
@@ -33,7 +38,8 @@ class CheckstylePreferenceChangeListener implements IPreferenceChangeListener {
 			final String newEnabled = (String) event.getNewValue();
 			final Boolean enabled = Boolean.valueOf(newEnabled);
 			if (!enabled) { // remove all violation markers
-				final String jobName = String.format("Removing Checkstyle violations for project '%s'...", this.project.getName());
+				final String jobName = String.format("Removing Checkstyle violations for project '%s'...",
+						this.project.getName());
 
 				CheckstyleRemoveMarkersJob.start(jobName, this.project);
 			}

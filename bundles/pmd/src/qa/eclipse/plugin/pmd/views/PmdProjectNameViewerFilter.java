@@ -20,6 +20,11 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdProjectNameViewerFilter extends ViewerFilter {
 
 	private String projectName;
@@ -27,10 +32,10 @@ public class PmdProjectNameViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
 		final PmdViolationMarker marker = (PmdViolationMarker) element;
-		if (projectName == null) {
+		if (this.projectName == null) {
 			return true;
 		}
-		return marker.getProjectName().equals(projectName);
+		return marker.getProjectName().equals(this.projectName);
 	}
 
 	public void setProjectName(final String projectName) {

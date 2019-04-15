@@ -27,6 +27,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class ProjectUtil {
 
 	private ProjectUtil() {

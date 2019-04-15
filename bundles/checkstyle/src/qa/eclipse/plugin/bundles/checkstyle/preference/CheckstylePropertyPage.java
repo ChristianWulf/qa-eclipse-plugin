@@ -31,6 +31,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.osgi.service.prefs.BackingStoreException;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class CheckstylePropertyPage extends PropertyPage {
 
 	static final String CONFIG_FILE_PATH_DEFAULT_TEXT = "Example: conf/quality-config/cs-conf.xml";
@@ -100,7 +105,8 @@ public class CheckstylePropertyPage extends PropertyPage {
 		gd = new GridData();
 		gd.widthHint = this.convertWidthInCharsToPixels(60);
 		this.customModulesJarPathsText.setLayoutData(gd);
-		this.customModulesJarPathsText.setText(preferences.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, ""));
+		this.customModulesJarPathsText
+				.setText(preferences.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, ""));
 		this.customModulesJarPathsText.addKeyListener(new CustomModulesKeyListener(this));
 
 		this.exampleCustomModulesLabel = new Label(composite, SWT.NONE);
@@ -197,7 +203,8 @@ public class CheckstylePropertyPage extends PropertyPage {
 				.getProjectScopedPreferences(resource.getProject());
 
 		preferences.put(CheckstylePreferences.PROP_KEY_CONFIG_FILE_PATH, this.configFilePathText.getText());
-		preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, this.customModulesJarPathsText.getText());
+		preferences.put(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS,
+				this.customModulesJarPathsText.getText());
 		preferences.putBoolean(CheckstylePreferences.PROP_KEY_ENABLED, this.enabledButton.getSelection());
 
 		try {

@@ -35,6 +35,11 @@ import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
 	public static final String ID = "pmd-eclipse-plugin.decorator";
@@ -42,7 +47,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	private final ImageRegistry imageRegistry;
 
 	public FileIconDecorator() {
-		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
+		this.imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 	}
 
 	@Override
@@ -66,7 +71,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 		ImageDescriptor imageDescriptor = null;
 		try {
-			imageDescriptor = getImageDescriptor(resource);
+			imageDescriptor = this.getImageDescriptor(resource);
 		} catch (final CoreException e) {
 			PmdUIPlugin.getDefault().logThrowable("Error on decorating element.", e);
 		}
@@ -108,7 +113,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		final int lowestAllowedPriority = 5;
 		if (highestPriority <= lowestAllowedPriority) {
 			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
-			imageDescriptor = imageRegistry.getDescriptor(imageRegistryKey);
+			imageDescriptor = this.imageRegistry.getDescriptor(imageRegistryKey);
 		}
 
 		return imageDescriptor;

@@ -20,6 +20,11 @@ import static org.hamcrest.Matchers.arrayContaining;
 
 import org.junit.Test;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class SplitTest {
 
 	@Test

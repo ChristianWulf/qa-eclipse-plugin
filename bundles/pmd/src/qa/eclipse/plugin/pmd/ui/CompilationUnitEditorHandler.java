@@ -32,14 +32,19 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.pmd.PmdTool;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 // used by, for example,
-//	popup:#CompilationUnitEditorContext
+// popup:#CompilationUnitEditorContext
 public class CompilationUnitEditorHandler extends AbstractHandler {
 
 	private final PmdTool pmdTool;
 
 	public CompilationUnitEditorHandler() {
-		pmdTool = PmdUIPlugin.getDefault().getPmdTool();
+		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 
 	@Override
@@ -59,7 +64,7 @@ public class CompilationUnitEditorHandler extends AbstractHandler {
 			final IFile file = fileEditorInput.getFile();
 
 			final List<IFile> files = Arrays.asList(file);
-			pmdTool.startAsyncAnalysis(files);
+			this.pmdTool.startAsyncAnalysis(files);
 		}
 
 		return null;

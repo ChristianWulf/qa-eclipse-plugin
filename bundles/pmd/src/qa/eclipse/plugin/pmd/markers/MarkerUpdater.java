@@ -20,6 +20,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.texteditor.IMarkerUpdater;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 // org.eclipse.ui.editors.markerUpdaters
 public class MarkerUpdater implements IMarkerUpdater {
 

@@ -21,6 +21,11 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import net.sourceforge.pmd.RulePriority;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class PmdPriorityViewerFilter extends ViewerFilter {
 
 	private int lowestPriority = RulePriority.LOW.getPriority();
@@ -28,7 +33,7 @@ class PmdPriorityViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
 		final PmdViolationMarker marker = (PmdViolationMarker) element;
-		return marker.getPriority() <= lowestPriority;
+		return marker.getPriority() <= this.lowestPriority;
 	}
 
 	public void setLowestPriority(final int lowestPriority) {
@@ -36,7 +41,7 @@ class PmdPriorityViewerFilter extends ViewerFilter {
 	}
 
 	public int getLowestPriority() {
-		return lowestPriority;
+		return this.lowestPriority;
 	}
 
 }

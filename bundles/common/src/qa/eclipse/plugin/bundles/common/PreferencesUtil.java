@@ -17,6 +17,11 @@ package qa.eclipse.plugin.bundles.common;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public final class PreferencesUtil {
 
 	/** split pattern */

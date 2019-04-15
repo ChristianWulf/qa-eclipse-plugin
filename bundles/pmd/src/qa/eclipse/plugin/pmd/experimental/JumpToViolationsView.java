@@ -24,6 +24,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class JumpToViolationsView extends AbstractHandler {
 
 	@Override

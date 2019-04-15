@@ -72,6 +72,11 @@ import qa.eclipse.plugin.pmd.markers.PmdMarkers;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {
 
@@ -655,7 +660,7 @@ public class PmdViolationsView extends ViewPart
 	private void flushSettings() {
 		try {
 			this.viewPreferences.flush();
-		} catch (final Exception e) { // NOPMD
+		} catch (final Exception e) { // NOCS,NOPMD
 			// we do not want to hinder Eclipse to quit.
 			// So, we catch all exceptions here.
 		}

@@ -26,6 +26,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 class ResourceCollector implements IResourceVisitor {
 
 	private final Map<IProject, List<IFile>> projectResources = new HashMap<>();

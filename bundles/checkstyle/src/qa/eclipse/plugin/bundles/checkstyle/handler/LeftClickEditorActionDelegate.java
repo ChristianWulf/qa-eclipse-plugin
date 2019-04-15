@@ -22,6 +22,11 @@ import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.texteditor.AbstractRulerActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class LeftClickEditorActionDelegate extends AbstractRulerActionDelegate {
 
 	@Override

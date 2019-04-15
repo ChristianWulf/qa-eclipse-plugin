@@ -19,6 +19,11 @@ import java.io.File;
 
 import org.eclipse.core.resources.IMarker;
 
+/**
+ *
+ * @author Christian Wulf
+ *
+ */
 public class CheckstyleViolationMarker {
 
 	private final IMarker marker;
