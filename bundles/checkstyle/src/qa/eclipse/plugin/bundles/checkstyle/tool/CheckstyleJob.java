@@ -15,9 +15,9 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.tool;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -42,7 +42,7 @@ import qa.eclipse.plugin.bundles.common.Logger;
 
 /**
  * Workspace job for checkstyle analysis.
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -69,7 +69,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 			return Status.OK_STATUS;
 		}
 
-		final Map<String, IFile> eclipseFileByFilePath = new HashMap<>();
+		final Map<String, IFile> eclipseFileByFilePath = new ConcurrentHashMap<>();
 		// collect data sources
 		for (final IFile eclipseFile : this.eclipseFiles) {
 			final String key = eclipseFile.getLocation().toFile().getAbsolutePath();
@@ -78,7 +78,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 			try {
 				// also remove previous markers on that file
 				CheckstyleMarkers.deleteMarkers(eclipseFile);
-			} catch (final CoreException e) {
+			} catch (final CoreException e) { // NOPMD ignore empty block
 				// ignore if resource does not exist anymore or has been closed
 			}
 		}

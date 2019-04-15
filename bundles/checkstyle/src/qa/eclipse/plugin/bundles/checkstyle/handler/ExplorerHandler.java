@@ -44,6 +44,13 @@ import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
  */
 public class ExplorerHandler extends AbstractHandler {
 
+	/**
+	 * Basic constructor.
+	 */
+	public ExplorerHandler() {
+		super();
+	}
+
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);

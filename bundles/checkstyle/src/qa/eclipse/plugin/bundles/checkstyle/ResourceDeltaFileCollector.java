@@ -16,10 +16,10 @@
 package qa.eclipse.plugin.bundles.checkstyle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -42,11 +42,18 @@ import qa.eclipse.plugin.bundles.common.JavaUtil;
  */
 class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
-	private final Map<IProject, List<IFile>> addedFiles = new HashMap<>();
+	private final Map<IProject, List<IFile>> addedFiles = new ConcurrentHashMap<>();
 	// private final Map<IProject, List<IFile>> removedFiles = new HashMap<>();
-	private final Map<IProject, List<IFile>> changedFiles = new HashMap<>();
+	private final Map<IProject, List<IFile>> changedFiles = new ConcurrentHashMap<>();
 
 	private final JavaUtil javaUtil = new JavaUtil();
+
+	/**
+	 * Default constructor.
+	 */
+	public ResourceDeltaFileCollector() {
+		super();
+	}
 
 	@Override
 	public boolean visit(final IResourceDelta delta) throws CoreException {
@@ -69,10 +76,7 @@ class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 			return false;
 		}
 		// filter resources which are not located on the file system
-		if (resource.getLocation() == null) {
-			return false;
-		}
-		return true;
+		return (resource.getLocation() != null);
 	}
 
 	private void addFileIfApplicable(final IResourceDelta delta) throws JavaModelException {
@@ -102,7 +106,7 @@ class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 			}
 		}
 
-		switch (delta.getKind()) {
+		switch (delta.getKind()) { // NOCS default would be empty
 		case IResourceDelta.ADDED: {
 			this.addFileToProjectMap(file, project, this.addedFiles);
 			break;
@@ -120,9 +124,6 @@ class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 
 			this.addFileToProjectMap(file, project, this.changedFiles);
 			break;
-		}
-		default: {
-			// ignore other kinds
 		}
 		}
 	}

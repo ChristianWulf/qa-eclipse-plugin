@@ -16,9 +16,9 @@
 package qa.eclipse.plugin.bundles.checkstyle.handler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -33,7 +33,14 @@ import org.eclipse.core.runtime.CoreException;
  */
 class ResourceCollector implements IResourceVisitor {
 
-	private final Map<IProject, List<IFile>> projectResources = new HashMap<>();
+	private final Map<IProject, List<IFile>> projectResources = new ConcurrentHashMap<>();
+
+	/**
+	 * Default constructor.
+	 */
+	public ResourceCollector() {
+		// nothing to be done here
+	}
 
 	@Override
 	public boolean visit(final IResource resource) throws CoreException {

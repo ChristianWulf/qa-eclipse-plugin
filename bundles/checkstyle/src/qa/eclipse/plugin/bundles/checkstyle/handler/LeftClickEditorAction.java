@@ -51,6 +51,14 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 
 	private final IVerticalRulerInfo ruler;
 
+	/**
+	 * Create an left click editor action.
+	 *
+	 * @param bundle
+	 * @param prefix
+	 * @param editor
+	 * @param ruler
+	 */
 	public LeftClickEditorAction(final ResourceBundle bundle, final String prefix, final ITextEditor editor,
 			final IVerticalRulerInfo ruler) {
 		super(bundle, prefix, editor, ruler);

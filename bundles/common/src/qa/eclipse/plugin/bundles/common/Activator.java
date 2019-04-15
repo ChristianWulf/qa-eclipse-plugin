@@ -36,6 +36,7 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor.
 	 */
 	public Activator() {
+		super();
 	}
 
 	/*
@@ -58,12 +59,12 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		Activator.plugin = null;
+		Activator.plugin = null; // NOPMD necessary in this context, due to start/stop protocol
 		super.stop(context);
 	}
 
 	/**
-	 * Returns the shared instance
+	 * Returns the shared instance.
 	 *
 	 * @return the shared instance
 	 */

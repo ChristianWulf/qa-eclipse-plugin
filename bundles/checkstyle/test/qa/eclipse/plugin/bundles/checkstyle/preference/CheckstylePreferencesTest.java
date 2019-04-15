@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author Christian Wulf
  *
  */
-public class CheckstylePreferencesTest {
+public class CheckstylePreferencesTest { // NOPMD test class no constructor
 
 	private IEclipsePreferences preferences;
 

@@ -16,10 +16,10 @@
 package qa.eclipse.plugin.bundles.common;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +36,14 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public class JavaUtil {
 
-	private final Map<IProject, IJavaProject> javaProjectByIProject = new HashMap<>();
+	private final Map<IProject, IJavaProject> javaProjectByIProject = new ConcurrentHashMap<>();
+
+	/**
+	 * Default constructor.
+	 */
+	public JavaUtil() {
+		// nothing to do here
+	}
 
 	/**
 	 * @param project

@@ -20,9 +20,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -111,7 +111,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private final ViewerFilter[] viewerFilters = new ViewerFilter[2];
 
-	private final Map<Integer, String> verticalKeyByPriority = new HashMap<>();
+	private final Map<Integer, String> verticalKeyByPriority = new ConcurrentHashMap<>();
 
 	public CheckstyleViolationsView() {
 		final IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
@@ -206,8 +206,6 @@ public class CheckstyleViolationsView extends ViewPart
 						CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
 					}
 				});
-
-				return;
 			}
 		});
 		this.createTableComboItems(tableCombo);
@@ -310,9 +308,8 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private int loadSavedSortDirection() {
-		final int savedSortDirection = this.viewPreferences.getInt(CheckstyleViolationsView.PREF_SORT_DIRECTION,
+		return this.viewPreferences.getInt(CheckstyleViolationsView.PREF_SORT_DIRECTION,
 				SWT.NONE);
-		return savedSortDirection;
 	}
 
 	private TableColumn loadSavedSortColumn() {
@@ -680,7 +677,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private void flushSettings() {
 		try {
 			this.viewPreferences.flush();
-		} catch (final Exception e) { // NOCS
+		} catch (final Exception e) { // NOCS, NOPMD
 			// we do not want to hinder Eclipse to quit.
 			// So, we catch all exceptions here.
 		}

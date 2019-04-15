@@ -29,13 +29,18 @@ class CheckstyleProjectNameViewerFilter extends ViewerFilter {
 
 	private String projectName;
 
+	public CheckstyleProjectNameViewerFilter() {
+		super();
+	}
+
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
-		final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
 		if (this.projectName == null) {
 			return true;
+		} else {
+			final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			return marker.getProjectName().equals(this.projectName);
 		}
-		return marker.getProjectName().equals(this.projectName);
 	}
 
 	public void setProjectName(final String projectName) {
