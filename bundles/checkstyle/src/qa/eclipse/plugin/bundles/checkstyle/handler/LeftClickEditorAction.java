@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView;
 
@@ -106,7 +106,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 					break;
 				}
 
-				if (markerType.startsWith(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER)) {
+				if (markerType.startsWith(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER)) {
 					this.openViolationView(marker);
 				}
 			}

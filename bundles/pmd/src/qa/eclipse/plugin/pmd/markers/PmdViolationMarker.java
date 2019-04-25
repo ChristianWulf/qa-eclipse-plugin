@@ -44,7 +44,7 @@ public class PmdViolationMarker {
 	 * @return the priority (1 highest to 5 lowest) or 0 otherwise.
 	 */
 	public int getPriority() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_PRIORITY, 0);
+		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_PRIORITY, 0);
 	}
 
 	/**
@@ -69,11 +69,11 @@ public class PmdViolationMarker {
 	}
 
 	public String getRuleName() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_RULENAME, "unknown");
+		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_RULENAME, "unknown");
 	}
 
 	public String getRuleSetName() {
-		return this.marker.getAttribute(PmdMarkers.ATTR_KEY_RULESETNAME, "unknown");
+		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_RULESETNAME, "unknown");
 	}
 
 	public IMarker getMarker() {

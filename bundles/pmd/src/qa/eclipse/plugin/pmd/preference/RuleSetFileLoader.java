@@ -26,8 +26,9 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.util.ResourceLoader;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 
 /**
  *
@@ -39,10 +40,12 @@ public class RuleSetFileLoader {
 	// TODO load only once at the start, i.e., make this field static
 	private final RuleSets defaultRuleSets;
 
+	/**
+	 * Load a rule set from file.
+	 */
 	public RuleSetFileLoader() {
-		final ClassLoader classLoader = this.getClass().getClassLoader();
-
-		final RuleSetFactory factory = new RuleSetFactory(classLoader, RulePriority.LOW, false, true);
+		final ResourceLoader resourceLoader = new ResourceLoader(this.getClass().getClassLoader());
+		final RuleSetFactory factory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, true);
 
 		final Iterator<RuleSet> registeredRuleSets;
 
@@ -50,7 +53,7 @@ public class RuleSetFileLoader {
 		Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 		try {
 			registeredRuleSets = factory.getRegisteredRuleSets();
-		} catch (RuleSetNotFoundException | RuntimeException e) { // NOCS RuntimeException: if rule class was not found
+		} catch (RuleSetNotFoundException | RuntimeException e) { // NOPMD, NOCS RuntimeException: if rule class was not found
 			throw new IllegalStateException(e);
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedContextClassLoader);
@@ -65,14 +68,20 @@ public class RuleSetFileLoader {
 
 	/**
 	 * @param ruleSetFilePath
+	 *            path to the ruleset
+	 * @param project
+	 *            associated project
+	 * @param classLoaderWithCustomRules
+	 *            class loader with custom rules
 	 * @return the rule set declared in the given <code>ruleSetFilePath</code>, or
 	 *         the built-in default rule set.
 	 */
 	public RuleSets load(final String ruleSetFilePath, final IProject project,
 			final ClassLoader classLoaderWithCustomRules) {
 		final ClassLoader savedContextClassLoader = Thread.currentThread().getContextClassLoader();
+		final ResourceLoader resourceLoader = new ResourceLoader(this.getClass().getClassLoader());
 
-		final RuleSetFactory factory = new RuleSetFactory(classLoaderWithCustomRules, RulePriority.LOW, false, true);
+		final RuleSetFactory factory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, true);
 		Thread.currentThread().setContextClassLoader(classLoaderWithCustomRules);
 		try {
 			// Explanation for overwriting the context class loader:
@@ -86,7 +95,7 @@ public class RuleSetFileLoader {
 			// Finally, we rollback the context class loader to its original one.
 			final RuleSet ruleSet = factory.createRuleSet(ruleSetFilePath);
 			return new RuleSets(ruleSet);
-		} catch (RuleSetNotFoundException | RuntimeException e) { // RuntimeException: if rule class was not found
+		} catch (RuleSetNotFoundException | RuntimeException e) { // NOPMD, NOCS RuntimeException: if rule class was not found
 			final String message;
 			if (!new File(ruleSetFilePath).exists()) {
 				// RuleSetNotFoundException at this place means: file not found.
@@ -100,7 +109,7 @@ public class RuleSetFileLoader {
 				message = String.format(messageFormat, e.getLocalizedMessage());
 			}
 			try {
-				PmdMarkers.appendViolationMarker(project, message);
+				PmdMarkersUtils.appendViolationMarker(project, message);
 			} catch (final CoreException e1) {
 				PmdUIPlugin.getDefault().logThrowable("Cannot set marker error, while reporting: " + message, e);
 			}

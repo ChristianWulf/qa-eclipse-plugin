@@ -33,9 +33,9 @@ import org.eclipse.ui.PlatformUI;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
-import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
  *
@@ -82,7 +82,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		// depth = IResource.DEPTH_ZERO;
 		// }
 
-		final IMarker[] markers = resource.findMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
+		final IMarker[] markers = resource.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
 				depth);
 
 		// do not display any file decorator if there are no markers
@@ -108,7 +108,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		ImageDescriptor imageDescriptor = null;
 		final int lowestAllowedPriority = 0;
 		if (highestPriority >= lowestAllowedPriority) {
-			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
+			final String imageRegistryKey = ImageRegistryKeyUtils.getFileDecoratorKeyByPriority("checkstyle", highestPriority);
 			imageDescriptor = this.imageRegistry.getDescriptor(imageRegistryKey);
 		}
 

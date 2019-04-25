@@ -32,8 +32,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.builder.IncrementalViolationMarkerBuilder;
-import qa.eclipse.plugin.pmd.icons.ImageRegistryKey;
 import qa.eclipse.plugin.pmd.pmd.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
 
@@ -105,8 +105,6 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 		// our view listens to marker changes and thus is indirectly notified about
 		// removed resource
-
-		return;
 	}
 
 	/**
@@ -114,8 +112,10 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	 *
 	 * @param project
 	 *            current project
+	 * @throws CoreException
+	 *             when setting the project description
 	 */
-	public void registerBuilder(final IProject project) {
+	public void registerBuilder(final IProject project) throws CoreException {
 		final IProjectDescription desc;
 		try {
 			desc = project.getDescription();
@@ -123,31 +123,28 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 			throw new IllegalStateException(e);
 		}
 		final ICommand[] commands = desc.getBuildSpec();
-		boolean found = false;
 
-		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(IncrementalViolationMarkerBuilder.BUILDER_ID)) {
-				found = true;
+		for (final ICommand command : commands) {
+			if (command.getBuilderName().equals(IncrementalViolationMarkerBuilder.BUILDER_ID)) {
+				this.addBuilderToProject(desc, commands, project);
 				break;
 			}
 		}
+	}
 
-		if (!found) {
-			// add builder to project
-			final ICommand command = desc.newCommand();
-			command.setBuilderName(IncrementalViolationMarkerBuilder.BUILDER_ID);
-			final ICommand[] newCommands = new ICommand[commands.length + 1];
+	private void addBuilderToProject(final IProjectDescription description,
+			final ICommand[] commands, final IProject project) throws CoreException {
+		// add builder to project
+		final ICommand command = description.newCommand();
+		command.setBuilderName(IncrementalViolationMarkerBuilder.BUILDER_ID);
+		final ICommand[] newCommands = new ICommand[commands.length + 1];
 
-			// Add it before other builders.
-			System.arraycopy(commands, 0, newCommands, 1, commands.length);
-			newCommands[0] = command;
-			desc.setBuildSpec(newCommands);
-			try {
-				project.setDescription(desc, null);
-			} catch (final CoreException e) {
-				throw new IllegalStateException(e);
-			}
-		}
+		// Add it before other builders.
+		System.arraycopy(commands, 0, newCommands, 1, commands.length);
+		newCommands[0] = command;
+		description.setBuildSpec(newCommands);
+
+		project.setDescription(description, null);
 	}
 
 	/*
@@ -158,15 +155,15 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception { // NOCS context is API
-		PmdUIPlugin.plugin = null;
+		PmdUIPlugin.plugin = null; // NOPMD
 		super.stop(context);
 	}
 
 	@Override
-	protected void initializeImageRegistry(final ImageRegistry reg) {
-		super.initializeImageRegistry(reg);
+	protected void initializeImageRegistry(final ImageRegistry registry) {
+		super.initializeImageRegistry(registry);
 
-		ImageRegistryKey.initialize(reg);
+		ImageRegistryKeyUtils.initialize(PmdUIPlugin.class, "pmd", registry);
 	}
 
 	/**

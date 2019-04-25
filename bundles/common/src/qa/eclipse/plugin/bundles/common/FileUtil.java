@@ -49,7 +49,7 @@ public final class FileUtil {
 				fileUrl = jarFile.toURI().toURL();
 			} catch (final MalformedURLException e) {
 				// jarFile is filled by the user, so continue loop upon exception
-				Logger.logThrowable("Cannot convert file to URL: " + jarFile, e);
+				LoggerUtils.logThrowable("Cannot convert file to URL: " + jarFile, e);
 				continue;
 			}
 
@@ -69,7 +69,7 @@ public final class FileUtil {
 			final File file = FileUtil.makeAbsoluteFile(filePath, parentFile);
 			if (!file.exists()) {
 				final String message = String.format("%s not found on file path '%s'.", messagePrefix, filePath);
-				Logger.logWarning(message);
+				LoggerUtils.logWarning(message);
 			}
 		}
 	}

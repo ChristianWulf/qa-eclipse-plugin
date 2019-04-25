@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 
 /**
  *
@@ -47,7 +47,7 @@ final class PmdRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		try {
-			PmdMarkers.deleteMarkers(this.project);
+			PmdMarkersUtils.deleteMarkers(this.project);
 		} catch (final CoreException e) {
 			final String message = String.format("Could not delete all markers for project '%s'", this.project);
 			PmdUIPlugin.getDefault().logThrowable(message, e);

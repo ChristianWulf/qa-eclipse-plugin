@@ -66,9 +66,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.osgi.service.prefs.Preferences;
 
 import net.sourceforge.pmd.RulePriority;
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
-import qa.eclipse.plugin.pmd.icons.ImageRegistryKey;
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
@@ -108,6 +108,9 @@ public class PmdViolationsView extends ViewPart
 
 	private final Map<Integer, String> keyByPriority = new HashMap<>();
 
+	/**
+	 * Create PMD violations view.
+	 */
 	public PmdViolationsView() {
 		final IEclipsePreferences defaultPreferences = PmdPreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(PmdViolationsView.PREF_SORT_DIRECTION, SWT.DOWN);
@@ -264,7 +267,7 @@ public class PmdViolationsView extends ViewPart
 		TableItem ti;
 
 		for (final RulePriority rulePriority : RulePriority.values()) {
-			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(rulePriority.getPriority());
+			imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("pmd", rulePriority.getPriority());
 			image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
 			ti.setText("At least " + rulePriority.getName());
@@ -405,7 +408,7 @@ public class PmdViolationsView extends ViewPart
 			public Image getImage(final Object element) {
 				final PmdViolationMarker violationMarker = (PmdViolationMarker) element;
 				final int pmdPriority = violationMarker.getPriority();
-				final String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(pmdPriority);
+				final String imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("pmd", pmdPriority);
 				final Image image = PmdUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
@@ -564,7 +567,7 @@ public class PmdViolationsView extends ViewPart
 	 */
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
-		final IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true);
+		final IMarkerDelta[] markerDeltas = event.findMarkerDeltas(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER, true);
 		// do not unnecessarily collect all PMD markers again if no marker of this
 		// resource was changed
 		if (markerDeltas.length == 0) {
@@ -575,7 +578,7 @@ public class PmdViolationsView extends ViewPart
 	}
 
 	private void updateView() {
-		final IMarker[] updatedMarkers = PmdMarkers.findAllInWorkspace();
+		final IMarker[] updatedMarkers = PmdMarkersUtils.findAllInWorkspace();
 
 		final List<PmdViolationMarker> pmdViolationMarkers = new ArrayList<>();
 
@@ -616,6 +619,9 @@ public class PmdViolationsView extends ViewPart
 		this.numViolationsLabel.getParent().layout(); // update label
 	}
 
+	/**
+	 * @return get table viewer
+	 */
 	public TableViewer getTableViewer() {
 		// tableViewer.getTable().getItem(index)
 		// tableViewer.getTable().showItem(item);

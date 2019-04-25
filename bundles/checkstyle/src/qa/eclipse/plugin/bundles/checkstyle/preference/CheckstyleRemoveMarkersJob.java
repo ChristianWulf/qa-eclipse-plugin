@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 
 /**
  * 
@@ -47,7 +47,7 @@ final class CheckstyleRemoveMarkersJob extends Job {
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		try {
-			CheckstyleMarkers.deleteMarkers(this.project);
+			CheckstyleMarkersUtils.deleteMarkers(this.project);
 		} catch (final CoreException e) {
 			final String message = String.format("Could not delete all markers for project '%s'", this.project);
 			Activator.getDefault().logThrowable(message, e);

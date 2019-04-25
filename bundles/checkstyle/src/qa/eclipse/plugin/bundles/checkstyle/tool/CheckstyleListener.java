@@ -26,7 +26,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 
 /**
  *
@@ -78,7 +78,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		final String violationFilename = violation.getFileName();
 		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
-			CheckstyleMarkers.appendViolationMarker(eclipseFile, violation);
+			CheckstyleMarkersUtils.appendViolationMarker(eclipseFile, violation);
 		} catch (final CoreException e) { // NOPMD ignore empty block
 			// ignore if marker could not be created
 		}
@@ -91,7 +91,7 @@ class CheckstyleListener implements AuditListener, BeforeExecutionFileFilter {
 		final String violationFilename = event.getFileName();
 		final IFile eclipseFile = this.eclipseFileByFilePath.get(violationFilename);
 		try {
-			CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, throwable);
+			CheckstyleMarkersUtils.appendProcessingErrorMarker(eclipseFile, throwable);
 		} catch (final CoreException e) { // NOPMD ignore empty block
 			// ignore if marker could not be created
 		}

@@ -30,7 +30,6 @@ public class PmdSaveParticipant implements ISaveParticipant {
 	@Override
 	public void doneSaving(final ISaveContext context) {
 		final IPath[] files = context.getFiles();
-		System.out.println("files: " + files);
 	}
 
 	@Override
