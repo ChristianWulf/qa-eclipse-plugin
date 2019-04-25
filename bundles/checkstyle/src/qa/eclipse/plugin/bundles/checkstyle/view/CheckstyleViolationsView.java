@@ -70,10 +70,10 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.Activator;
 import qa.eclipse.plugin.bundles.checkstyle.StringUtils;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
-import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
  *
@@ -281,7 +281,7 @@ public class CheckstyleViolationsView extends ViewPart
 		});
 
 		for (final SeverityLevel severityLevel : severityLevels) {
-			imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(severityLevel.ordinal());
+			imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("checkstyle", severityLevel.ordinal());
 			image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
 			ti.setText("At least " + severityLevel.name());
@@ -423,7 +423,7 @@ public class CheckstyleViolationsView extends ViewPart
 			public Image getImage(final Object element) {
 				final CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
 				final int priority = violationMarker.getSeverityLevelIndex();
-				final String imageRegistryKey = ImageRegistryKey.getPriorityColumnKeyByPriority(priority);
+				final String imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("checkstyle", priority);
 				final Image image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
@@ -602,7 +602,7 @@ public class CheckstyleViolationsView extends ViewPart
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 		final IMarkerDelta[] markerDeltas = event
-				.findMarkerDeltas(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true);
+				.findMarkerDeltas(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true);
 		// do not unnecessarily collect all PMD markers again if no marker of this
 		// resource was changed
 		if (markerDeltas.length == 0) {
@@ -613,7 +613,7 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void updateView() {
-		final IMarker[] updatedMarkers = CheckstyleMarkers.findAllInWorkspace();
+		final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
 
 		final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 

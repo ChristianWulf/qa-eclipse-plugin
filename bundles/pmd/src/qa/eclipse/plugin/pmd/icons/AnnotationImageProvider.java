@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
@@ -38,7 +39,7 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 	 * Is created automatically once from the Eclipse Plugin Environment.
 	 */
 	public AnnotationImageProvider() {
-		imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
+		this.imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 	}
 
 	@Override
@@ -51,16 +52,16 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 		// IMarker marker = markerAnnotation.getMarker();
 		// PmdViolationMarker violationMarker = new PmdViolationMarker(marker);
 
-		final int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
+		final int priority = this.getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
 		// apply filter
 		String imageRegistryKey = null;
 		final int lowestAllowedPriority = 5;
 		if (priority <= lowestAllowedPriority) {
-			imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
+			imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority("pmd", priority);
 		}
 
-		return imageRegistry.get(imageRegistryKey);
+		return this.imageRegistry.get(imageRegistryKey);
 		// return null;
 	}
 
@@ -74,13 +75,13 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 			return null;
 		}
 
-		final int priority = getPriorityFromAnnotation((MarkerAnnotation) annotation);
+		final int priority = this.getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
 		// apply filter
 		String imageRegistryKey = null;
 		final int lowestAllowedPriority = 5;
 		if (priority <= lowestAllowedPriority) {
-			imageRegistryKey = ImageRegistryKey.getAnnotationKeyByPriority(priority);
+			imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority("pmd", priority);
 		}
 
 		return imageRegistryKey;
@@ -89,7 +90,7 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 	@Override
 	public ImageDescriptor getImageDescriptor(final String imageDescriptorId) {
-		return imageRegistry.getDescriptor(imageDescriptorId);
+		return this.imageRegistry.getDescriptor(imageDescriptorId);
 	}
 
 	private int getPriorityFromAnnotation(final MarkerAnnotation markerAnnotation) {

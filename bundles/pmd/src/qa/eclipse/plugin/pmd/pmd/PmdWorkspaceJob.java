@@ -17,9 +17,9 @@ package qa.eclipse.plugin.pmd.pmd;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
 /**
@@ -82,12 +82,12 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 
 		// collect data sources
-		final Map<String, IFile> eclipseFilesMap = new HashMap<>();
+		final Map<String, IFile> eclipseFilesMap = new ConcurrentHashMap<>();
 		for (final IFile eclipseFile : this.eclipseFiles) {
 			try {
 				// also remove previous PMD markers on that file
-				PmdMarkers.deleteMarkers(eclipseFile);
-			} catch (final CoreException e) {
+				PmdMarkersUtils.deleteMarkers(eclipseFile);
+			} catch (final CoreException e) { // NOPMD empty catch, ignore missing files
 				// ignore if resource does not exist anymore or has been closed
 			}
 		}
@@ -102,7 +102,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
 		try {
-			final RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetFrom(eclipseProject); // don't cache
+			final RuleSets ruleSets = PmdPreferences.INSTANCE.loadRuleSetsFrom(eclipseProject); // don't cache
 			final RuleSetFactory ruleSetFactory = new ConstantRuleSetFactory(ruleSets);
 
 			final Renderer progressRenderer = new PmdProgressRenderer(subMonitor);
@@ -153,8 +153,8 @@ class PmdWorkspaceJob extends WorkspaceJob {
 				final String violationFilename = violation.getFilename();
 				final IFile eclipseFile = eclipseFilesMap.get(violationFilename);
 				try {
-					PmdMarkers.appendViolationMarker(eclipseFile, violation);
-				} catch (final CoreException e) {
+					PmdMarkersUtils.appendViolationMarker(eclipseFile, violation);
+				} catch (final CoreException e) { // NOPMD empty catch
 					// ignore if marker could not be created
 				}
 			}
@@ -173,7 +173,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			final IFile eclipseFile = eclipseFilesMap.get(errorFilename);
 			try {
 				this.appendProcessingErrorMarker(eclipseFile, error);
-			} catch (final CoreException e) {
+			} catch (final CoreException e) { // NOPMD empty catch
 				// ignore if marker could not be created
 			}
 			// PmdUIPlugin.getDefault().logWarning(error.getMsg());
@@ -182,7 +182,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 
 	private void appendProcessingErrorMarker(final IFile eclipseFile, final ProcessingError error)
 			throws CoreException {
-		final IMarker marker = eclipseFile.createMarker(PmdMarkers.PMD_ERROR_MARKER);
+		final IMarker marker = eclipseFile.createMarker(PmdMarkersUtils.PMD_ERROR_MARKER);
 		// whether it is displayed as error, warning, info or other in the Problems View
 		marker.setAttribute(IMarker.SEVERITY, PmdWorkspaceJob.IMARKER_SEVERITY_OTHERS);
 		marker.setAttribute(IMarker.MESSAGE, error.getMsg());

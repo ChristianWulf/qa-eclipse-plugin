@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-// architectural hints: do not use plugin-specific types to avoid a cascade of class compilings
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +36,8 @@ import qa.eclipse.plugin.bundles.common.ProjectUtil;
 /**
  * Preferences for PMD.
  *
+ * Note: architectural hints: do not use plugin-specific types to avoid a cascade of class compilings
+ *
  * @author Christian Wulf
  *
  */
@@ -50,7 +51,7 @@ public final class PmdPreferences {
 	public static final String PROP_KEY_RULE_SET_FILE_PATH = "ruleSetFilePath";
 	public static final String PROP_KEY_ENABLED = "enabled";
 
-	/** split pattern */
+	/** split pattern. */
 	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
@@ -63,46 +64,70 @@ public final class PmdPreferences {
 	private PmdPreferences(final String node) {
 		// private singleton constructor
 		this.node = node;
-		osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
+		this.osgiClassLoaderWithCustomRules = new URLClassLoader(new URL[0]); // NullObjectPattern
 	}
 
+	/**
+	 * Get default preferences.
+	 *
+	 * @return return the default preferences
+	 */
 	public IEclipsePreferences getDefaultPreferences() {
-		final IEclipsePreferences preferences = DefaultScope.INSTANCE.getNode(node);
-		return preferences;
+		return DefaultScope.INSTANCE.getNode(this.node);
 	}
 
+	/**
+	 * Get the eclipse wide preferences.
+	 *
+	 * @return returns the preferences
+	 */
 	public IEclipsePreferences getEclipseScopedPreferences() {
-		final IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(node);
-		return preferences;
+		return InstanceScope.INSTANCE.getNode(this.node);
 	}
 
 	public IEclipsePreferences getEclipseEditorPreferences() {
 		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
 	}
 
+	/**
+	 * Get the project related preferences.
+	 *
+	 * @param project
+	 *            the project for the preferences
+	 *
+	 * @return returns the preferences
+	 */
 	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) {
 		final IEclipsePreferences preferences;
 
 		final IScopeContext projectPref;
-		if (projectScopeByProject.containsKey(project)) {
-			projectPref = projectScopeByProject.get(project);
-			preferences = projectPref.getNode(node);
+		if (this.projectScopeByProject.containsKey(project)) {
+			projectPref = this.projectScopeByProject.get(project);
+			preferences = projectPref.getNode(this.node);
 		} else {
 			projectPref = new ProjectScope(project);
-			projectScopeByProject.put(project, projectPref);
+			this.projectScopeByProject.put(project, projectPref);
 
-			preferences = projectPref.getNode(node);
+			preferences = projectPref.getNode(this.node);
 			preferences.addPreferenceChangeListener(new PmdPreferenceChangeListener(project));
 		}
 
 		return preferences;
 	}
 
-	public RuleSets loadRuleSetFrom(final IProject project) {
-		final IScopeContext projectPref = projectScopeByProject.get(project);
-		final IEclipsePreferences preferences = projectPref.getNode(node);
+	/**
+	 * Load all rulesets for a specific project.
+	 *
+	 * @param project
+	 *            the project
+	 * @return return the rulesets
+	 */
+	public RuleSets loadRuleSetsFrom(final IProject project) {
+		final IScopeContext projectPref = this.projectScopeByProject.get(project);
+		final IEclipsePreferences preferences = projectPref.getNode(this.node);
 		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
-		final RuleSets ruleSets = loadUpdatedRuleSet(preferences, project, eclipseProjectPath);
+		final RuleSets ruleSets = this.loadUpdatedRuleSet(preferences, project, eclipseProjectPath);
+
 		return ruleSets;
 	}
 
@@ -123,19 +148,22 @@ public final class PmdPreferences {
 		final ClassLoader parentClassLoader;
 		// parentClassLoader = Thread.currentThread().getContextClassLoader();
 		parentClassLoader = this.getClass().getClassLoader(); // equinox class loader with jars from the lib folder
-		osgiClassLoaderWithCustomRules = new URLClassLoader(urls, parentClassLoader);
+		this.osgiClassLoaderWithCustomRules = new URLClassLoader(urls, parentClassLoader);
 
 		final String ruleSetFilePathValue = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
 				PmdPreferences.INVALID_RULESET_FILE_PATH);
 		final File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
 		final String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
-		return ruleSetFileLoader.load(ruleSetFilePath, project, osgiClassLoaderWithCustomRules);
+		return this.ruleSetFileLoader.load(ruleSetFilePath, project, this.osgiClassLoaderWithCustomRules);
 	}
 
+	/**
+	 * Cleanup preferences view.
+	 */
 	public void close() {
 		try {
-			osgiClassLoaderWithCustomRules.close();
+			this.osgiClassLoaderWithCustomRules.close();
 		} catch (final IOException e) {
 			throw new IllegalStateException(e);
 		}

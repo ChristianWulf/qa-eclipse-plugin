@@ -54,32 +54,32 @@ class CancelablePmdProcessor {
 		this.ruleSetFactory = ruleSetFactory;
 		this.renderers = renderers;
 
-		processor = new SourceCodeProcessor(configuration);
+		this.processor = new SourceCodeProcessor(configuration);
 	}
 
 	public void onStarted() {
-		final RuleSets rs = createRuleSets(ruleSetFactory);
-		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+		final RuleSets rs = this.createRuleSets(this.ruleSetFactory);
+		this.configuration.getAnalysisCache().checkValidity(rs, this.configuration.getClassLoader());
 	}
 
 	public void processFile(final DataSource dataSource, final RuleContext context) {
-		final String niceFileName = filenameFrom(dataSource);
+		final String niceFileName = this.filenameFrom(dataSource);
 
-		final RuleSets rs = createRuleSets(ruleSetFactory);
+		final RuleSets rs = this.createRuleSets(this.ruleSetFactory);
 
-		final PmdRunnable pmdRunnable = new PmdRunnable(dataSource, niceFileName, renderers, context, rs, processor);
+		final PmdRunnable pmdRunnable = new PmdRunnable(dataSource, niceFileName, this.renderers, context, rs, this.processor);
 
 		final Report resultReport = pmdRunnable.call();
 
-		reports.add(resultReport);
+		this.reports.add(resultReport);
 	}
 
 	public void onFinished() {
-		collectReports(renderers);
+		this.collectReports(this.renderers);
 	}
 
 	private String filenameFrom(final DataSource dataSource) {
-		return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
+		return dataSource.getNiceFileName(this.configuration.isReportShortNames(), this.configuration.getInputPaths());
 	}
 
 	/**
@@ -92,15 +92,15 @@ class CancelablePmdProcessor {
 	 * @return the rules within a rulesets
 	 */
 	private RuleSets createRuleSets(final RuleSetFactory factory) {
-		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
+		return RulesetsFactoryUtils.getRuleSets(this.configuration.getRuleSets(), factory);
 	}
 
 	private void collectReports(final List<Renderer> localRenderers) {
-		for (final Report report : reports) {
+		for (final Report report : this.reports) {
 			for (final Renderer r : localRenderers) {
 				try {
 					r.renderFileReport(report);
-				} catch (final IOException e) {
+				} catch (final IOException e) { // NOPMD we want to ignore errors here
 					// on exception: ignore specific renderer
 				}
 			}

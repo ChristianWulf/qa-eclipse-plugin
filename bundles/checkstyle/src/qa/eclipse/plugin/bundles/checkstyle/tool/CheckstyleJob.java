@@ -36,9 +36,9 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkers;
+import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
-import qa.eclipse.plugin.bundles.common.Logger;
+import qa.eclipse.plugin.bundles.common.LoggerUtils;
 
 /**
  * Workspace job for checkstyle analysis.
@@ -77,7 +77,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 
 			try {
 				// also remove previous markers on that file
-				CheckstyleMarkers.deleteMarkers(eclipseFile);
+				CheckstyleMarkersUtils.deleteMarkers(eclipseFile);
 			} catch (final CoreException e) { // NOPMD ignore empty block
 				// ignore if resource does not exist anymore or has been closed
 			}
@@ -92,7 +92,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 		try {
 			checkstyleTool.startAsyncAnalysis(this.eclipseFiles, checkstyleListener);
 		} catch (final Exception e) { // NOCS used to catch all not handled exceptions
-			Logger.logThrowable("Exception while analyzing with Checkstyle.", e);
+			LoggerUtils.logThrowable("Exception while analyzing with Checkstyle.", e);
 			return Status.CANCEL_STATUS;
 		}
 

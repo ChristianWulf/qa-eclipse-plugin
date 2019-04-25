@@ -36,17 +36,17 @@ import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
  * @author Christian Wulf
  *
  */
-public final class CheckstyleMarkers {
+public final class CheckstyleMarkersUtils {
 
 	/** marker to delete violation and error markers */
 	public static final String ABSTRACT_CHECKSTYLE_COMMON_MARKER = "qa.eclipse.plugin.checkstyle.markers.common";
 	/** marker to identify violation marker for the violations view */
 	public static final String ABSTRACT_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.checkstyle.markers.violation";
-	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".error";
-	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".warning";
-	public static final String INFO_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".info";
-	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".ignore";
-	public static final String EXCEPTION_CHECKSTYLE_MARKER = CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".exception";
+	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".error";
+	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".warning";
+	public static final String INFO_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".info";
+	public static final String IGNORE_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".ignore";
+	public static final String EXCEPTION_CHECKSTYLE_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".exception";
 
 	/**
 	 * @see {@link com.puppycrawl.tools.checkstyle.api.SeverityLevel}
@@ -60,31 +60,31 @@ public final class CheckstyleMarkers {
 	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<Integer, String>();
 
 	static {
-		CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.ERROR.ordinal(), CheckstyleMarkers.ERROR_CHECKSTYLE_VIOLATION_MARKER);
-		CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.WARNING.ordinal(), CheckstyleMarkers.WARNING_CHECKSTYLE_VIOLATION_MARKER);
-		CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.INFO.ordinal(), CheckstyleMarkers.INFO_CHECKSTYLE_VIOLATION_MARKER);
-		CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.IGNORE.ordinal(), CheckstyleMarkers.IGNORE_CHECKSTYLE_VIOLATION_MARKER);
+		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.ERROR.ordinal(), CheckstyleMarkersUtils.ERROR_CHECKSTYLE_VIOLATION_MARKER);
+		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.WARNING.ordinal(), CheckstyleMarkersUtils.WARNING_CHECKSTYLE_VIOLATION_MARKER);
+		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.INFO.ordinal(), CheckstyleMarkersUtils.INFO_CHECKSTYLE_VIOLATION_MARKER);
+		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.IGNORE.ordinal(), CheckstyleMarkersUtils.IGNORE_CHECKSTYLE_VIOLATION_MARKER);
 	}
 
-	private CheckstyleMarkers() {
+	private CheckstyleMarkersUtils() {
 		// utility class
 	}
 
 	public static void appendViolationMarker(final IFile eclipseFile, final AuditEvent violation) throws CoreException {
 		final int priority = violation.getSeverityLevel().ordinal();
-		final String markerType = CheckstyleMarkers.MARKER_TYPE_BY_PRIORITY.get(priority);
+		final String markerType = CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.get(priority);
 
 		final IMarker marker = eclipseFile.createMarker(markerType);
 		marker.setAttribute(IMarker.MESSAGE, violation.getMessage());
 		marker.setAttribute(IMarker.LINE_NUMBER, violation.getLine());
 		// marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 
-		marker.setAttribute(CheckstyleMarkers.ATTR_KEY_PRIORITY, priority);
+		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_PRIORITY, priority);
 		// getModuleId() always returns null
 		final String checkClassName = violation.getSourceName();
 		final List<String> checkClassNameParts = SplitUtils.split(checkClassName).once().at('.').fromTheRight();
-		marker.setAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_PACKAGE, checkClassNameParts.get(0));
-		marker.setAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_NAME, checkClassNameParts.get(1));
+		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_PACKAGE, checkClassNameParts.get(0));
+		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_NAME, checkClassNameParts.get(1));
 
 		// marker.setAttribute(IMarker.CHAR_START, violation.getBeginColumn());
 		// marker.setAttribute(IMarker.CHAR_END, violation.getEndColumn());
@@ -97,7 +97,7 @@ public final class CheckstyleMarkers {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		final IMarker[] markers;
 		try {
-			markers = workspaceRoot.findMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
+			markers = workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
 		} catch (final CoreException e) {
 			throw new IllegalStateException(e);
 		}
@@ -105,13 +105,13 @@ public final class CheckstyleMarkers {
 	}
 
 	public static void deleteMarkers(final IResource resource) throws CoreException {
-		resource.deleteMarkers(CheckstyleMarkers.ABSTRACT_CHECKSTYLE_COMMON_MARKER, true, IResource.DEPTH_INFINITE);
+		resource.deleteMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_COMMON_MARKER, true, IResource.DEPTH_INFINITE);
 	}
 
 	public static void appendProcessingErrorMarker(final IFile eclipseFile, final Throwable throwable) throws CoreException {
-		final IMarker marker = eclipseFile.createMarker(CheckstyleMarkers.EXCEPTION_CHECKSTYLE_MARKER);
+		final IMarker marker = eclipseFile.createMarker(CheckstyleMarkersUtils.EXCEPTION_CHECKSTYLE_MARKER);
 		// whether it is displayed as error, warning, info or other in the Problems View
-		marker.setAttribute(IMarker.SEVERITY, CheckstyleMarkers.IMARKER_SEVERITY_OTHERS);
+		marker.setAttribute(IMarker.SEVERITY, CheckstyleMarkersUtils.IMARKER_SEVERITY_OTHERS);
 		marker.setAttribute(IMarker.MESSAGE, throwable.toString());
 		// marker.setAttribute(IMarker.LINE_NUMBER, violation.getBeginLine());
 		marker.setAttribute(IMarker.LOCATION, eclipseFile.getFullPath().toString());

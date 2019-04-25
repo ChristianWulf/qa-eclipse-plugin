@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.views.PmdViolationsView;
 
@@ -98,7 +98,7 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 					break;
 				}
 
-				if (markerType.startsWith(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER)) {
+				if (markerType.startsWith(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER)) {
 					this.openViolationView(marker);
 				}
 			}

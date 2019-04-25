@@ -31,8 +31,9 @@ import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.PlatformUI;
 
 import net.sourceforge.pmd.RulePriority;
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
-import qa.eclipse.plugin.pmd.markers.PmdMarkers;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
 /**
@@ -46,6 +47,9 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 	private final ImageRegistry imageRegistry;
 
+	/**
+	 * Create file icon decorator.
+	 */
 	public FileIconDecorator() {
 		this.imageRegistry = PmdUIPlugin.getDefault().getImageRegistry();
 	}
@@ -87,7 +91,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		// depth = IResource.DEPTH_ZERO;
 		// }
 
-		final IMarker[] markers = resource.findMarkers(PmdMarkers.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
+		final IMarker[] markers = resource.findMarkers(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER, true, depth);
 
 		// do not display any file decorator if there are no markers
 		if (markers.length == 0) {
@@ -112,13 +116,16 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		ImageDescriptor imageDescriptor = null;
 		final int lowestAllowedPriority = 5;
 		if (highestPriority <= lowestAllowedPriority) {
-			final String imageRegistryKey = ImageRegistryKey.getFileDecoratorKeyByPriority(highestPriority);
+			final String imageRegistryKey = ImageRegistryKeyUtils.getFileDecoratorKeyByPriority("pmd", highestPriority);
 			imageDescriptor = this.imageRegistry.getDescriptor(imageRegistryKey);
 		}
 
 		return imageDescriptor;
 	}
 
+	/**
+	 * Refresh decorators for file icons.
+	 */
 	public static void refresh() {
 		final IDecoratorManager manager = PlatformUI.getWorkbench().getDecoratorManager();
 		final IBaseLabelProvider decorator = manager.getBaseLabelProvider(FileIconDecorator.ID);

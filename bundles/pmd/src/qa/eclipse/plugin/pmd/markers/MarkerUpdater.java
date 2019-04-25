@@ -30,19 +30,16 @@ public class MarkerUpdater implements IMarkerUpdater {
 
 	@Override
 	public String getMarkerType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String[] getAttribute() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[0];
 	}
 
 	@Override
 	public boolean updateMarker(final IMarker marker, final IDocument document, final Position position) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

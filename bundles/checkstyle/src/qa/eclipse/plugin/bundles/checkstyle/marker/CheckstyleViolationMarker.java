@@ -41,7 +41,7 @@ public class CheckstyleViolationMarker {
 	 * @return the priority (3 highest to 0 lowest) or -1 otherwise.
 	 */
 	public int getSeverityLevelIndex() {
-		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_PRIORITY, -1);
+		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_PRIORITY, -1);
 	}
 
 	/**
@@ -59,11 +59,11 @@ public class CheckstyleViolationMarker {
 	}
 
 	public String getCheckName() {
-		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_NAME, "");
+		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_NAME, "");
 	}
 
 	public String getCheckPackageName() {
-		return this.marker.getAttribute(CheckstyleMarkers.ATTR_KEY_CHECK_PACKAGE, "");
+		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_PACKAGE, "");
 	}
 
 	public String getProjectName() {

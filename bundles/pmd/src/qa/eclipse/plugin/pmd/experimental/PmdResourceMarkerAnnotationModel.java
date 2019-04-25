@@ -28,7 +28,7 @@ import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
  */
 class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
-	private final int maxPriority = 1;
+	private static final int MAX_PRIORITY = 1;
 
 	public PmdResourceMarkerAnnotationModel(final IResource resource) {
 		super(resource);
@@ -43,7 +43,7 @@ class PmdResourceMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
 
 		final PmdViolationMarker pmdViolationMarker = new PmdViolationMarker(marker);
 		final int priority = pmdViolationMarker.getPriority();
-		return (this.maxPriority >= priority);
+		return (PmdResourceMarkerAnnotationModel.MAX_PRIORITY >= priority);
 	}
 
 }

@@ -33,9 +33,17 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 public class PmdTool {
 
 	/**
+	 * Create a pmd tool.
+	 */
+	public PmdTool() {
+		// empty constructor
+	}
+
+	/**
 	 * All passed files must belong to the same project.
 	 *
 	 * @param eclipseFiles
+	 *            collection of eclipse files
 	 */
 	public void startAsyncAnalysis(final List<IFile> eclipseFiles) {
 		if (eclipseFiles.isEmpty()) {

@@ -21,26 +21,40 @@ import org.eclipse.core.runtime.Status;
 
 /**
  *
- * @author Christian Wulf
+ * @author Reiner Jung
  *
  */
-public final class Logger {
+public final class LoggerUtils {
 
 	private static final String PLUGIN_ID = Activator.PLUGIN_ID;
 
 	private static final Plugin ACTIVATOR = Activator.getDefault();
 
-	private Logger() {
+	private LoggerUtils() {
 		// utility class
 	}
 
+	/**
+	 * Log errors based on exceptions.
+	 *
+	 * @param message
+	 *            the message for the error
+	 * @param throwable
+	 *            the exception value
+	 */
 	public static void logThrowable(final String message, final Throwable throwable) {
-		final IStatus status = new Status(IStatus.ERROR, Logger.PLUGIN_ID, message, throwable);
-		Logger.ACTIVATOR.getLog().log(status);
+		final IStatus status = new Status(IStatus.ERROR, LoggerUtils.PLUGIN_ID, message, throwable);
+		LoggerUtils.ACTIVATOR.getLog().log(status);
 	}
 
+	/**
+	 * Log warnings.
+	 *
+	 * @param message
+	 *            warning message
+	 */
 	public static void logWarning(final String message) {
-		final IStatus status = new Status(IStatus.WARNING, Logger.PLUGIN_ID, message);
-		Logger.ACTIVATOR.getLog().log(status);
+		final IStatus status = new Status(IStatus.WARNING, LoggerUtils.PLUGIN_ID, message);
+		LoggerUtils.ACTIVATOR.getLog().log(status);
 	}
 }

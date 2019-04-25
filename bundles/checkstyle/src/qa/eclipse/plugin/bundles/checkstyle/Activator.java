@@ -30,8 +30,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.ImageRegistryKey;
 import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
+import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -87,10 +87,10 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	}
 
 	@Override
-	protected void initializeImageRegistry(final ImageRegistry reg) {
-		super.initializeImageRegistry(reg);
+	protected void initializeImageRegistry(final ImageRegistry registry) {
+		super.initializeImageRegistry(registry);
 
-		ImageRegistryKey.initialize(reg);
+		ImageRegistryKeyUtils.initialize(Activator.class, "checkstyle", registry);
 	}
 
 	/**
