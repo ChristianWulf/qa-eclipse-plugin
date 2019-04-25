@@ -1,0 +1,26 @@
+    <!--
+      <command
+            id="qa.eclipse.plugin.pmd.ui.ruler.click"
+            name="Jump to Violations View">
+      </command>
+      -->
+      
+          <!--
+    <menuContribution
+          allPopups="false"
+          class="qa.eclipse.plugin.pmd.experimental.MyMenuContribution"
+          locationURI="toolbar:org.eclipse.jdt.ui.CompilationUnitEditor">
+       <command
+             style="push">
+       </command>
+       <dynamic
+             class="org.eclipse.ui.ExtensionFactory:showInContribution"
+             id="qa.eclipse.plugin.pmd.ui.dynamic2">
+          <class
+                class="qa.eclipse.plugin.pmd.experimental.MyExecutableExtension">
+          </class>
+       </dynamic>
+    </menuContribution>
+    -->
+
+
