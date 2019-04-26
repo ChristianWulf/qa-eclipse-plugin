@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
-import qa.eclipse.plugin.pmd.pmd.PmdTool;
+import qa.eclipse.plugin.pmd.tool.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
 
 /**

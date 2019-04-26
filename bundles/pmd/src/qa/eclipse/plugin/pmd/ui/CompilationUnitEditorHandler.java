@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
-import qa.eclipse.plugin.pmd.pmd.PmdTool;
+import qa.eclipse.plugin.pmd.tool.PmdTool;
 
 /**
  *

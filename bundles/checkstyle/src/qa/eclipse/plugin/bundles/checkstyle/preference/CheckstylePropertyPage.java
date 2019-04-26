@@ -15,21 +15,30 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.preference;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.osgi.service.prefs.BackingStoreException;
+
+import qa.eclipse.plugin.bundles.common.PropertyPageUtils;
 
 /**
  *
@@ -84,13 +93,42 @@ public class CheckstylePropertyPage extends PropertyPage {
 		final Label pathLabel = new Label(composite, SWT.NONE);
 		pathLabel.setText("&Configuration file path:");
 
+		Composite lineComposite = this.createDefaultComposite(composite, 2);
+
+		final String configFilePath = CheckstylePreferences.INSTANCE.loadConfigFilePath(preferences);
 		// Path text field
-		this.configFilePathText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		this.configFilePathText = new Text(lineComposite, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData();
 		gd.widthHint = this.convertWidthInCharsToPixels(60);
 		this.configFilePathText.setLayoutData(gd);
-		this.configFilePathText.setText(CheckstylePreferences.INSTANCE.loadConfigFilePath(preferences));
+		this.configFilePathText.setText(configFilePath);
 		this.configFilePathText.addKeyListener(new ConfigFilePathTextListener(this));
+
+		final Button browseButton = new Button(lineComposite, SWT.NONE);
+		browseButton.setText("...");
+		browseButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(final MouseEvent e) {
+				final String message = "Select your configuration file for this project...";
+				final ResourceSelectionDialog dialog = new ResourceSelectionDialog(CheckstylePropertyPage.this.getShell(),
+						project.getParent(), message);
+
+				final int returnCode = dialog.open();
+				if (returnCode == Window.OK) {
+					final Object[] selectedObjects = dialog.getResult();
+					if (selectedObjects.length > 0) {
+						final IFile selectedFilePath = (IFile) selectedObjects[0];
+						final IPath projectRelativePath = PropertyPageUtils.computeRelativePath(project.getLocation(), selectedFilePath.getLocation());
+						Display.getCurrent().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								CheckstylePropertyPage.this.configFilePathText.setText(projectRelativePath.toString());
+							}
+						});
+					}
+				}
+			}
+		});
 
 		this.exampleLabel = new Label(composite, SWT.NONE);
 		this.exampleLabel.setText(CheckstylePropertyPage.CONFIG_FILE_PATH_DEFAULT_TEXT);
@@ -99,6 +137,8 @@ public class CheckstylePropertyPage extends PropertyPage {
 
 		final Label label = new Label(composite, SWT.NONE);
 		label.setText("Zero or more jar file paths with custom modules (comma separated):");
+
+		lineComposite = this.createDefaultComposite(composite, 2);
 
 		this.customModulesJarPathsText = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData();

@@ -34,7 +34,7 @@ import org.osgi.framework.BundleContext;
 
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.builder.IncrementalViolationMarkerBuilder;
-import qa.eclipse.plugin.pmd.pmd.PmdTool;
+import qa.eclipse.plugin.pmd.tool.PmdTool;
 import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
 
 /**
@@ -46,6 +46,12 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.pmd"; //$NON-NLS-1$
+
+	public static final int PMD_MIN_PRIORITY = 1;
+
+	public static final int PMD_MAX_PRIORITY = 5;
+
+	public static final String PMD_PREFIX = "pmd";
 
 	// The shared instance
 	private static PmdUIPlugin plugin;
@@ -163,7 +169,8 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	protected void initializeImageRegistry(final ImageRegistry registry) {
 		super.initializeImageRegistry(registry);
 
-		ImageRegistryKeyUtils.initialize(PmdUIPlugin.class, "pmd", registry);
+		ImageRegistryKeyUtils.initialize(PmdUIPlugin.class, PmdUIPlugin.PMD_PREFIX, registry,
+				PmdUIPlugin.PMD_MIN_PRIORITY, PmdUIPlugin.PMD_MAX_PRIORITY);
 	}
 
 	/**

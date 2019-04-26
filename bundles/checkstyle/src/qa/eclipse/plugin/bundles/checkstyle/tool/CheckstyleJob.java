@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.LoggerUtils;
 

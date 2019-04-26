@@ -26,7 +26,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 
 /**
  *
