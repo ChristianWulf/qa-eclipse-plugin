@@ -50,7 +50,7 @@ The "prefs" file is intended to be uploaded to your repository to share your con
 ## Build
 - via Maven 3.6 or above
 ```
-mvn clean package -s settings.xml -DupdateSiteUrl=URL -Dkeystore=KEY
+mvn clean install -s settings.xml -DupdateSiteUrl=URL -Dkeystore=KEY
 ```
 - You need to specify two variable to publish the packages
   - URL = an sftp url, e.g., sftp://user@host/repo
