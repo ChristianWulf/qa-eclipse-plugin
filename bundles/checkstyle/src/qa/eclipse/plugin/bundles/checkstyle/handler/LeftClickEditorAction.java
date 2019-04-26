@@ -38,8 +38,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.view.CheckstyleViolationsView;
 
 /**

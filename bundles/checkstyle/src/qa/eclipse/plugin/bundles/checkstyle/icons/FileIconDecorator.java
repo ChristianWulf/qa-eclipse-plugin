@@ -32,9 +32,9 @@ import org.eclipse.ui.PlatformUI;
 
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
@@ -49,7 +49,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	private final ImageRegistry imageRegistry;
 
 	public FileIconDecorator() {
-		this.imageRegistry = Activator.getDefault().getImageRegistry();
+		this.imageRegistry = CheckstyleUIPlugin.getDefault().getImageRegistry();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		try {
 			imageDescriptor = this.getImageDescriptor(resource);
 		} catch (final CoreException e) {
-			Activator.getDefault().logThrowable("Error on decorating element.", e);
+			CheckstyleUIPlugin.getDefault().logThrowable("Error on decorating element.", e);
 		}
 
 		decoration.addOverlay(imageDescriptor, IDecoration.TOP_LEFT);

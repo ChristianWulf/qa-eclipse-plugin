@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 
 /**
  *

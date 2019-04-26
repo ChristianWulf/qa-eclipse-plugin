@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 
 /**
  *

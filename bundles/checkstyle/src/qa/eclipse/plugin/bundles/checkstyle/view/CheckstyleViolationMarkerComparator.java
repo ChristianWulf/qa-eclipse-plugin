@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 
 /**
  *
@@ -86,7 +86,7 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			compareResult = 0;
 			final String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
 			final String message = String.format(messageFormatString, this.selectedSortProperty);
-			Activator.getDefault().logWarning(message);
+			CheckstyleUIPlugin.getDefault().logWarning(message);
 			break;
 		}
 		}

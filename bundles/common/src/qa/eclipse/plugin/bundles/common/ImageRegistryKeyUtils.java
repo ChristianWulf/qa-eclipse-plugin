@@ -25,9 +25,6 @@ import org.eclipse.jface.resource.ImageRegistry;
  */
 public final class ImageRegistryKeyUtils {
 
-	private static final int MIN_PRIORITY = 0;
-	private static final int MAX_PRIORITY = 3;
-
 	private ImageRegistryKeyUtils() {
 		// utility class
 	}
@@ -82,9 +79,13 @@ public final class ImageRegistryKeyUtils {
 	 *            name of the check tool used
 	 * @param registry
 	 *            image registry
+	 * @param minPriority
+	 *            minimal priority
+	 * @param maxPriority
+	 *            maximal priority
 	 */
-	public static void initialize(final Class<?> location, final String toolName, final ImageRegistry registry) {
-		for (int priority = ImageRegistryKeyUtils.MIN_PRIORITY; priority <= ImageRegistryKeyUtils.MAX_PRIORITY; priority++) {
+	public static void initialize(final Class<?> location, final String toolName, final ImageRegistry registry, final int minPriority, final int maxPriority) {
+		for (int priority = minPriority; priority <= maxPriority; priority++) {
 			final String imageRegistryKey = ImageRegistryKeyUtils.getFileDecoratorKeyByPriority(toolName, priority);
 			final String imageFilePath = "/icons/" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null
@@ -93,7 +94,7 @@ public final class ImageRegistryKeyUtils {
 			registry.put(imageRegistryKey, imageDescriptor);
 		}
 
-		for (int priority = ImageRegistryKeyUtils.MIN_PRIORITY; priority <= ImageRegistryKeyUtils.MAX_PRIORITY; priority++) {
+		for (int priority = minPriority; priority <= maxPriority; priority++) {
 			final String imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority(toolName, priority);
 			final String imageFilePath = "/icons/" + imageRegistryKey + ".png";
 			// AbstractUIPlugin.imageDescriptorFromPlugin always returns null

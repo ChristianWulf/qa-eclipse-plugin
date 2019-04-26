@@ -56,13 +56,12 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 
 		// apply filter
 		String imageRegistryKey = null;
-		final int lowestAllowedPriority = 5;
-		if (priority <= lowestAllowedPriority) {
-			imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority("pmd", priority);
+		final int highestAllowedPriority = PmdUIPlugin.PMD_MAX_PRIORITY;
+		if (priority <= highestAllowedPriority) {
+			imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority(PmdUIPlugin.PMD_PREFIX, priority);
 		}
 
 		return this.imageRegistry.get(imageRegistryKey);
-		// return null;
 	}
 
 	// letting getManagedImage() and getImageDescriptorId() return null
@@ -78,14 +77,12 @@ public class AnnotationImageProvider implements IAnnotationImageProvider {
 		final int priority = this.getPriorityFromAnnotation((MarkerAnnotation) annotation);
 
 		// apply filter
-		String imageRegistryKey = null;
-		final int lowestAllowedPriority = 5;
-		if (priority <= lowestAllowedPriority) {
-			imageRegistryKey = ImageRegistryKeyUtils.getAnnotationKeyByPriority("pmd", priority);
+		final int highestAllowedPriority = PmdUIPlugin.PMD_MAX_PRIORITY;
+		if (priority <= highestAllowedPriority) {
+			return ImageRegistryKeyUtils.getAnnotationKeyByPriority(PmdUIPlugin.PMD_PREFIX, priority);
+		} else {
+			return null;
 		}
-
-		return imageRegistryKey;
-		// return null;
 	}
 
 	@Override

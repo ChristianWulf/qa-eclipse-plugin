@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse plugin for Checkstyle
 Bundle-SymbolicName: qa.eclipse.plugin.bundles.checkstyle;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: qa.eclipse.plugin.bundles.checkstyle.Activator
+Bundle-Activator: qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="3.9.0",
  org.eclipse.core.resources;bundle-version="3.9.0",

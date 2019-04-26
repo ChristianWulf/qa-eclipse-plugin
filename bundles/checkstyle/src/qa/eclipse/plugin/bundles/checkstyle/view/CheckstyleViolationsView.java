@@ -68,10 +68,10 @@ import org.osgi.service.prefs.Preferences;
 
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-import qa.eclipse.plugin.bundles.checkstyle.Activator;
+import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
 import qa.eclipse.plugin.bundles.checkstyle.StringUtils;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleMarkersUtils;
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
@@ -282,7 +282,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 		for (final SeverityLevel severityLevel : severityLevels) {
 			imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("checkstyle", severityLevel.ordinal());
-			image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
+			image = CheckstyleUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 			ti = new TableItem(tableCombo.getTable(), SWT.NONE);
 			ti.setText("At least " + severityLevel.name());
 			ti.setImage(image);
@@ -424,7 +424,7 @@ public class CheckstyleViolationsView extends ViewPart
 				final CheckstyleViolationMarker violationMarker = (CheckstyleViolationMarker) element;
 				final int priority = violationMarker.getSeverityLevelIndex();
 				final String imageRegistryKey = ImageRegistryKeyUtils.getPriorityColumnKeyByPriority("checkstyle", priority);
-				final Image image = Activator.getDefault().getImageRegistry().get(imageRegistryKey);
+				final Image image = CheckstyleUIPlugin.getDefault().getImageRegistry().get(imageRegistryKey);
 				return image;
 			}
 

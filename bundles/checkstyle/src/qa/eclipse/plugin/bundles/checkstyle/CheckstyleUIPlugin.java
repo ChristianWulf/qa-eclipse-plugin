@@ -38,18 +38,24 @@ import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
  *
  * @author Christian Wulf
  */
-public class Activator extends AbstractUIPlugin implements IResourceChangeListener {
+public class CheckstyleUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.checkstyle"; //$NON-NLS-1$
 
+	public static final int CHECKSTYLE_MIN_PRIORITY = 0;
+
+	public static final int CHECKSTYLE_MAX_PRIORITY = 3;
+
+	public static final String CHECKSTYLE_PREFIX = "checkstyle";
+
 	// The shared instance
-	private static Activator plugin;
+	private static CheckstyleUIPlugin plugin;
 
 	/**
 	 * The constructor.
 	 */
-	public Activator() {
+	public CheckstyleUIPlugin() {
 		// nothing to do here
 	}
 
@@ -62,7 +68,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		Activator.plugin = this;
+		CheckstyleUIPlugin.plugin = this;
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
@@ -75,22 +81,23 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		Activator.plugin = null; // NOPMD necessary in context of plugins
+		CheckstyleUIPlugin.plugin = null; // NOPMD necessary in context of plugins
 		super.stop(context);
 	}
 
 	/**
 	 * @return the shared instance of the plugin
 	 */
-	public static Activator getDefault() {
-		return Activator.plugin;
+	public static CheckstyleUIPlugin getDefault() {
+		return CheckstyleUIPlugin.plugin;
 	}
 
 	@Override
 	protected void initializeImageRegistry(final ImageRegistry registry) {
 		super.initializeImageRegistry(registry);
 
-		ImageRegistryKeyUtils.initialize(Activator.class, "checkstyle", registry);
+		ImageRegistryKeyUtils.initialize(CheckstyleUIPlugin.class, CheckstyleUIPlugin.CHECKSTYLE_PREFIX, registry,
+				CheckstyleUIPlugin.CHECKSTYLE_MIN_PRIORITY, CheckstyleUIPlugin.CHECKSTYLE_MAX_PRIORITY);
 	}
 
 	/**
@@ -102,7 +109,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 *            exception
 	 */
 	public void logThrowable(final String message, final Throwable throwable) {
-		final IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, throwable);
+		final IStatus status = new Status(IStatus.ERROR, CheckstyleUIPlugin.PLUGIN_ID, message, throwable);
 		this.getLog().log(status);
 	}
 
@@ -113,7 +120,7 @@ public class Activator extends AbstractUIPlugin implements IResourceChangeListen
 	 *            the message to display
 	 */
 	public void logWarning(final String message) {
-		final IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, message);
+		final IStatus status = new Status(IStatus.WARNING, CheckstyleUIPlugin.PLUGIN_ID, message);
 		this.getLog().log(status);
 	}
 

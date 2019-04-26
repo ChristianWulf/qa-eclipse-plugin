@@ -18,7 +18,7 @@ package qa.eclipse.plugin.bundles.checkstyle.view;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import qa.eclipse.plugin.bundles.checkstyle.marker.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 
 /**
  *
