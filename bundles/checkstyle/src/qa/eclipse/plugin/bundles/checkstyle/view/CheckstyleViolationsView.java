@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -62,6 +63,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.service.prefs.Preferences;
@@ -73,6 +75,7 @@ import qa.eclipse.plugin.bundles.checkstyle.StringUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
@@ -613,23 +616,28 @@ public class CheckstyleViolationsView extends ViewPart
 	}
 
 	private void updateView() {
-		final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
+		try {
+			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
 
-		final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
+			final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
-		for (final IMarker marker : updatedMarkers) {
-			final CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
-			violationMarkers.add(violationMarker);
+			for (final IMarker marker : updatedMarkers) {
+				final CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
+				violationMarkers.add(violationMarker);
+			}
+
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers);
+
+					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
+				}
+			});
+		} catch (final ConfigurationErrorException e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Internal Error", e.getLocalizedMessage());
 		}
 
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers);
-
-				CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
-			}
-		});
 	}
 
 	private void updateTitleAndLabel(final List<?> violationMarkers) {

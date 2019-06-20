@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
+import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 
 /**
  *
@@ -38,9 +39,9 @@ import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
  */
 public final class CheckstyleMarkersUtils {
 
-	/** marker to delete violation and error markers */
+	/** marker to delete violation and error markers. */
 	public static final String ABSTRACT_CHECKSTYLE_COMMON_MARKER = "qa.eclipse.plugin.checkstyle.markers.common";
-	/** marker to identify violation marker for the violations view */
+	/** marker to identify violation marker for the violations view. */
 	public static final String ABSTRACT_CHECKSTYLE_VIOLATION_MARKER = "qa.eclipse.plugin.checkstyle.markers.violation";
 	public static final String ERROR_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".error";
 	public static final String WARNING_CHECKSTYLE_VIOLATION_MARKER = CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER + ".warning";
@@ -93,13 +94,13 @@ public final class CheckstyleMarkersUtils {
 		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 
-	public static IMarker[] findAllInWorkspace() {
+	public static IMarker[] findAllInWorkspace() throws ConfigurationErrorException {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		final IMarker[] markers;
 		try {
 			markers = workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
 		} catch (final CoreException e) {
-			throw new IllegalStateException(e);
+			throw new ConfigurationErrorException(e);
 		}
 		return markers;
 	}

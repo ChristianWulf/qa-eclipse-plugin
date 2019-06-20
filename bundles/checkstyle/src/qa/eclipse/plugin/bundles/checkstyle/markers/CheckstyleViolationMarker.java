@@ -28,6 +28,11 @@ public class CheckstyleViolationMarker {
 
 	private final IMarker marker;
 
+	/**
+	 *
+	 * @param marker
+	 *            marker
+	 */
 	public CheckstyleViolationMarker(final IMarker marker) {
 		super();
 		this.marker = marker;

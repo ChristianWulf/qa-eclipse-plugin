@@ -39,7 +39,7 @@ public final class FileUtil {
 		return customRulesJarFile;
 	}
 
-	public static URL[] filePathsToUrls(final File parentFile, final String[] jarFilePaths) {
+	public static URL[] filePathsToUrls(final File parentFile, final String[] jarFilePaths) throws ConfigurationErrorException {
 		final URL[] urls = new URL[jarFilePaths.length];
 		for (int i = 0; i < jarFilePaths.length; i++) {
 			final File jarFile = FileUtil.makeAbsoluteFile(jarFilePaths[i], parentFile);
@@ -56,7 +56,7 @@ public final class FileUtil {
 			if (fileUrl.toString().endsWith("/")) {
 				final String message = String.format("The passed jar file '%s' may not end with a slash ('/').",
 						fileUrl.toString());
-				throw new IllegalStateException(message);
+				throw new ConfigurationErrorException(message);
 			}
 
 			urls[i] = fileUrl;
