@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.bundles.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheEnd(final String text, final SplitQuantity splitQuantity, final char separator) {
+	private static List<String> splitFromTheEnd(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int endIndex = text.length();
 
@@ -102,7 +102,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheBeginning(final String text, final SplitQuantity splitQuantity, final char separator) {
+	private static List<String> splitFromTheBeginning(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int beginIndex = 0;
 
@@ -134,21 +134,21 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	public static interface ISplitResult {
+	public interface ISplitResult {
 
 		/**
 		 * Only split once.
 		 *
 		 * @return returns a quantity result object
 		 */
-		public IQuantityResult once();
+		IQuantityResult once();
 
 		/**
 		 * Only split at every occurrence of the separator.
 		 *
 		 * @return returns a quantity result object
 		 */
-		public IQuantityResult always();
+		IQuantityResult always();
 	}
 
 	/**
@@ -156,7 +156,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
+	/* default */ static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
 
 		private final String text;
 		private SplitQuantity splitQuantity;
@@ -186,12 +186,14 @@ public final class SplitUtils {
 
 		@Override
 		public List<String> fromTheEnd() {
-			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator); // NOPMD
+			// Ignore warning on calling parent class static methods
 		}
 
 		@Override
 		public List<String> fromTheBeginning() {
-			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator); // NOPMD
+			// Ignore warning on calling parent class static methods
 		}
 
 	}
@@ -202,7 +204,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	public static interface IQuantityResult {
+	public interface IQuantityResult {
 
 		/**
 		 * Set the separator.
@@ -212,7 +214,7 @@ public final class SplitUtils {
 		 *
 		 * @return result after separation
 		 */
-		public ISeparatorResult at(char separator); // NOPMD internal DSL
+		ISeparatorResult at(char separator); // NOPMD internal DSL
 	}
 
 	/**
@@ -221,7 +223,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	public static enum SplitQuantity {
+	public enum SplitQuantity {
 		ONCE, ALWAYS
 	}
 
@@ -231,7 +233,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	static class QuantityResultImpl implements IQuantityResult {
+	/* default */static class QuantityResultImpl implements IQuantityResult {
 
 		private final String text;
 		private final SplitQuantity splitQuantity;
@@ -253,7 +255,7 @@ public final class SplitUtils {
 	 * @author Reiner Jung
 	 *
 	 */
-	public static interface ISeparatorResult {
+	public interface ISeparatorResult {
 		/**
 		 * This is a terminal operation.
 		 *
@@ -261,7 +263,7 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in passed the text (from left to right).
 		 */
-		public List<String> fromTheEnd();
+		List<String> fromTheEnd();
 
 		/**
 		 * This is a terminal operation.
@@ -270,7 +272,7 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in the passed text (from left to right).
 		 */
-		public List<String> fromTheBeginning();
+		List<String> fromTheBeginning();
 	}
 
 	/**
@@ -279,7 +281,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	static class SeparatorResultImpl implements ISeparatorResult {
+	/* default */static class SeparatorResultImpl implements ISeparatorResult {
 
 		private final String text;
 		private final SplitQuantity splitQuantity;
@@ -293,12 +295,14 @@ public final class SplitUtils {
 
 		@Override
 		public List<String> fromTheEnd() {
-			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator); // NOPMD
+			// Ignore warning on calling parent class static methods
 		}
 
 		@Override
 		public List<String> fromTheBeginning() {
-			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator); // NOPMD
+			// Ignore warning on calling parent class static methods
 		}
 
 	}

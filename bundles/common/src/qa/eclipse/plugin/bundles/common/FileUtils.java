@@ -25,9 +25,9 @@ import java.net.URL;
  * @author Christian Wulf
  *
  */
-public final class FileUtil {
+public final class FileUtils {
 
-	private FileUtil() {
+	private FileUtils() {
 		// utility class
 	}
 
@@ -39,10 +39,10 @@ public final class FileUtil {
 		return customRulesJarFile;
 	}
 
-	public static URL[] filePathsToUrls(final File parentFile, final String[] jarFilePaths) throws ConfigurationErrorException {
+	public static URL[] filePathsToUrls(final File parentFile, final String[] jarFilePaths) {
 		final URL[] urls = new URL[jarFilePaths.length];
 		for (int i = 0; i < jarFilePaths.length; i++) {
-			final File jarFile = FileUtil.makeAbsoluteFile(jarFilePaths[i], parentFile);
+			final File jarFile = FileUtils.makeAbsoluteFile(jarFilePaths[i], parentFile);
 
 			final URL fileUrl;
 			try {
@@ -56,7 +56,7 @@ public final class FileUtil {
 			if (fileUrl.toString().endsWith("/")) {
 				final String message = String.format("The passed jar file '%s' may not end with a slash ('/').",
 						fileUrl.toString());
-				throw new ConfigurationErrorException(message);
+				throw new IllegalStateException(message);
 			}
 
 			urls[i] = fileUrl;
@@ -66,7 +66,7 @@ public final class FileUtil {
 
 	public static void checkFilesExist(final String messagePrefix, final File parentFile, final String[] filePaths) {
 		for (final String filePath : filePaths) {
-			final File file = FileUtil.makeAbsoluteFile(filePath, parentFile);
+			final File file = FileUtils.makeAbsoluteFile(filePath, parentFile);
 			if (!file.exists()) {
 				final String message = String.format("%s not found on file path '%s'.", messagePrefix, filePath);
 				LoggerUtils.logWarning(message);

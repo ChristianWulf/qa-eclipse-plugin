@@ -38,6 +38,7 @@ class CompareOnSelectListener extends SelectionAdapter {
 
 	public CompareOnSelectListener(final Preferences preferences, final StructuredViewer structuredViewer,
 			final int selectedSortProperty) {
+		super();
 		this.preferences = preferences;
 		this.structuredViewer = structuredViewer;
 		this.selectedSortProperty = selectedSortProperty;
@@ -46,8 +47,8 @@ class CompareOnSelectListener extends SelectionAdapter {
 	}
 
 	@Override
-	public void widgetSelected(final SelectionEvent e) {
-		final TableColumn selectedColumn = (TableColumn) e.getSource();
+	public void widgetSelected(final SelectionEvent event) {
+		final TableColumn selectedColumn = (TableColumn) event.getSource();
 		final Table table = selectedColumn.getParent();
 
 		// toggle sort order

@@ -34,21 +34,25 @@ import org.eclipse.jdt.core.JavaModelException;
  * @author Christian Wulf
  *
  */
-public class JavaUtil {
+public class JavaUtils {
 
 	private final Map<IProject, IJavaProject> javaProjectByIProject = new ConcurrentHashMap<>();
 
 	/**
 	 * Default constructor.
 	 */
-	public JavaUtil() {
+	public JavaUtils() {
 		// nothing to do here
 	}
 
 	/**
+	 * Get the set of default build output paths.
+	 *
 	 * @param project
+	 *            project
 	 * @return a (possibly empty) read-only set of output folder paths
 	 * @throws JavaModelException
+	 *             on model errors
 	 */
 	public Set<IPath> getDefaultBuildOutputFolderPaths(final IProject project) throws JavaModelException {
 		if (!project.isAccessible()) {

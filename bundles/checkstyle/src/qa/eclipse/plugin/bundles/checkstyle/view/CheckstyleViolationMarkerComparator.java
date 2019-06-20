@@ -45,7 +45,7 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	}
 
 	@Override
-	public int compare(final Viewer viewer, final Object e1, final Object e2) {
+	public int compare(final Viewer viewer, final Object object1, final Object object2) {
 		final TableViewer tableViewer = (TableViewer) viewer;
 		final Table table = tableViewer.getTable();
 		final int sortDirection = table.getSortDirection();
@@ -53,8 +53,8 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			return 0;
 		}
 
-		final CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) e1;
-		final CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) e2;
+		final CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) object1;
+		final CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) object2;
 
 		int compareResult;
 		switch (this.selectedSortProperty) {

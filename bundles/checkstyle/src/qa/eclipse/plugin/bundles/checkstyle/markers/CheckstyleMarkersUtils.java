@@ -29,10 +29,10 @@ import org.eclipse.core.runtime.CoreException;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
-import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
+import qa.eclipse.plugin.bundles.common.SplitUtils;
 
 /**
+ * Utility class to handle checkstyle markers.
  *
  * @author Christian Wulf
  *
@@ -58,7 +58,7 @@ public final class CheckstyleMarkersUtils {
 
 	private static final int IMARKER_SEVERITY_OTHERS = 3;
 
-	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<Integer, String>();
+	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<>();
 
 	static {
 		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.ERROR.ordinal(), CheckstyleMarkersUtils.ERROR_CHECKSTYLE_VIOLATION_MARKER);
@@ -71,6 +71,16 @@ public final class CheckstyleMarkersUtils {
 		// utility class
 	}
 
+	/**
+	 * Add a violation marker for a given file and a specific violation level.
+	 *
+	 * @param eclipseFile
+	 *            the file
+	 * @param violation
+	 *            the audit level
+	 * @throws CoreException
+	 *             on various errors
+	 */
 	public static void appendViolationMarker(final IFile eclipseFile, final AuditEvent violation) throws CoreException {
 		final int priority = violation.getSeverityLevel().ordinal();
 		final String markerType = CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.get(priority);
@@ -94,21 +104,41 @@ public final class CheckstyleMarkersUtils {
 		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 
-	public static IMarker[] findAllInWorkspace() throws ConfigurationErrorException {
+	/**
+	 * Find all markers in the workspace.
+	 *
+	 * @return return an array of markers
+	 * @throws CoreException
+	 *             in case an error occurs while finding markers
+	 *
+	 */
+	public static IMarker[] findAllMarkers() throws CoreException {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		final IMarker[] markers;
-		try {
-			markers = workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
-		} catch (final CoreException e) {
-			throw new ConfigurationErrorException(e);
-		}
-		return markers;
+		return workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
 	}
 
+	/**
+	 * Delete all markers for the given resource.
+	 *
+	 * @param resource
+	 *            resource
+	 * @throws CoreException
+	 *             on errors while deleting
+	 */
 	public static void deleteMarkers(final IResource resource) throws CoreException {
 		resource.deleteMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_COMMON_MARKER, true, IResource.DEPTH_INFINITE);
 	}
 
+	/**
+	 * Append error markers during processing.
+	 *
+	 * @param eclipseFile
+	 *            the file checked
+	 * @param throwable
+	 *            the error which occured during checking
+	 * @throws CoreException
+	 *             on errors while appending
+	 */
 	public static void appendProcessingErrorMarker(final IFile eclipseFile, final Throwable throwable) throws CoreException {
 		final IMarker marker = eclipseFile.createMarker(CheckstyleMarkersUtils.EXCEPTION_CHECKSTYLE_MARKER);
 		// whether it is displayed as error, warning, info or other in the Problems View

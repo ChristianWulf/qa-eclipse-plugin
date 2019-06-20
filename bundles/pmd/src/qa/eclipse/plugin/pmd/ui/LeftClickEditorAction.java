@@ -40,7 +40,7 @@ import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
-import qa.eclipse.plugin.pmd.views.PmdViolationsView;
+import qa.eclipse.plugin.pmd.view.PmdViolationsView;
 
 /**
  *

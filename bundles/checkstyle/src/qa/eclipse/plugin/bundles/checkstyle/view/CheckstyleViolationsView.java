@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.checkstyle.view; // NOPMD (ExcessiveImports) UI programming
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -71,12 +72,11 @@ import org.osgi.service.prefs.Preferences;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
-import qa.eclipse.plugin.bundles.checkstyle.StringUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
-import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
+import qa.eclipse.plugin.bundles.common.StringUtils;
 
 /**
  *
@@ -116,7 +116,11 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private final Map<Integer, String> verticalKeyByPriority = new ConcurrentHashMap<>();
 
+	/**
+	 * Create the violation view.
+	 */
 	public CheckstyleViolationsView() {
+		super();
 		final IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(CheckstyleViolationsView.PREF_SORT_DIRECTION, SWT.DOWN);
 		defaultPreferences.putInt(CheckstyleViolationsView.PREF_SORT_COLUMN_INDEX, SWT.DOWN);
@@ -304,7 +308,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private int loadSavedFilterPriority(final TableCombo tableCombo) {
 		final int defaultPriorty = SeverityLevel.IGNORE.ordinal();
 		int filterPriority = this.viewPreferences.getInt(CheckstyleViolationsView.PREF_FILTER_PRIORITY, defaultPriorty);
-		if ((filterPriority < 0) || (filterPriority >= tableCombo.getItemCount())) {
+		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
 			filterPriority = defaultPriorty;
 		}
 		return filterPriority;
@@ -617,7 +621,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private void updateView() {
 		try {
-			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
+			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllMarkers();
 
 			final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
@@ -629,13 +633,13 @@ public class CheckstyleViolationsView extends ViewPart
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers);
-
-					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
+					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers); // NOPMD
+					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers); // NOPMD
 				}
 			});
-		} catch (final ConfigurationErrorException e) {
-			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Internal Error", e.getLocalizedMessage());
+		} catch (final CoreException e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Internal Error", e.getLocalizedMessage());
 		}
 
 	}

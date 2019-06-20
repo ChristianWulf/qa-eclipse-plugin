@@ -57,6 +57,7 @@
 		<exclude name="UselessParentheses" />
 		<exclude name="UselessQualifiedThis"/>
 		<exclude name="UseVarargs" />
+		<exclude name="DataClass"/>
 	</rule>
 
 	<rule ref="category/java/documentation.xml/CommentRequired">
@@ -73,5 +74,21 @@
 	<!-- <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement"> -->
 	<!-- <priority>3</priority> -->
 	<!-- </rule> -->
+	<rule ref="category/java/design.xml">
+		<exclude name="DataClass"/>
+		<exclude name="LawOfDemeter"/>
+	</rule>
+	<rule ref="category/java/codestyle.xml">
+		<exclude name="DefaultPackage"/>
+		<exclude name="OnlyOneReturn"/>
+		<exclude name="UnnecessaryConstructor"/>
+		<exclude name="AvoidFinalLocalVariable"/>
+	</rule>
+	<rule ref="category/java/codestyle.xml/LongVariable">
+    	<properties>
+        	<property name="minimum" value="36" />
+    	</properties>
+	</rule>
+	
 
 </ruleset>

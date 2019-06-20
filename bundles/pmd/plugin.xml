@@ -255,7 +255,7 @@
          point="org.eclipse.ui.views">
       <view
             category="qa.eclipse.plugin.category.qa"
-            class="qa.eclipse.plugin.pmd.views.PmdViolationsView"
+            class="qa.eclipse.plugin.pmd.view.PmdViolationsView"
             icon="icons/pmd-icon-16.gif"
             id="qa.eclipse.plugin.pmd.views.PmdViolationsView"
             name="PMD Violations"

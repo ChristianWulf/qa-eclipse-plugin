@@ -26,7 +26,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 
 /**
  *
@@ -41,6 +41,7 @@ class ConfigFilePathTextListener extends KeyAdapter {
 	private final CheckstylePropertyPage propertyPage;
 
 	public ConfigFilePathTextListener(final CheckstylePropertyPage propertyPage) {
+		super();
 		this.propertyPage = propertyPage;
 	}
 
@@ -48,13 +49,13 @@ class ConfigFilePathTextListener extends KeyAdapter {
 	public void keyReleased(final KeyEvent event) {
 		final Object source = event.getSource();
 		final Text textField = this.propertyPage.getConfigFilePathText();
-		if (source != textField) {
+		if (source != textField) { // NOPMD (CompareObjectWithEquals) no we want the exact object
 			return;
 		}
 
 		final String text = textField.getText();
 
-		final Label label = this.propertyPage.getExampleLabel();
+		final Label label = this.propertyPage.getExampleConfigurationFilePathLabel();
 		final Path path;
 		try {
 			path = Paths.get(text);
@@ -71,7 +72,7 @@ class ConfigFilePathTextListener extends KeyAdapter {
 			return;
 		}
 
-		final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(this.propertyPage);
+		final Path absoluteProjectPath = ProjectUtils.getAbsoluteProjectPath(this.propertyPage);
 		final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 		if (!Files.exists(absoluteConfigFilePath)) {

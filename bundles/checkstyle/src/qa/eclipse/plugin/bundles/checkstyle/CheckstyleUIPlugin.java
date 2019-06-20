@@ -56,7 +56,7 @@ public class CheckstyleUIPlugin extends AbstractUIPlugin implements IResourceCha
 	 * The constructor.
 	 */
 	public CheckstyleUIPlugin() {
-		// nothing to do here
+		super();
 	}
 
 	/*
