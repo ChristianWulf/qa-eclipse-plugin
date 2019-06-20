@@ -29,9 +29,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
-import net.sourceforge.pmd.RuleSets;
+import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 import qa.eclipse.plugin.bundles.common.FileUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
+
+import net.sourceforge.pmd.RuleSets;
 
 /**
  * Preferences for PMD.
@@ -121,8 +123,9 @@ public final class PmdPreferences {
 	 * @param project
 	 *            the project
 	 * @return return the rulesets
+	 * @throws ConfigurationErrorException
 	 */
-	public RuleSets loadRuleSetsFrom(final IProject project) {
+	public RuleSets loadRuleSetsFrom(final IProject project) throws ConfigurationErrorException {
 		final IScopeContext projectPref = this.projectScopeByProject.get(project);
 		final IEclipsePreferences preferences = projectPref.getNode(this.node);
 		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
@@ -132,7 +135,7 @@ public final class PmdPreferences {
 	}
 
 	private RuleSets loadUpdatedRuleSet(final IEclipsePreferences preferences, final IProject project,
-			final File eclipseProjectPath) {
+			final File eclipseProjectPath) throws ConfigurationErrorException {
 		final URL[] urls;
 
 		// load custom rules into a new class loader

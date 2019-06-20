@@ -16,6 +16,8 @@
 package qa.eclipse.plugin.bundles.checkstyle.handler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +34,10 @@ import org.eclipse.core.runtime.CoreException;
  *
  */
 class ResourceCollector implements IResourceVisitor {
+
+	private static final Collection<String> ACCEPTED_FILE_EXTENSIONS = Arrays.asList(new String[] {
+		"java", "jar", "class",
+	});
 
 	private final Map<IProject, List<IFile>> projectResources = new ConcurrentHashMap<>();
 
@@ -55,21 +61,19 @@ class ResourceCollector implements IResourceVisitor {
 			}
 
 			final IFile file = (IFile) resource;
-			files.add(file);
+			if (ResourceCollector.ACCEPTED_FILE_EXTENSIONS.contains(file.getFileExtension())) {
+				files.add(file);
+			}
 			return false;
 		}
-		case IResource.FOLDER: {
+		case IResource.FOLDER:
 			return true;
-		}
-		case IResource.PROJECT: {
+		case IResource.PROJECT:
 			return true;
-		}
-		case IResource.ROOT: {
+		case IResource.ROOT:
 			return true;
-		}
-		default: {
+		default:
 			return false;
-		}
 		}
 	}
 

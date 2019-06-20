@@ -42,7 +42,9 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 import qa.eclipse.plugin.bundles.checkstyle.EclipsePlatformUtil;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
+import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 import qa.eclipse.plugin.bundles.common.FileUtil;
+import qa.eclipse.plugin.bundles.common.MessagePopupUtils;
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
 import qa.eclipse.plugin.bundles.common.ProjectUtil;
 
@@ -55,6 +57,9 @@ public class CheckstyleTool {
 
 	private final Checker checker;
 
+	/**
+	 * Setup checkstyle tool.
+	 */
 	public CheckstyleTool() {
 		this.checker = new Checker();
 	}
@@ -63,20 +68,20 @@ public class CheckstyleTool {
 	 * You need to catch potential runtime exceptions if you call this method.
 	 *
 	 * @param eclipseFiles
+	 *            collection of files
 	 * @param checkstyleListener
+	 *            listener for checkstyle
 	 */
-	// FIXME remove Eclipse API
 	public void startAsyncAnalysis(final List<IFile> eclipseFiles, final CheckstyleListener checkstyleListener) {
 		final IFile file = eclipseFiles.get(0);
 		final IProject project = file.getProject();
 
 		this.checker.setBasedir(null);
-		// checker.setCacheFile(fileName);
 
 		try {
 			this.checker.setCharset(project.getDefaultCharset());
 		} catch (final UnsupportedEncodingException | CoreException e) {
-			throw new IllegalStateException(e);
+			MessagePopupUtils.displayError("Checkstyle Configuration Error", e.getLocalizedMessage());
 		}
 
 		final IEclipsePreferences projectPreferences = CheckstylePreferences.INSTANCE
@@ -86,29 +91,6 @@ public class CheckstyleTool {
 		final Locale platformLocale = EclipsePlatformUtil.getLocale();
 		this.checker.setLocaleLanguage(platformLocale.getLanguage());
 		this.checker.setLocaleCountry(platformLocale.getCountry());
-
-		// ClassLoader classLoader2 = CommonUtils.class.getClassLoader();
-		// URL emptyResourceName = CommonUtils.class.getResource("");
-		// URL slashResourceName = CommonUtils.class.getResource("/");
-		// URL relResourceName =
-		// CommonUtils.class.getResource("config/cs-suppressions.xml");
-		// URL absResourceName =
-		// CommonUtils.class.getResource("/config/cs-suppressions.xml");
-		// adds the Eclipse project's path to Checkstyle's class loader to find the file
-		// of the SuppressFilter module
-		// DOES NOT WORK since the class loader is not used to resolve the file path
-
-		// Possibilities: pass URL, absolute file path, or class path file path
-
-		// URL[] classLoaderUrls;
-		// try {
-		// classLoaderUrls = new URL[] { eclipseProjectPath.toURI().toURL() };
-		// } catch (MalformedURLException e) {
-		// throw new IllegalStateException(e);
-		// }
-		// ClassLoader classLoader = new URLClassLoader(classLoaderUrls,
-		// Thread.currentThread().getContextClassLoader());
-		// checker.setClassLoader(classLoader);
 
 		final String configFilePath = CheckstylePreferences.INSTANCE.loadConfigFilePath(projectPreferences);
 		final File configFile = FileUtil.makeAbsoluteFile(configFilePath, eclipseProjectPath);
@@ -126,27 +108,27 @@ public class CheckstyleTool {
 		try {
 			configuration = ConfigurationLoader.loadConfiguration(absoluteConfigFilePath, propertyResolver,
 					ignoredModulesOptions, threadModeSettings);
+
+			final String[] customModuleJarPaths = PreferencesUtil.loadCustomJarPaths(projectPreferences,
+					CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS);
+			final URL[] moduleClassLoaderUrls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
+
+			this.configureChecker(configuration, moduleClassLoaderUrls, checkstyleListener);
+
+			// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
+			this.runChecker(eclipseFiles);
 		} catch (final CheckstyleException e) {
 			final String message = String.format("Could not load Checkstyle configuration from '%s'.",
 					absoluteConfigFilePath);
-			throw new IllegalStateException(message, e);
+			MessagePopupUtils.displayError("Checkstyle Configuration Error", message);
+		} catch (final ConfigurationErrorException e) {
+			MessagePopupUtils.displayError("Checkstyle Configuration Error", e.getLocalizedMessage());
 		}
+	}
 
-		// Configuration suppressFilterConfiguration =
-		// resolveSuppressFilterConfiguration(configuration);
-		// if (suppressFilterConfiguration != null) {
-		// try {
-		// String filePath = suppressFilterConfiguration.getAttribute(CONFIG_PROP_FILE);
-		//
-		// } catch (CheckstyleException e) {
-		// throw new IllegalStateException(e);
-		// }
-		// }
+	private void configureChecker(final Configuration configuration, final URL[] moduleClassLoaderUrls,
+			final CheckstyleListener checkstyleListener) throws ConfigurationErrorException {
 
-		final String[] customModuleJarPaths = PreferencesUtil.loadCustomJarPaths(projectPreferences,
-				CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS);
-
-		final URL[] moduleClassLoaderUrls = FileUtil.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
 		try (URLClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls,
 				this.getClass().getClassLoader())) {
 			this.checker.setModuleClassLoader(moduleClassLoader);
@@ -154,52 +136,31 @@ public class CheckstyleTool {
 			try {
 				this.checker.configure(configuration);
 			} catch (final CheckstyleException e) {
-				throw new IllegalStateException(e);
+				MessagePopupUtils.displayError("Checkstyle Configuration Error", e.getLocalizedMessage());
 			}
 
 			this.checker.addListener(checkstyleListener);
 			this.checker.addBeforeExecutionFileFilter(checkstyleListener);
 
-			// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
-
-			final List<File> files = new ArrayList<>();
-
-			for (final IFile eclipseFile : eclipseFiles) {
-				final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
-				files.add(sourceCodeFile);
-			}
-
-			try {
-				this.checker.process(files);
-			} catch (final CheckstyleException e) {
-				throw new IllegalStateException(e);
-			}
 		} catch (final IOException e) {
-			throw new IllegalStateException(e);
+			MessagePopupUtils.displayError("Class Loading Error", e.getLocalizedMessage());
+		}
+	}
+
+	private void runChecker(final List<IFile> eclipseFiles) {
+		final List<File> files = new ArrayList<>();
+
+		for (final IFile eclipseFile : eclipseFiles) {
+			final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
+			files.add(sourceCodeFile);
 		}
 
-		// process each file separately to be able to skip it
-		// for (File fileToCheck : files) {
-		// for (IFile eclipseFile : eclipseFiles) {
-		// final File sourceCodeFile =
-		// eclipseFile.getLocation().toFile().getAbsoluteFile();
-		//
-		// List<File> filesToCheck = Arrays.asList(sourceCodeFile);
-		// try {
-		// checker.process(filesToCheck);
-		// } catch (CheckstyleException e) {
-		// if (e.getCause() instanceof OperationCanceledException) {
-		// throw new IllegalStateException(e);
-		// } else {
-		// // skip file upon syntax error
-		// try {
-		// CheckstyleMarkers.appendProcessingErrorMarker(eclipseFile, e);
-		// } catch (CoreException e1) {
-		// // ignore if marker could not be created
-		// }
-		// }
-		// }
-		// }
+		try {
+			this.checker.process(files);
+		} catch (final CheckstyleException e) {
+			MessagePopupUtils.displayError("Checkstyle Processing Error", e.getLocalizedMessage());
+		}
+
 	}
 
 }

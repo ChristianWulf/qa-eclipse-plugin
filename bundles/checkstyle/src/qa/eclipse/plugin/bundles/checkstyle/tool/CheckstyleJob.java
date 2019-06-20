@@ -103,6 +103,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 	 * All passed files must belong to the same project.
 	 *
 	 * @param eclipseFiles
+	 *            list of files
 	 */
 	public static void startAsyncAnalysis(final List<IFile> eclipseFiles) {
 		if (eclipseFiles.isEmpty()) {
