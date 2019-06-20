@@ -20,6 +20,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Internal DSL to split strings in a more convenient way.
+ *
+ * Sequence split(text),once|always,at(separator),fromTheEnd|fromTheBeginning
+ *
+ * * split = sets the text to split
+ * * once = split only at the first occurrence (results on success in 2 strings)
+ * * always = causes to continue splitting (results on success in multiple strings)
+ * * at = set the separator character
+ * * fromTheEnd = starts scanning of the text from end of the text
+ * * fromTheBeginning = starts scanning of the text from beginning of the text
  *
  * @author Christian Wulf
  *
@@ -51,7 +61,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheRight(final String text, final SplitQuantity splitQuantity, final char separator) {
+	static List<String> splitFromTheEnd(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int endIndex = text.length();
 
@@ -92,7 +102,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheLeft(final String text, final SplitQuantity splitQuantity, final char separator) {
+	static List<String> splitFromTheBeginning(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int beginIndex = 0;
 
@@ -118,13 +128,34 @@ public final class SplitUtils {
 		return textParts;
 	}
 
+	/**
+	 * Interface expressing the number of splits.
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	public static interface ISplitResult {
 
+		/**
+		 * Only split once.
+		 *
+		 * @return returns a quantity result object
+		 */
 		public IQuantityResult once();
 
+		/**
+		 * Only split at every occurrence of the separator.
+		 *
+		 * @return returns a quantity result object
+		 */
 		public IQuantityResult always();
 	}
 
+	/**
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	static class SplitResultImpl implements ISplitResult, IQuantityResult, ISeparatorResult {
 
 		private final String text;
@@ -137,14 +168,12 @@ public final class SplitUtils {
 
 		@Override
 		public IQuantityResult once() {
-			// return new QuantityResultImpl(text, SplitQuantity.ONCE);
 			this.splitQuantity = SplitQuantity.ONCE;
 			return this;
 		}
 
 		@Override
 		public IQuantityResult always() {
-			// return new QuantityResultImpl(text, SplitQuantity.ALWAYS);
 			this.splitQuantity = SplitQuantity.ALWAYS;
 			return this;
 		}
@@ -156,28 +185,38 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheEnd() {
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheBeginning() {
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
 		}
 
 	}
 
 	/**
+	 * Defines the separator keyword.
 	 *
 	 * @author Christian Wulf
 	 *
 	 */
 	public static interface IQuantityResult {
 
+		/**
+		 * Set the separator.
+		 *
+		 * @param separator
+		 *            separator character.
+		 *
+		 * @return result after separation
+		 */
 		public ISeparatorResult at(char separator); // NOPMD internal DSL
 	}
 
 	/**
+	 * How often shall we split the string.
 	 *
 	 * @author Christian Wulf
 	 *
@@ -186,6 +225,12 @@ public final class SplitUtils {
 		ONCE, ALWAYS
 	}
 
+	/**
+	 * Class to implement the separator.
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	static class QuantityResultImpl implements IQuantityResult {
 
 		private final String text;
@@ -202,6 +247,12 @@ public final class SplitUtils {
 		}
 	}
 
+	/**
+	 * Traversing the result.
+	 *
+	 * @author Reiner Jung
+	 *
+	 */
 	public static interface ISeparatorResult {
 		/**
 		 * This is a terminal operation.
@@ -210,7 +261,7 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in passed the text (from left to right).
 		 */
-		public List<String> fromTheRight();
+		public List<String> fromTheEnd();
 
 		/**
 		 * This is a terminal operation.
@@ -219,9 +270,15 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in the passed text (from left to right).
 		 */
-		public List<String> fromTheLeft();
+		public List<String> fromTheBeginning();
 	}
 
+	/**
+	 * Implementation of the string parsing direction.
+	 *
+	 * @author Christian Wulf
+	 *
+	 */
 	static class SeparatorResultImpl implements ISeparatorResult {
 
 		private final String text;
@@ -235,13 +292,13 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheEnd() {
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheBeginning() {
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
 		}
 
 	}

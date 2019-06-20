@@ -83,7 +83,7 @@ public final class CheckstyleMarkersUtils {
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_PRIORITY, priority);
 		// getModuleId() always returns null
 		final String checkClassName = violation.getSourceName();
-		final List<String> checkClassNameParts = SplitUtils.split(checkClassName).once().at('.').fromTheRight();
+		final List<String> checkClassNameParts = SplitUtils.split(checkClassName).once().at('.').fromTheEnd();
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_PACKAGE, checkClassNameParts.get(0));
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_NAME, checkClassNameParts.get(1));
 
