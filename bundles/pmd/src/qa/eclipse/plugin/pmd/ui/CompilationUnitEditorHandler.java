@@ -32,18 +32,23 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.tool.PmdTool;
 
+//used by, for example,
+//	popup:#CompilationUnitEditorContext
 /**
+ * Handler to run the pmd job.
  *
  * @author Christian Wulf
  *
  */
-// used by, for example,
-// popup:#CompilationUnitEditorContext
 public class CompilationUnitEditorHandler extends AbstractHandler {
 
 	private final PmdTool pmdTool;
 
+	/**
+	 * Create handler.
+	 */
 	public CompilationUnitEditorHandler() {
+		super();
 		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();
 	}
 

@@ -29,9 +29,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
-import net.sourceforge.pmd.RuleSets;
 import qa.eclipse.plugin.bundles.common.FileUtils;
 import qa.eclipse.plugin.bundles.common.ProjectUtils;
+
+import net.sourceforge.pmd.RuleSets;
 
 /**
  * Preferences for PMD.

@@ -63,7 +63,14 @@ public final class CheckstylePreferences {
 		return InstanceScope.INSTANCE.getNode("org.eclipse.ui.editors");
 	}
 
-	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) {
+	/**
+	 * Get project scoped preferences for the given project.
+	 *
+	 * @param project
+	 *            the project
+	 * @return the preferences
+	 */
+	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) { // NOPMD
 		final IEclipsePreferences preferences;
 
 		final IScopeContext projectPref;
@@ -83,19 +90,16 @@ public final class CheckstylePreferences {
 	}
 
 	/**
+	 * Load custom modules.
+	 *
+	 * @param preferences
+	 *            set of preferences
 	 * @return a new array containing zero or more jar paths
 	 */
 	public String[] loadCustomModuleJarPaths(final IEclipsePreferences preferences) {
 		final String customModulesJarPathsValue = preferences
 				.get(CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS, "");
-		final String[] customRulesJarPaths = customModulesJarPathsValue.split(CheckstylePreferences.BY_COMMA_AND_TRIM);
-
-		// FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath,
-		// customRulesJars);
-		// customModuleJarPaths = FileUtil.filePathsToUrls(eclipseProjectPath,
-		// customRulesJars);
-
-		return customRulesJarPaths;
+		return customModulesJarPathsValue.split(CheckstylePreferences.BY_COMMA_AND_TRIM);
 	}
 
 	/**

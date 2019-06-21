@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.checkstyle.view; // NOPMD (ExcessiveImports) UI programming
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -116,6 +116,9 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private final Map<Integer, String> verticalKeyByPriority = new ConcurrentHashMap<>();
 
+	/**
+	 * Create the violation view.
+	 */
 	public CheckstyleViolationsView() {
 		super();
 		final IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
@@ -305,7 +308,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private int loadSavedFilterPriority(final TableCombo tableCombo) {
 		final int defaultPriorty = SeverityLevel.IGNORE.ordinal();
 		int filterPriority = this.viewPreferences.getInt(CheckstyleViolationsView.PREF_FILTER_PRIORITY, defaultPriorty);
-		if ((filterPriority < 0) || (filterPriority >= tableCombo.getItemCount())) {
+		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
 			filterPriority = defaultPriorty;
 		}
 		return filterPriority;
@@ -618,7 +621,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private void updateView() {
 		try {
-			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
+			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllMarkers();
 
 			final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
@@ -630,9 +633,9 @@ public class CheckstyleViolationsView extends ViewPart
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers);
+					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers); // NOPMD
 
-					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
+					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers); // NOPMD
 				}
 			});
 		} catch (final CoreException e) {

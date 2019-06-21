@@ -76,7 +76,7 @@ class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 			return false;
 		}
 		// filter resources which are not located on the file system
-		return (resource.getLocation() != null);
+		return resource.getLocation() != null;
 	}
 
 	private void addFileIfApplicable(final IResourceDelta delta) throws JavaModelException {

@@ -50,7 +50,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 	public void keyReleased(final KeyEvent event) {
 		final Object source = event.getSource();
 		final Text textField = this.propertyPage.getCustomModulesJarPathsText();
-		if (source != textField) {
+		if (source != textField) { // NOPMD (CompareObjectWithEquals) no we want the exact object
 			return;
 		}
 

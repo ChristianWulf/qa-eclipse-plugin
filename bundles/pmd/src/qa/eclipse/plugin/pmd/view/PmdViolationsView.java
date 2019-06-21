@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.views;
+package qa.eclipse.plugin.pmd.view;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,12 +65,13 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.service.prefs.Preferences;
 
-import net.sourceforge.pmd.RulePriority;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
+
+import net.sourceforge.pmd.RulePriority;
 
 /**
  *
@@ -81,7 +82,7 @@ public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {
 
 	public static final String TOOL_NAME = "PMD";
-	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
+	public static final String ID = "pmd.eclipse.plugin.view.PmdViolationsView";
 
 	static final String PREF_SORT_DIRECTION = PmdViolationsView.ID + ".sortDirection";
 	static final String PREF_SORT_COLUMN_INDEX = PmdViolationsView.ID + ".sortColumnIndex";

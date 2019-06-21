@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
 /**
+ * Logs errors into the Eclipse error log.
  *
  * @author Reiner Jung
  *

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.tool;
+package qa.eclipse.plugin.pmd.tool; // NOPMD (EXcessiveImports) all perfect
 
 import java.io.File;
 import java.util.Arrays;
@@ -33,6 +33,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
+import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
+import qa.eclipse.plugin.pmd.preference.PmdPreferences;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -44,10 +49,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
-import qa.eclipse.plugin.bundles.common.ProjectUtils;
-import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
-import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
-import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
 /**
  *
@@ -137,7 +138,6 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			pmdProcessor.onFinished();
 
 			this.displayViolationMarkers(eclipseFilesMap, problemRenderer);
-
 		} finally {
 			PmdPreferences.INSTANCE.close();
 		}
@@ -202,12 +202,14 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// this.ruleSets = new RuleSets(ruleSet);
 		// }
 
-		ConstantRuleSetFactory(final RuleSets ruleSets) {
+		/* default */ ConstantRuleSetFactory(final RuleSets ruleSets) {
+			super();
 			this.ruleSets = ruleSets;
 		}
 
 		@Override
-		public synchronized RuleSets createRuleSets(final String referenceString) throws RuleSetNotFoundException {
+		public synchronized RuleSets createRuleSets(final String referenceString)// NOPMD
+				throws RuleSetNotFoundException {
 			return this.ruleSets;
 		}
 	}

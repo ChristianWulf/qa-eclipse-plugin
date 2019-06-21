@@ -30,7 +30,7 @@ public final class CheckstyleMessages extends NLS {
 		NLS.initializeMessages(CheckstyleMessages.BUNDLE_NAME, CheckstyleMessages.class);
 	}
 
-	private CheckstyleMessages() {
+	private CheckstyleMessages() { // NOPMD (CallSuperInConstructor) utility class
 		// utility class
 	}
 

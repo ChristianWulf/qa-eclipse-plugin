@@ -46,9 +46,13 @@ public class JavaUtils {
 	}
 
 	/**
+	 * Get the set of default build output paths.
+	 *
 	 * @param project
+	 *            project
 	 * @return a (possibly empty) read-only set of output folder paths
 	 * @throws JavaModelException
+	 *             on model errors
 	 */
 	public Set<IPath> getDefaultBuildOutputFolderPaths(final IProject project) throws JavaModelException {
 		if (!project.isAccessible()) {

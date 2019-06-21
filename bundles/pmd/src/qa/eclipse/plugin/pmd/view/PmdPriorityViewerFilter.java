@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.views;
+package qa.eclipse.plugin.pmd.view;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
+import net.sourceforge.pmd.RulePriority;
+
 /**
  *
  * @author Christian Wulf
  *
  */
-public class PmdProjectNameViewerFilter extends ViewerFilter {
+class PmdPriorityViewerFilter extends ViewerFilter {
 
-	private String projectName;
+	private int lowestPriority = RulePriority.LOW.getPriority();
 
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
 		final PmdViolationMarker marker = (PmdViolationMarker) element;
-		if (this.projectName == null) {
-			return true;
-		}
-		return marker.getProjectName().equals(this.projectName);
+		return marker.getPriority() <= this.lowestPriority;
 	}
 
-	public void setProjectName(final String projectName) {
-		this.projectName = projectName;
+	public void setLowestPriority(final int lowestPriority) {
+		this.lowestPriority = lowestPriority;
+	}
+
+	public int getLowestPriority() {
+		return this.lowestPriority;
 	}
 
 }

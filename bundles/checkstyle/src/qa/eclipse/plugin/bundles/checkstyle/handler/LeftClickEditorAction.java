@@ -36,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
 
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
@@ -55,9 +56,16 @@ public class LeftClickEditorAction extends SelectMarkerRulerAction {
 	 * Create an left click editor action.
 	 *
 	 * @param bundle
+	 *            the resource bundle
 	 * @param prefix
+	 *            a prefix to be prepended to the various resource keys
+	 *            (described in <code>ResourceAction</code> constructor), or <code>null</code> if none
 	 * @param editor
+	 *            the editor
 	 * @param ruler
+	 *            the ruler
+	 *
+	 * @see ResourceAction#ResourceAction(ResourceBundle, String)
 	 */
 	public LeftClickEditorAction(final ResourceBundle bundle, final String prefix, final ITextEditor editor,
 			final IVerticalRulerInfo ruler) {

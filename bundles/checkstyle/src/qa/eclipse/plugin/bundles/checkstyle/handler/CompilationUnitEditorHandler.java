@@ -34,12 +34,16 @@ import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
 // used by, for example,
 //	popup:#CompilationUnitEditorContext
 /**
+ * Handler to run the checkstyle job.
  *
  * @author Christian Wulf
  *
  */
 public class CompilationUnitEditorHandler extends AbstractHandler {
 
+	/**
+	 * Create handler.
+	 */
 	public CompilationUnitEditorHandler() {
 		super();
 	}

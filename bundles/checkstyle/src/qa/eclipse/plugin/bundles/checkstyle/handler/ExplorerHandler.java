@@ -57,15 +57,6 @@ public class ExplorerHandler extends AbstractHandler {
 		final IWorkbenchPage activePage = window.getActivePage();
 		final ISelection selection = activePage.getSelection();
 
-		// if (selection instanceof ITreeSelection) {
-		// TreePath[] treePaths = ((ITreeSelection) selection).getPaths();
-		// for (TreePath treePath : treePaths) {
-		// System.out.println(treePath);
-		// Object lastSegment = treePath.getLastSegment();
-		// System.out.println(lastSegment);
-		// }
-		// }
-
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
@@ -90,16 +81,6 @@ public class ExplorerHandler extends AbstractHandler {
 	private void collectElement(final Object selectedObject, final ResourceCollector resourceCollector) {
 		if (selectedObject instanceof IAdaptable) {
 			final IResource resource = ((IAdaptable) selectedObject).getAdapter(IResource.class);
-
-			// IWorkbenchWindow activeWorkbenchWindow =
-			// PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			// IWorkbenchPart activePart =
-			// activeWorkbenchWindow.getActivePage().getActivePart();
-			// if (activePart instanceof IPackagesViewPart) {
-			// PackageExplorerPart;
-			// ProjectExplorer?
-			// "org.eclipse.jdt.ui.PackageExplorer" = org.eclipse.jdt.ui.JavaUI.ID_PACKAGES
-			// }
 
 			// TODO determine depth based on the package presentation: flat or hierarchical
 			final int depth = (true) ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE;

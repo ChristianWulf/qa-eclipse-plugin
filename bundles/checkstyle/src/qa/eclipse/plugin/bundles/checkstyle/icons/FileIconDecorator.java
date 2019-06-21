@@ -44,10 +44,13 @@ import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
  */
 public class FileIconDecorator extends LabelProvider implements ILightweightLabelDecorator {
 
-	public static final String ID = "qa.eclipse.plugin.bundles.checkstyle.decorator";
+	public static final String ID = "qa.eclipse.plugin.bundles.checkstyle.decorator"; // NOPMD (ShortVariable) id is just perfect
 
 	private final ImageRegistry imageRegistry;
 
+	/**
+	 * Create file icon decorator.
+	 */
 	public FileIconDecorator() {
 		super();
 		this.imageRegistry = CheckstyleUIPlugin.getDefault().getImageRegistry();
@@ -77,11 +80,6 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 
 	private ImageDescriptor getImageDescriptor(final IResource resource) throws CoreException {
 		final int depth = IResource.DEPTH_INFINITE;
-		// if (resource instanceof IFolder) {
-		// depth = IResource.DEPTH_INFINITE;
-		// } else if (resource instanceof IFile) {
-		// depth = IResource.DEPTH_ZERO;
-		// }
 
 		final IMarker[] markers = resource.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true,
 				depth);
@@ -116,6 +114,9 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		return imageDescriptor;
 	}
 
+	/**
+	 * Update decorations of file and package symbols.
+	 */
 	public static void refresh() {
 		final IDecoratorManager manager = PlatformUI.getWorkbench().getDecoratorManager();
 		final IBaseLabelProvider decorator = manager.getBaseLabelProvider(FileIconDecorator.ID);

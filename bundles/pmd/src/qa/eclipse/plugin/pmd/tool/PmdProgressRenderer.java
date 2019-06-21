@@ -32,6 +32,12 @@ public class PmdProgressRenderer extends AbstractRenderer {
 
 	private final SubMonitor subMonitor;
 
+	/**
+	 * Create PmdProgressRenderer.
+	 *
+	 * @param subMonitor
+	 *            sub monitor
+	 */
 	public PmdProgressRenderer(final SubMonitor subMonitor) {
 		super(PmdProgressRenderer.class.getName(), "Renderer that informs about the progress");
 		this.subMonitor = subMonitor;

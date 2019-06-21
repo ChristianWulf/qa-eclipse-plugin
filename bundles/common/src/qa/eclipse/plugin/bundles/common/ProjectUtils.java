@@ -39,8 +39,10 @@ public final class ProjectUtils {
 	}
 
 	/**
+	 * Get compiler code compliance for a project.
 	 *
 	 * @param project
+	 *            project
 	 * @return e.g., <code>JavaSE-1.8</code>
 	 */
 	public static String getCompilerCompliance(final IProject project) {
@@ -55,15 +57,30 @@ public final class ProjectUtils {
 		}
 	}
 
+	/**
+	 * Get java io file for a given project.
+	 *
+	 * @param project
+	 *            the project
+	 * @return the file
+	 */
 	public static File getProjectPath(final IProject project) {
 		final IPath location = project.getLocation(); // getRawLocation returns null
 		return location.makeAbsolute().toFile();
 	}
 
+	/**
+	 * Get absolute project path.
+	 *
+	 * @param propertyPage
+	 *            property page which is related to the project
+	 * @return the project path (java)
+	 */
 	public static Path getAbsoluteProjectPath(final PropertyPage propertyPage) {
 		final IResource resource = propertyPage.getElement().getAdapter(IResource.class);
 		final IProject project = resource.getProject();
 		final File projectFile = ProjectUtils.getProjectPath(project);
+
 		return Paths.get(projectFile.getAbsolutePath());
 	}
 

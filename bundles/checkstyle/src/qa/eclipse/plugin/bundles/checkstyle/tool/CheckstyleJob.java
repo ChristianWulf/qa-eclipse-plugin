@@ -91,7 +91,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 		final CheckstyleTool checkstyleTool = new CheckstyleTool();
 		try {
 			checkstyleTool.startAsyncAnalysis(this.eclipseFiles, checkstyleListener);
-		} catch (final Exception e) { // NOCS used to catch all not handled exceptions
+		} catch (final Exception e) { // NOCS, NOPMD used to catch all not handled exceptions
 			LoggerUtils.logThrowable("Exception while analyzing with Checkstyle.", e);
 			return Status.CANCEL_STATUS;
 		}
@@ -103,6 +103,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 	 * All passed files must belong to the same project.
 	 *
 	 * @param eclipseFiles
+	 *            list of files
 	 */
 	public static void startAsyncAnalysis(final List<IFile> eclipseFiles) {
 		if (eclipseFiles.isEmpty()) {

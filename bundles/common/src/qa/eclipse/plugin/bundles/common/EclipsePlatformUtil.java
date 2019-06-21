@@ -37,8 +37,8 @@ public final class EclipsePlatformUtil {
 	 * @return the platform locale
 	 */
 	public static Locale getLocale() {
-		final String nl = Platform.getNL();
-		final String[] parts = nl.split("_"); //$NON-NLS-1$
+		final String locale = Platform.getNL();
+		final String[] parts = locale.split("_"); //$NON-NLS-1$
 
 		final String language = parts.length > 0 ? parts[0] : ""; //$NON-NLS-1$
 		final String country = parts.length > 1 ? parts[1] : ""; //$NON-NLS-1$
