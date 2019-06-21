@@ -13,37 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.pmd.view;
 
-import java.util.Locale;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 
-import org.eclipse.core.runtime.Platform;
+import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
 /**
- * Utility class to identify the correct language and locale settings.
- * 
+ *
  * @author Christian Wulf
  *
  */
-public final class EclipsePlatformUtil {
+public class PmdProjectNameViewerFilter extends ViewerFilter {
 
-	private EclipsePlatformUtil() {
-		// utility class
+	private String projectName;
+
+	@Override
+	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
+		final PmdViolationMarker marker = (PmdViolationMarker) element;
+		if (this.projectName == null) {
+			return true;
+		}
+		return marker.getProjectName().equals(this.projectName);
 	}
 
-	/**
-	 * Helper method to get the current platform locale.
-	 *
-	 * @return the platform locale
-	 */
-	public static Locale getLocale() {
-		final String nl = Platform.getNL();
-		final String[] parts = nl.split("_"); //$NON-NLS-1$
-
-		final String language = parts.length > 0 ? parts[0] : ""; //$NON-NLS-1$
-		final String country = parts.length > 1 ? parts[1] : ""; //$NON-NLS-1$
-		final String variant = parts.length > 2 ? parts[2] : ""; //$NON-NLS-1$
-
-		return new Locale(language, country, variant);
+	public void setProjectName(final String projectName) {
+		this.projectName = projectName;
 	}
+
 }

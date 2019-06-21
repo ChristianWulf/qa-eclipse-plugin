@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 
 /**
  *
@@ -42,6 +42,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 	private final CheckstylePropertyPage propertyPage;
 
 	public CustomModulesKeyListener(final CheckstylePropertyPage propertyPage) {
+		super();
 		this.propertyPage = propertyPage;
 	}
 
@@ -49,7 +50,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 	public void keyReleased(final KeyEvent event) {
 		final Object source = event.getSource();
 		final Text textField = this.propertyPage.getCustomModulesJarPathsText();
-		if (source != textField) {
+		if (source != textField) { // NOPMD (CompareObjectWithEquals) no we want the exact object
 			return;
 		}
 
@@ -75,7 +76,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 				return;
 			}
 
-			final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(this.propertyPage);
+			final Path absoluteProjectPath = ProjectUtils.getAbsoluteProjectPath(this.propertyPage);
 			final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 			if (!Files.exists(absoluteConfigFilePath)) {

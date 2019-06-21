@@ -32,23 +32,24 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @author Christian Wulf
  *
  */
-public final class ProjectUtil {
+public final class ProjectUtils {
 
-	private ProjectUtil() {
+	private ProjectUtils() {
 		// utility class
 	}
 
 	/**
+	 * Get compiler code compliance for a project.
 	 *
 	 * @param project
+	 *            project
 	 * @return e.g., <code>JavaSE-1.8</code>
 	 */
 	public static String getCompilerCompliance(final IProject project) {
 		try {
 			if (project.hasNature(JavaCore.NATURE_ID)) {
 				final IJavaProject javaProject = JavaCore.create(project);
-				final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-				return compilerCompliance;
+				return javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
 			}
 			throw new IllegalStateException("The project is not a Java project.");
 		} catch (final CoreException e) {
@@ -56,17 +57,31 @@ public final class ProjectUtil {
 		}
 	}
 
+	/**
+	 * Get java io file for a given project.
+	 *
+	 * @param project
+	 *            the project
+	 * @return the file
+	 */
 	public static File getProjectPath(final IProject project) {
 		final IPath location = project.getLocation(); // getRawLocation returns null
 		return location.makeAbsolute().toFile();
 	}
 
+	/**
+	 * Get absolute project path.
+	 *
+	 * @param propertyPage
+	 *            property page which is related to the project
+	 * @return the project path (java)
+	 */
 	public static Path getAbsoluteProjectPath(final PropertyPage propertyPage) {
 		final IResource resource = propertyPage.getElement().getAdapter(IResource.class);
 		final IProject project = resource.getProject();
-		final File projectFile = ProjectUtil.getProjectPath(project);
-		final Path absoluteProjectPath = Paths.get(projectFile.getAbsolutePath());
-		return absoluteProjectPath;
+		final File projectFile = ProjectUtils.getProjectPath(project);
+
+		return Paths.get(projectFile.getAbsolutePath());
 	}
 
 }

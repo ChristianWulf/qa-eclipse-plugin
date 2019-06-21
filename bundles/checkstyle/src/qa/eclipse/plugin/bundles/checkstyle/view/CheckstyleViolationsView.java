@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.checkstyle.view; // NOPMD (ExcessiveImports) UI programming
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -71,12 +72,11 @@ import org.osgi.service.prefs.Preferences;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
-import qa.eclipse.plugin.bundles.checkstyle.StringUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
-import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
+import qa.eclipse.plugin.bundles.common.StringUtils;
 
 /**
  *
@@ -116,7 +116,11 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private final Map<Integer, String> verticalKeyByPriority = new ConcurrentHashMap<>();
 
+	/**
+	 * Create the violation view.
+	 */
 	public CheckstyleViolationsView() {
+		super();
 		final IEclipsePreferences defaultPreferences = CheckstylePreferences.INSTANCE.getDefaultPreferences();
 		defaultPreferences.putInt(CheckstyleViolationsView.PREF_SORT_DIRECTION, SWT.DOWN);
 		defaultPreferences.putInt(CheckstyleViolationsView.PREF_SORT_COLUMN_INDEX, SWT.DOWN);
@@ -171,8 +175,8 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public void handleEvent(final Event event) {
 				@SuppressWarnings("unchecked")
-				final List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) CheckstyleViolationsView.this.tableViewer
-						.getInput();
+				final List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) CheckstyleViolationsView.this.tableViewer.getInput(); // NOPMD
+				// pmd error caused by API
 				// CheckstyleMarkers.deleteMarkers(eclipseFile);
 				ClearViolationsViewJob.startAsyncAnalysis(violationMarkers);
 			}
@@ -191,22 +195,22 @@ public class CheckstyleViolationsView extends ViewPart
 		tableCombo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 		tableCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				final TableCombo source = (TableCombo) e.getSource();
+			public void widgetSelected(final SelectionEvent event) {
+				final TableCombo source = (TableCombo) event.getSource();
 				final int selectionIndex = source.getSelectionIndex();
-				CheckstyleViolationsView.this.filterBySelectionIndex(selectionIndex);
-				CheckstyleViolationsView.this.tableViewer.refresh(false);
-				CheckstyleViolationsView.this.viewPreferences.putInt(CheckstyleViolationsView.PREF_FILTER_PRIORITY,
+				CheckstyleViolationsView.this.filterBySelectionIndex(selectionIndex); // NOPMD cause by API
+				CheckstyleViolationsView.this.tableViewer.refresh(false); // NOPMD cause by API
+				CheckstyleViolationsView.this.viewPreferences.putInt(CheckstyleViolationsView.PREF_FILTER_PRIORITY, // NOPMD cause by API
 						selectionIndex); // save filter setting
 
 				Display.getDefault().asyncExec(new Runnable() {
 					@SuppressWarnings("unchecked")
 					@Override
 					public void run() {
-						final Object input = CheckstyleViolationsView.this.tableViewer.getInput();
+						final Object input = CheckstyleViolationsView.this.tableViewer.getInput(); // NOPMD cause by API
 						final List<CheckstyleViolationMarker> violationMarkers = (List<CheckstyleViolationMarker>) input;
 
-						CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
+						CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers); // NOPMD cause by API
 					}
 				});
 			}
@@ -304,7 +308,7 @@ public class CheckstyleViolationsView extends ViewPart
 	private int loadSavedFilterPriority(final TableCombo tableCombo) {
 		final int defaultPriorty = SeverityLevel.IGNORE.ordinal();
 		int filterPriority = this.viewPreferences.getInt(CheckstyleViolationsView.PREF_FILTER_PRIORITY, defaultPriorty);
-		if ((filterPriority < 0) || (filterPriority >= tableCombo.getItemCount())) {
+		if (filterPriority < 0 || filterPriority >= tableCombo.getItemCount()) {
 			filterPriority = defaultPriorty;
 		}
 		return filterPriority;
@@ -384,7 +388,7 @@ public class CheckstyleViolationsView extends ViewPart
 		itemName.setSelection(tableColumn.getResizable());
 		itemName.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(final SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent event) {
 				if (itemName.getSelection()) {
 					tableColumn.setWidth(150);
 					tableColumn.setResizable(true);
@@ -409,18 +413,32 @@ public class CheckstyleViolationsView extends ViewPart
 			@Override
 			public void handleEvent(final Event event) {
 				if (event.type == SWT.Move) {
-					final int[] columnOrder = CheckstyleViolationsView.this.tableViewer.getTable().getColumnOrder();
+					final int[] columnOrder = CheckstyleViolationsView.this.tableViewer.getTable().getColumnOrder(); // NOPMD cause by API
 					final String columnOrderEncoded = StringUtils.join(columnOrder, ',');
-					CheckstyleViolationsView.this.viewPreferences.put(CheckstyleViolationsView.PREF_COLUMN_ORDER,
+					CheckstyleViolationsView.this.viewPreferences.put(CheckstyleViolationsView.PREF_COLUMN_ORDER, // NOPMD cause by API
 							columnOrderEncoded);
 				}
 			}
 		};
 
-		TableViewerColumn tableViewerColumn;
-		TableColumn column;
+		this.createPriorityColumn(columnMovedListener);
+		this.createCheckNameColumn(columnMovedListener);
+		this.createViolationMessageColumn(columnMovedListener);
+		this.createProjectNameColumn(columnMovedListener);
+		this.createPackageColumn(columnMovedListener);
+		this.createLineNumberColumn(columnMovedListener);
+		this.createDirectoryPathColumn(columnMovedListener);
+		this.createFileNameColumn(columnMovedListener);
+	}
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	/**
+	 * Create priority column.
+	 *
+	 * @param columnMovedListener
+	 *            listener
+	 */
+	private void createPriorityColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public Image getImage(final Object element) {
@@ -449,17 +467,11 @@ public class CheckstyleViolationsView extends ViewPart
 				return severityLevel.name();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Priority"); // only icon; hover shows explanation (HIGH, LOW, ...)
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_PRIORITY));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Priority", 50, ESortProperty.SORT_PROP_PRIORITY, columnMovedListener);
+	}
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	private void createCheckNameColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -467,17 +479,11 @@ public class CheckstyleViolationsView extends ViewPart
 				return marker.getCheckName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Check name");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_NAME));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Check name", 200, ESortProperty.SORT_PROP_CHECK_NAME, columnMovedListener);
+	}
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	private void createViolationMessageColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -485,17 +491,12 @@ public class CheckstyleViolationsView extends ViewPart
 				return marker.getMessage();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Violation message");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(400);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_VIOLATION_MSG));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Violation message", 400, ESortProperty.SORT_PROP_VIOLATION_MSG, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	}
+
+	private void createProjectNameColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -503,17 +504,12 @@ public class CheckstyleViolationsView extends ViewPart
 				return String.valueOf(marker.getProjectName());
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Project");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(100);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_PROJECTNAME));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Project", 100, ESortProperty.SORT_PROP_PROJECTNAME, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	}
+
+	private void createPackageColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -521,17 +517,12 @@ public class CheckstyleViolationsView extends ViewPart
 				return marker.getCheckPackageName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Check package");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_CHECK_PACKAGE_NAME));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Check package", 200, ESortProperty.SORT_PROP_CHECK_PACKAGE_NAME, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.RIGHT);
+	}
+
+	private void createLineNumberColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.RIGHT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -539,17 +530,12 @@ public class CheckstyleViolationsView extends ViewPart
 				return String.valueOf(marker.getLineNumer());
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Line");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(50);
-		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
-				CheckstyleViolationMarkerComparator.SORT_PROP_LINENUMBER));
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Line", 50, ESortProperty.SORT_PROP_LINENUMBER, columnMovedListener);
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	}
+
+	private void createDirectoryPathColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -557,15 +543,11 @@ public class CheckstyleViolationsView extends ViewPart
 				return marker.getDirectoryPath();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("Directory path");
-		column.setResizable(true);
-		column.setMoveable(true);
-		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
-		column.addListener(SWT.Move, columnMovedListener);
+		this.configureColumn(tableViewerColumn, "Directory path", 200, ESortProperty.SORT_PROP_PATH, columnMovedListener);
+	}
 
-		tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
+	private void createFileNameColumn(final Listener columnMovedListener) {
+		final TableViewerColumn tableViewerColumn = new TableViewerColumn(this.tableViewer, SWT.LEFT);
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(final Object element) {
@@ -573,12 +555,34 @@ public class CheckstyleViolationsView extends ViewPart
 				return marker.getFileName();
 			}
 		});
-		column = tableViewerColumn.getColumn();
-		column.setText("File name");
+		this.configureColumn(tableViewerColumn, "File name", 200, ESortProperty.SORT_PROP_FILENAME, columnMovedListener);
+
+	}
+
+	/**
+	 * Setup a table column.
+	 *
+	 * @param tableViewerColumn
+	 *            the table column viewer
+	 * @param label
+	 *            the label of the column
+	 * @param width
+	 *            the initial width
+	 * @param sortByProperty
+	 *            the sort by property for this column
+	 * @param columnMovedListener
+	 *            column listener
+	 */
+	private void configureColumn(final TableViewerColumn tableViewerColumn, final String label, final int width, final ESortProperty sortByProperty,
+			final Listener columnMovedListener) {
+		final TableColumn column = tableViewerColumn.getColumn();
+		column.setText(label); // only icon; hover shows explanation (HIGH, LOW, ...)
 		column.setResizable(true);
 		column.setMoveable(true);
 		column.setData(this.tableViewer.getTable().getColumnCount() - 1); // necessary for save/load
-		column.setWidth(200);
+		column.setWidth(width);
+		column.addSelectionListener(new CompareOnSelectListener(this.viewPreferences, this.tableViewer,
+				sortByProperty));
 		column.addListener(SWT.Move, columnMovedListener);
 	}
 
@@ -617,7 +621,7 @@ public class CheckstyleViolationsView extends ViewPart
 
 	private void updateView() {
 		try {
-			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllInWorkspace();
+			final IMarker[] updatedMarkers = CheckstyleMarkersUtils.findAllMarkers();
 
 			final List<CheckstyleViolationMarker> violationMarkers = new ArrayList<>();
 
@@ -629,13 +633,13 @@ public class CheckstyleViolationsView extends ViewPart
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers);
-
-					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers);
+					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers); // NOPMD
+					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers); // NOPMD
 				}
 			});
-		} catch (final ConfigurationErrorException e) {
-			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Internal Error", e.getLocalizedMessage());
+		} catch (final CoreException e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Internal Error", e.getLocalizedMessage());
 		}
 
 	}

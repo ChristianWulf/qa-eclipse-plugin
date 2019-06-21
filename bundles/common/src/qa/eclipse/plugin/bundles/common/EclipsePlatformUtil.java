@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.views;
+package qa.eclipse.plugin.bundles.common;
 
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import java.util.Locale;
 
-import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
+import org.eclipse.core.runtime.Platform;
 
 /**
- *
+ * Utility class to identify the correct language and locale settings.
+ * 
  * @author Christian Wulf
  *
  */
-public class PmdProjectNameViewerFilter extends ViewerFilter {
+public final class EclipsePlatformUtil {
 
-	private String projectName;
-
-	@Override
-	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
-		final PmdViolationMarker marker = (PmdViolationMarker) element;
-		if (this.projectName == null) {
-			return true;
-		}
-		return marker.getProjectName().equals(this.projectName);
+	private EclipsePlatformUtil() {
+		// utility class
 	}
 
-	public void setProjectName(final String projectName) {
-		this.projectName = projectName;
-	}
+	/**
+	 * Helper method to get the current platform locale.
+	 *
+	 * @return the platform locale
+	 */
+	public static Locale getLocale() {
+		final String locale = Platform.getNL();
+		final String[] parts = locale.split("_"); //$NON-NLS-1$
 
+		final String language = parts.length > 0 ? parts[0] : ""; //$NON-NLS-1$
+		final String country = parts.length > 1 ? parts[1] : ""; //$NON-NLS-1$
+		final String variant = parts.length > 2 ? parts[2] : ""; //$NON-NLS-1$
+
+		return new Locale(language, country, variant);
+	}
 }

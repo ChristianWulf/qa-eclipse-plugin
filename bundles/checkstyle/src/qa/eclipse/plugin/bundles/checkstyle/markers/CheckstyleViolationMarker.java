@@ -75,11 +75,21 @@ public class CheckstyleViolationMarker {
 		return this.marker.getResource().getProject().getName();
 	}
 
+	/**
+	 * Get the string representing the directory of the file which this is a marker from.
+	 *
+	 * @return directory name
+	 */
 	public String getDirectoryPath() {
 		final File file = this.marker.getResource().getRawLocation().toFile();
 		return file.getParent();
 	}
 
+	/**
+	 * Get the string representing the file which is associated to this marker.
+	 *
+	 * @return file name
+	 */
 	public String getFileName() {
 		final File file = this.marker.getResource().getRawLocation().toFile();
 		return file.getName();
@@ -89,7 +99,7 @@ public class CheckstyleViolationMarker {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((this.marker == null) ? 0 : this.marker.hashCode());
+		result = (prime * result) + (this.marker == null ? 0 : this.marker.hashCode()); // NOPMD
 		return result;
 	}
 

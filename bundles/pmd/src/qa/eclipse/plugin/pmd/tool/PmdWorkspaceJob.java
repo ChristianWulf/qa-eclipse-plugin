@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.tool;
+package qa.eclipse.plugin.pmd.tool; // NOPMD (EXcessiveImports) all perfect
 
 import java.io.File;
 import java.util.Arrays;
@@ -33,9 +33,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-import qa.eclipse.plugin.bundles.common.ConfigurationErrorException;
-import qa.eclipse.plugin.bundles.common.LoggerUtils;
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
@@ -101,7 +99,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		final String taskName = String.format("Analyzing %d file(s)...", this.eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, this.eclipseFiles.size());
 
-		final String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
+		final String compilerCompliance = ProjectUtils.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
 		try {
@@ -140,8 +138,6 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			pmdProcessor.onFinished();
 
 			this.displayViolationMarkers(eclipseFilesMap, problemRenderer);
-		} catch (final ConfigurationErrorException e) {
-			LoggerUtils.logThrowable(e.getLocalizedMessage(), e);
 		} finally {
 			PmdPreferences.INSTANCE.close();
 		}
@@ -206,12 +202,14 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		// this.ruleSets = new RuleSets(ruleSet);
 		// }
 
-		ConstantRuleSetFactory(final RuleSets ruleSets) {
+		/* default */ ConstantRuleSetFactory(final RuleSets ruleSets) {
+			super();
 			this.ruleSets = ruleSets;
 		}
 
 		@Override
-		public synchronized RuleSets createRuleSets(final String referenceString) throws RuleSetNotFoundException {
+		public synchronized RuleSets createRuleSets(final String referenceString)// NOPMD
+				throws RuleSetNotFoundException {
 			return this.ruleSets;
 		}
 	}

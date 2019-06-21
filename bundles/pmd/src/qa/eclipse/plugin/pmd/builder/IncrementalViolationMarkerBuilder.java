@@ -49,6 +49,9 @@ public class IncrementalViolationMarkerBuilder extends IncrementalProjectBuilder
 
 	private final PmdTool pmdTool;
 
+	/**
+	 * Create marker builder.
+	 */
 	public IncrementalViolationMarkerBuilder() {
 		// necessary default public ctor
 		this.pmdTool = PmdUIPlugin.getDefault().getPmdTool();

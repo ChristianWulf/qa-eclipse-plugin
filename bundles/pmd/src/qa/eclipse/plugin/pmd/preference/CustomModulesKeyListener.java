@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import qa.eclipse.plugin.bundles.common.PreferencesUtil;
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 
 /**
  *
@@ -75,7 +75,7 @@ class CustomModulesKeyListener extends KeyAdapter {
 				return;
 			}
 
-			final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(this.propertyPage);
+			final Path absoluteProjectPath = ProjectUtils.getAbsoluteProjectPath(this.propertyPage);
 			final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 			if (!Files.exists(absoluteConfigFilePath)) {

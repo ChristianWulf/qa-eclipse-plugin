@@ -31,21 +31,14 @@ import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
  */
 class CheckstyleViolationMarkerComparator extends ViewerComparator {
 
-	public static final int SORT_PROP_PRIORITY = 0;
-	public static final int SORT_PROP_CHECK_NAME = 1;
-	public static final int SORT_PROP_LINENUMBER = 2;
-	public static final int SORT_PROP_PROJECTNAME = 3;
-	public static final int SORT_PROP_CHECK_PACKAGE_NAME = 4;
-	public static final int SORT_PROP_VIOLATION_MSG = 5;
-
-	private int selectedSortProperty;
+	private ESortProperty selectedSortProperty;
 
 	public CheckstyleViolationMarkerComparator() {
 		super();
 	}
 
 	@Override
-	public int compare(final Viewer viewer, final Object e1, final Object e2) {
+	public int compare(final Viewer viewer, final Object object1, final Object object2) {
 		final TableViewer tableViewer = (TableViewer) viewer;
 		final Table table = tableViewer.getTable();
 		final int sortDirection = table.getSortDirection();
@@ -53,42 +46,41 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			return 0;
 		}
 
-		final CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) e1;
-		final CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) e2;
+		final CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) object1;
+		final CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) object2;
 
 		int compareResult;
 		switch (this.selectedSortProperty) {
-		case SORT_PROP_PRIORITY: {
-			compareResult = this.comparePriority(marker1, marker2);
+		case SORT_PROP_PRIORITY:
+			compareResult = -1 * Integer.compare(marker1.getSeverityLevelIndex(), marker2.getSeverityLevelIndex());
 			break;
-		}
-		case SORT_PROP_CHECK_NAME: {
-			compareResult = this.compareCheckName(marker1, marker2);
+		case SORT_PROP_CHECK_NAME:
+			compareResult = marker1.getCheckName().compareToIgnoreCase(marker2.getCheckName());
 			break;
-		}
-		case SORT_PROP_LINENUMBER: {
-			compareResult = this.compareLineNumber(marker1, marker2);
+		case SORT_PROP_LINENUMBER:
+			compareResult = Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
 			break;
-		}
-		case SORT_PROP_PROJECTNAME: {
-			compareResult = this.compareProjectName(marker1, marker2);
+		case SORT_PROP_PROJECTNAME:
+			compareResult = marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
 			break;
-		}
-		case SORT_PROP_CHECK_PACKAGE_NAME: {
-			compareResult = this.compareCheckPackageName(marker1, marker2);
+		case SORT_PROP_CHECK_PACKAGE_NAME:
+			compareResult = marker1.getCheckPackageName().compareToIgnoreCase(marker2.getCheckPackageName());
 			break;
-		}
-		case SORT_PROP_VIOLATION_MSG: {
-			compareResult = this.compareViolationMessageText(marker1, marker2);
+		case SORT_PROP_VIOLATION_MSG:
+			compareResult = marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
 			break;
-		}
-		default: {
+		case SORT_PROP_PATH:
+			compareResult = marker1.getDirectoryPath().compareToIgnoreCase(marker2.getDirectoryPath());
+			break;
+		case SORT_PROP_FILENAME:
+			compareResult = marker1.getFileName().compareToIgnoreCase(marker2.getFileName());
+			break;
+		default:
 			compareResult = 0;
 			final String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
 			final String message = String.format(messageFormatString, this.selectedSortProperty);
 			CheckstyleUIPlugin.getDefault().logWarning(message);
 			break;
-		}
 		}
 
 		// We assume a sort order of SWT.UP for the compare-Methods.
@@ -100,50 +92,8 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 		return compareResult;
 	}
 
-	public void setSelectedSortProperty(final int selectedSortProperty) {
+	public void setSelectedSortProperty(final ESortProperty selectedSortProperty) {
 		this.selectedSortProperty = selectedSortProperty;
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int comparePriority(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return -1 * Integer.compare(marker1.getSeverityLevelIndex(), marker2.getSeverityLevelIndex());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareCheckName(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return marker1.getCheckName().compareToIgnoreCase(marker2.getCheckName());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareLineNumber(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareProjectName(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareCheckPackageName(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return marker1.getCheckPackageName().compareToIgnoreCase(marker2.getCheckPackageName());
-	}
-
-	/**
-	 * Assumed sort order is SWT.UP.
-	 */
-	private int compareViolationMessageText(final CheckstyleViolationMarker marker1, final CheckstyleViolationMarker marker2) {
-		return marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
 	}
 
 }
