@@ -58,7 +58,7 @@ public final class CheckstyleMarkersUtils {
 
 	private static final int IMARKER_SEVERITY_OTHERS = 3;
 
-	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<Integer, String>();
+	private static final Map<Integer, String> MARKER_TYPE_BY_PRIORITY = new ConcurrentHashMap<>();
 
 	static {
 		CheckstyleMarkersUtils.MARKER_TYPE_BY_PRIORITY.put(SeverityLevel.ERROR.ordinal(), CheckstyleMarkersUtils.ERROR_CHECKSTYLE_VIOLATION_MARKER);

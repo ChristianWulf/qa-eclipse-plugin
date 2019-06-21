@@ -634,7 +634,6 @@ public class CheckstyleViolationsView extends ViewPart
 				@Override
 				public void run() {
 					CheckstyleViolationsView.this.tableViewer.setInput(violationMarkers); // NOPMD
-
 					CheckstyleViolationsView.this.updateTitleAndLabel(violationMarkers); // NOPMD
 				}
 			});

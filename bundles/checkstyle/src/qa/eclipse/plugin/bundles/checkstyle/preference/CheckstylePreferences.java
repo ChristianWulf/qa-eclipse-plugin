@@ -103,6 +103,10 @@ public final class CheckstylePreferences {
 	}
 
 	/**
+	 * Load configuration file.
+	 *
+	 * @param preferences
+	 *            set of preferences
 	 * @return the file path of the Checkstyle configuration file, or an empty
 	 *         string.
 	 */

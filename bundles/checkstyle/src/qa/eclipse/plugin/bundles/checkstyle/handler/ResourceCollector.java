@@ -61,7 +61,6 @@ class ResourceCollector implements IResourceVisitor {
 			}
 
 			final IFile file = (IFile) resource;
-			files.add(file);
 			if (ResourceCollector.ACCEPTED_FILE_EXTENSIONS.contains(file.getFileExtension())) {
 				files.add(file);
 			}

@@ -255,7 +255,7 @@ public final class SplitUtils {
 	 * @author Reiner Jung
 	 *
 	 */
-	public static interface ISeparatorResult {
+	public interface ISeparatorResult {
 		/**
 		 * This is a terminal operation.
 		 *
