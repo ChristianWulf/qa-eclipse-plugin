@@ -31,13 +31,13 @@ import org.osgi.service.prefs.Preferences;
 class CompareOnSelectListener extends SelectionAdapter {
 
 	private final StructuredViewer structuredViewer;
-	private final int selectedSortProperty;
+	private final ESortProperty selectedSortProperty;
 	private final Preferences preferences;
 	private final String sortOrderKey;
 	private final String sortColumnIndex;
 
 	public CompareOnSelectListener(final Preferences preferences, final StructuredViewer structuredViewer,
-			final int selectedSortProperty) {
+			final ESortProperty selectedSortProperty) {
 		super();
 		this.preferences = preferences;
 		this.structuredViewer = structuredViewer;
