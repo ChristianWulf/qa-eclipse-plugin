@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import net.sourceforge.pmd.RuleSets;
-import qa.eclipse.plugin.bundles.common.FileUtil;
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.FileUtils;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 
 /**
  * Preferences for PMD.
@@ -125,7 +125,7 @@ public final class PmdPreferences {
 	public RuleSets loadRuleSetsFrom(final IProject project) {
 		final IScopeContext projectPref = this.projectScopeByProject.get(project);
 		final IEclipsePreferences preferences = projectPref.getNode(this.node);
-		final File eclipseProjectPath = ProjectUtil.getProjectPath(project);
+		final File eclipseProjectPath = ProjectUtils.getProjectPath(project);
 		final RuleSets ruleSets = this.loadUpdatedRuleSet(preferences, project, eclipseProjectPath);
 
 		return ruleSets;
@@ -141,8 +141,8 @@ public final class PmdPreferences {
 			urls = new URL[0];
 		} else {
 			final String[] customRulesJars = customRulesJarsValue.split(PmdPreferences.BY_COMMA_AND_TRIM);
-			FileUtil.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
-			urls = FileUtil.filePathsToUrls(eclipseProjectPath, customRulesJars);
+			FileUtils.checkFilesExist("Jar file with custom rules", eclipseProjectPath, customRulesJars);
+			urls = FileUtils.filePathsToUrls(eclipseProjectPath, customRulesJars);
 		}
 
 		final ClassLoader parentClassLoader;
@@ -152,7 +152,7 @@ public final class PmdPreferences {
 
 		final String ruleSetFilePathValue = preferences.get(PmdPreferences.PROP_KEY_RULE_SET_FILE_PATH,
 				PmdPreferences.INVALID_RULESET_FILE_PATH);
-		final File ruleSetFile = FileUtil.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
+		final File ruleSetFile = FileUtils.makeAbsoluteFile(ruleSetFilePathValue, eclipseProjectPath);
 		final String ruleSetFilePath = ruleSetFile.toString();
 		// (re)load the project-specific ruleset file
 		return this.ruleSetFileLoader.load(ruleSetFilePath, project, this.osgiClassLoaderWithCustomRules);

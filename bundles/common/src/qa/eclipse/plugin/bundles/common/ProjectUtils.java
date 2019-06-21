@@ -32,9 +32,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @author Christian Wulf
  *
  */
-public final class ProjectUtil {
+public final class ProjectUtils {
 
-	private ProjectUtil() {
+	private ProjectUtils() {
 		// utility class
 	}
 
@@ -47,8 +47,7 @@ public final class ProjectUtil {
 		try {
 			if (project.hasNature(JavaCore.NATURE_ID)) {
 				final IJavaProject javaProject = JavaCore.create(project);
-				final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-				return compilerCompliance;
+				return javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
 			}
 			throw new IllegalStateException("The project is not a Java project.");
 		} catch (final CoreException e) {
@@ -64,9 +63,8 @@ public final class ProjectUtil {
 	public static Path getAbsoluteProjectPath(final PropertyPage propertyPage) {
 		final IResource resource = propertyPage.getElement().getAdapter(IResource.class);
 		final IProject project = resource.getProject();
-		final File projectFile = ProjectUtil.getProjectPath(project);
-		final Path absoluteProjectPath = Paths.get(projectFile.getAbsolutePath());
-		return absoluteProjectPath;
+		final File projectFile = ProjectUtils.getProjectPath(project);
+		return Paths.get(projectFile.getAbsolutePath());
 	}
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.bundles.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheRight(final String text, final SplitQuantity splitQuantity, final char separator) {
+	static List<String> splitFromTheEnd(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int endIndex = text.length();
 
@@ -92,7 +92,7 @@ public final class SplitUtils {
 	 *         allocated empty list otherwise. The text parts are sorted according
 	 *         to the order of occurrence in passed the text (from left to right).
 	 */
-	static List<String> splitFromTheLeft(final String text, final SplitQuantity splitQuantity, final char separator) {
+	static List<String> splitFromTheBeginning(final String text, final SplitQuantity splitQuantity, final char separator) {
 		final List<String> textParts = new ArrayList<>();
 		int beginIndex = 0;
 
@@ -156,13 +156,13 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheEnd() {
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheBeginning() {
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
 		}
 
 	}
@@ -210,7 +210,7 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in passed the text (from left to right).
 		 */
-		public List<String> fromTheRight();
+		public List<String> fromTheEnd();
 
 		/**
 		 * This is a terminal operation.
@@ -219,7 +219,7 @@ public final class SplitUtils {
 		 *         allocated empty list otherwise. The text parts are sorted according
 		 *         to the order of occurrence in the passed text (from left to right).
 		 */
-		public List<String> fromTheLeft();
+		public List<String> fromTheBeginning();
 	}
 
 	static class SeparatorResultImpl implements ISeparatorResult {
@@ -235,13 +235,13 @@ public final class SplitUtils {
 		}
 
 		@Override
-		public List<String> fromTheRight() {
-			return SplitUtils.splitFromTheRight(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheEnd() {
+			return SplitUtils.splitFromTheEnd(this.text, this.splitQuantity, this.separator);
 		}
 
 		@Override
-		public List<String> fromTheLeft() {
-			return SplitUtils.splitFromTheLeft(this.text, this.splitQuantity, this.separator);
+		public List<String> fromTheBeginning() {
+			return SplitUtils.splitFromTheBeginning(this.text, this.splitQuantity, this.separator);
 		}
 
 	}

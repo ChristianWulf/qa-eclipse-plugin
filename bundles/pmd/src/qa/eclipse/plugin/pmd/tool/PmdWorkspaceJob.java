@@ -44,7 +44,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
@@ -98,7 +98,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		final String taskName = String.format("Analyzing %d file(s)...", this.eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, this.eclipseFiles.size());
 
-		final String compilerCompliance = ProjectUtil.getCompilerCompliance(eclipseProject);
+		final String compilerCompliance = ProjectUtils.getCompilerCompliance(eclipseProject);
 		final PMDConfiguration configuration = new CustomPMDConfiguration(compilerCompliance);
 
 		try {

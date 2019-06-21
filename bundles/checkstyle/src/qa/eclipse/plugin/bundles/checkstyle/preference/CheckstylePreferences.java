@@ -40,7 +40,7 @@ public final class CheckstylePreferences {
 	public static final String PROP_KEY_CUSTOM_MODULES_JAR_PATHS = "customModulesJarPaths";
 
 	/** split pattern. */
-	static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
+	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
 	private final Map<IProject, IScopeContext> projectScopeByProject = new ConcurrentHashMap<>();
 

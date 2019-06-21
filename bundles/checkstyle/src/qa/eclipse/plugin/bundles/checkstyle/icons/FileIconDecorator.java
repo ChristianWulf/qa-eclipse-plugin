@@ -49,6 +49,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 	private final ImageRegistry imageRegistry;
 
 	public FileIconDecorator() {
+		super();
 		this.imageRegistry = CheckstyleUIPlugin.getDefault().getImageRegistry();
 	}
 

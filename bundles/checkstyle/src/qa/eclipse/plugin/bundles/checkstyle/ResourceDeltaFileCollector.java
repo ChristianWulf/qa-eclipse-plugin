@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.JavaModelException;
 
-import qa.eclipse.plugin.bundles.common.JavaUtil;
+import qa.eclipse.plugin.bundles.common.JavaUtils;
 
 /**
  * Represents an IResourceDeltaVisitor which collects all IFiles that have been
@@ -46,7 +46,7 @@ class ResourceDeltaFileCollector implements IResourceDeltaVisitor {
 	// private final Map<IProject, List<IFile>> removedFiles = new HashMap<>();
 	private final Map<IProject, List<IFile>> changedFiles = new ConcurrentHashMap<>();
 
-	private final JavaUtil javaUtil = new JavaUtil();
+	private final JavaUtils javaUtil = new JavaUtils();
 
 	/**
 	 * Default constructor.

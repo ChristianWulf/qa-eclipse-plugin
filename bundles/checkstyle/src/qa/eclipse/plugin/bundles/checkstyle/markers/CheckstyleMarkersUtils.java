@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
-import qa.eclipse.plugin.bundles.checkstyle.SplitUtils;
+import qa.eclipse.plugin.bundles.common.SplitUtils;
 
 /**
  *
@@ -82,7 +82,7 @@ public final class CheckstyleMarkersUtils {
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_PRIORITY, priority);
 		// getModuleId() always returns null
 		final String checkClassName = violation.getSourceName();
-		final List<String> checkClassNameParts = SplitUtils.split(checkClassName).once().at('.').fromTheRight();
+		final List<String> checkClassNameParts = SplitUtils.split(checkClassName).once().at('.').fromTheEnd();
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_PACKAGE, checkClassNameParts.get(0));
 		marker.setAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_NAME, checkClassNameParts.get(1));
 
@@ -93,15 +93,9 @@ public final class CheckstyleMarkersUtils {
 		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 
-	public static IMarker[] findAllInWorkspace() {
+	public static IMarker[] findAllInWorkspace() throws CoreException {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		final IMarker[] markers;
-		try {
-			markers = workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
-		} catch (final CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return markers;
+		return workspaceRoot.findMarkers(CheckstyleMarkersUtils.ABSTRACT_CHECKSTYLE_VIOLATION_MARKER, true, IResource.DEPTH_INFINITE);
 	}
 
 	public static void deleteMarkers(final IResource resource) throws CoreException {

@@ -34,14 +34,14 @@ import org.eclipse.jdt.core.JavaModelException;
  * @author Christian Wulf
  *
  */
-public class JavaUtil {
+public class JavaUtils {
 
 	private final Map<IProject, IJavaProject> javaProjectByIProject = new ConcurrentHashMap<>();
 
 	/**
 	 * Default constructor.
 	 */
-	public JavaUtil() {
+	public JavaUtils() {
 		// nothing to do here
 	}
 

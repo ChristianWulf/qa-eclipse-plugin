@@ -38,6 +38,7 @@ class CompareOnSelectListener extends SelectionAdapter {
 
 	public CompareOnSelectListener(final Preferences preferences, final StructuredViewer structuredViewer,
 			final int selectedSortProperty) {
+		super();
 		this.preferences = preferences;
 		this.structuredViewer = structuredViewer;
 		this.selectedSortProperty = selectedSortProperty;

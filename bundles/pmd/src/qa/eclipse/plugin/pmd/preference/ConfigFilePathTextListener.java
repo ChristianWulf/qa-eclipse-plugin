@@ -26,7 +26,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import qa.eclipse.plugin.bundles.common.ProjectUtil;
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
 
 /**
  *
@@ -72,7 +72,7 @@ class ConfigFilePathTextListener extends KeyAdapter {
 			return;
 		}
 
-		final Path absoluteProjectPath = ProjectUtil.getAbsoluteProjectPath(propertyPage);
+		final Path absoluteProjectPath = ProjectUtils.getAbsoluteProjectPath(propertyPage);
 		final Path absoluteConfigFilePath = absoluteProjectPath.resolve(path);
 
 		if (!Files.exists(absoluteConfigFilePath)) {

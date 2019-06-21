@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle;
+package qa.eclipse.plugin.bundles.common;
 
 import java.util.Locale;
 
