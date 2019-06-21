@@ -110,12 +110,19 @@ public class CheckstyleTool {
 
 			final String[] customModuleJarPaths = PreferencesUtil.loadCustomJarPaths(projectPreferences,
 					CheckstylePreferences.PROP_KEY_CUSTOM_MODULES_JAR_PATHS);
+
 			final URL[] moduleClassLoaderUrls = FileUtils.filePathsToUrls(eclipseProjectPath, customModuleJarPaths);
 
-			this.configureChecker(configuration, moduleClassLoaderUrls, checkstyleListener);
+			try (URLClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls,
+					this.getClass().getClassLoader())) {
 
-			// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
-			this.runChecker(eclipseFiles);
+				this.configureChecker(configuration, checkstyleListener, moduleClassLoader);
+
+				this.runChecker(eclipseFiles);
+
+			} catch (final IOException e) {
+				throw new IllegalStateException(e);
+			}
 		} catch (final CheckstyleException e) {
 			final String message = String.format("Could not load Checkstyle configuration from '%s'.",
 					absoluteConfigFilePath);
@@ -123,28 +130,9 @@ public class CheckstyleTool {
 		}
 	}
 
-	private void configureChecker(final Configuration configuration, final URL[] moduleClassLoaderUrls,
-			final CheckstyleListener checkstyleListener) {
-
-		try (URLClassLoader moduleClassLoader = new URLClassLoader(moduleClassLoaderUrls,
-				this.getClass().getClassLoader())) {
-			this.checker.setModuleClassLoader(moduleClassLoader);
-
-			try {
-				this.checker.configure(configuration);
-			} catch (final CheckstyleException e) {
-				MessagePopupUtils.displayError("Checkstyle Configuration Error", e.getLocalizedMessage());
-			}
-
-			this.checker.addListener(checkstyleListener);
-			this.checker.addBeforeExecutionFileFilter(checkstyleListener);
-
-		} catch (final IOException e) {
-			MessagePopupUtils.displayError("Class Loading Error", e.getLocalizedMessage());
-		}
-	}
-
 	private void runChecker(final List<IFile> eclipseFiles) {
+		// https://github.com/checkstyle/eclipse-cs/blob/master/net.sf.eclipsecs.core/src/net/sf/eclipsecs/core/builder/CheckerFactory.java#L275
+
 		final List<File> files = new ArrayList<>();
 
 		for (final IFile eclipseFile : eclipseFiles) {
@@ -155,9 +143,21 @@ public class CheckstyleTool {
 		try {
 			this.checker.process(files);
 		} catch (final CheckstyleException e) {
-			MessagePopupUtils.displayError("Checkstyle Processing Error", e.getLocalizedMessage());
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private void configureChecker(final Configuration configuration, final CheckstyleListener checkstyleListener, final URLClassLoader moduleClassLoader) {
+		this.checker.setModuleClassLoader(moduleClassLoader);
+
+		try {
+			this.checker.configure(configuration);
+		} catch (final CheckstyleException e) {
+			throw new IllegalStateException(e);
 		}
 
+		this.checker.addListener(checkstyleListener);
+		this.checker.addBeforeExecutionFileFilter(checkstyleListener);
 	}
 
 }

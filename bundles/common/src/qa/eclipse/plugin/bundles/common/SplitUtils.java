@@ -233,7 +233,7 @@ public final class SplitUtils {
 	 * @author Christian Wulf
 	 *
 	 */
-	/* default */static class QuantityResultImpl implements IQuantityResult {
+	/* default */ static class QuantityResultImpl implements IQuantityResult {
 
 		private final String text;
 		private final SplitQuantity splitQuantity;

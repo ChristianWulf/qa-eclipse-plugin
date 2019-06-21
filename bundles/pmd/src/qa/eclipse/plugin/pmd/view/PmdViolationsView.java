@@ -82,7 +82,7 @@ public class PmdViolationsView extends ViewPart
 		implements ISelectionChangedListener, IResourceChangeListener, IDoubleClickListener {
 
 	public static final String TOOL_NAME = "PMD";
-	public static final String ID = "pmd.eclipse.plugin.views.PmdViolationsView";
+	public static final String ID = "pmd.eclipse.plugin.view.PmdViolationsView";
 
 	static final String PREF_SORT_DIRECTION = PmdViolationsView.ID + ".sortDirection";
 	static final String PREF_SORT_COLUMN_INDEX = PmdViolationsView.ID + ".sortColumnIndex";

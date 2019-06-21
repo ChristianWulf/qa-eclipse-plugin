@@ -89,6 +89,4 @@
         	<property name="minimum" value="36" />
     	</properties>
 	</rule>
-	
-
 </ruleset>

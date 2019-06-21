@@ -257,7 +257,7 @@
             category="qa.eclipse.plugin.category.qa"
             class="qa.eclipse.plugin.pmd.view.PmdViolationsView"
             icon="icons/pmd-icon-16.gif"
-            id="qa.eclipse.plugin.pmd.views.PmdViolationsView"
+            id="qa.eclipse.plugin.pmd.view.PmdViolationsView"
             name="PMD Violations"
             restorable="true">
       </view>
