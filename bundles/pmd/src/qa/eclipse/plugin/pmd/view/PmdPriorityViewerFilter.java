@@ -18,9 +18,9 @@ package qa.eclipse.plugin.pmd.view;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
-
 import net.sourceforge.pmd.RulePriority;
+
+import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 
 /**
  *

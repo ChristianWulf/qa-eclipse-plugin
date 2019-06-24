@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -29,10 +29,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
+import net.sourceforge.pmd.RuleSets;
+
 import qa.eclipse.plugin.bundles.common.FileUtils;
 import qa.eclipse.plugin.bundles.common.ProjectUtils;
-
-import net.sourceforge.pmd.RuleSets;
 
 /**
  * Preferences for PMD.
@@ -55,7 +55,7 @@ public final class PmdPreferences {
 	/** split pattern. */
 	private static final String BY_COMMA_AND_TRIM = "\\s*,\\s*";
 
-	private final Map<IProject, IScopeContext> projectScopeByProject = new HashMap<>();
+	private final Map<IProject, IScopeContext> projectScopeByProject = new ConcurrentHashMap<>();
 	private final RuleSetFileLoader ruleSetFileLoader = new RuleSetFileLoader();
 
 	private final String node;
@@ -98,7 +98,7 @@ public final class PmdPreferences {
 	 *
 	 * @return returns the preferences
 	 */
-	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) {
+	public synchronized IEclipsePreferences getProjectScopedPreferences(final IProject project) { // NOPMD
 		final IEclipsePreferences preferences;
 
 		final IScopeContext projectPref;
