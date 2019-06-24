@@ -31,6 +31,12 @@ import org.eclipse.ui.editors.text.EditorsUI;
  */
 public class TextHover extends DefaultTextHover implements ITextHoverExtension {
 
+	/**
+	 * Create a hover text element.
+	 *
+	 * @param sourceViewer
+	 *            source code viewer
+	 */
 	public TextHover(final ISourceViewer sourceViewer) {
 		super(sourceViewer);
 	}

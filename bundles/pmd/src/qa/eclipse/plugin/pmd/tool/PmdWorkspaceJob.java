@@ -33,11 +33,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-import qa.eclipse.plugin.bundles.common.ProjectUtils;
-import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
-import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
-import qa.eclipse.plugin.pmd.preference.PmdPreferences;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -49,6 +44,11 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
+
+import qa.eclipse.plugin.bundles.common.ProjectUtils;
+import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
+import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
+import qa.eclipse.plugin.pmd.preference.PmdPreferences;
 
 /**
  *

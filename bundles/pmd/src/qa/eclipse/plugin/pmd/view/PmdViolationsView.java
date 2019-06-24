@@ -65,13 +65,13 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.service.prefs.Preferences;
 
+import net.sourceforge.pmd.RulePriority;
+
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
-
-import net.sourceforge.pmd.RulePriority;
 
 /**
  *

@@ -29,7 +29,15 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Christian Wulf
  *
  */
-public class JumpToViolationsView extends AbstractHandler {
+public class JumpToViolationsViewHandler extends AbstractHandler {
+
+	/**
+	 * Jump to a view event handler.
+	 */
+	public JumpToViolationsViewHandler() {
+		super();
+		// nothing to do here
+	}
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
