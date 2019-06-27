@@ -342,8 +342,9 @@ public class PmdViolationsView extends AbstractViolationViewPart {
 				@Override
 				public void run() {
 					// setInput must be set first so that numFilteredViolations is correct
-					PmdViolationsView.this.tableViewer.setInput(pmdViolationMarkers);
-					PmdViolationsView.this.updateTitleAndLabel(pmdViolationMarkers);
+					PmdViolationsView.this.tableViewer.setInput(pmdViolationMarkers); // NOPMD
+					PmdViolationsView.this.updateTitleAndLabel(pmdViolationMarkers); // NOPMD
+					// pmd avoid auto generated methods, both are necessary due to design pattern
 				}
 			});
 		} catch (final CoreException e) {
@@ -407,7 +408,7 @@ public class PmdViolationsView extends AbstractViolationViewPart {
 
 	@Override
 	protected SelectionListener getPrioritySelectionListener() {
-		return new PriorityFilterSelectionAdapter(PmdViolationsView.PREF_FILTER_PRIORITY, this.tableViewer, this.viewPreferences);
+		return new PriorityFilterSelectionAdapter(PmdViolationsView.PREF_FILTER_PRIORITY, this.tableViewer, this.viewPreferences); // NOPMD
 	}
 
 	@Override
@@ -420,6 +421,12 @@ public class PmdViolationsView extends AbstractViolationViewPart {
 		return PmdViolationsView.PREF_COLUMN_ORDER;
 	}
 
+	/**
+	 * Selection adapter for the selection of the lowest priority to be shown.
+	 *
+	 * @author Reiner Jung
+	 *
+	 */
 	private class PriorityFilterSelectionAdapter extends SelectionAdapter {
 
 		private final String preferenceFilterPriority;
@@ -446,7 +453,7 @@ public class PmdViolationsView extends AbstractViolationViewPart {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					PmdViolationsView.this.updateTitleAndLabel((List<?>) PriorityFilterSelectionAdapter.this.tableViewer.getInput());
+					PmdViolationsView.this.updateTitleAndLabel((List<?>) PriorityFilterSelectionAdapter.this.tableViewer.getInput()); // NOPMD
 				}
 			});
 		}

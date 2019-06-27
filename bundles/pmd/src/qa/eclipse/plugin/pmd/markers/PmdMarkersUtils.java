@@ -69,6 +69,16 @@ public final class PmdMarkersUtils {
 		// utility class
 	}
 
+	/**
+	 * Set violation markers to a file based on a rule violation.
+	 *
+	 * @param eclipseFile
+	 *            the file
+	 * @param violation
+	 *            the violation
+	 * @throws CoreException
+	 *             on errors while working with markers
+	 */
 	public static void appendViolationMarker(final IFile eclipseFile, final RuleViolation violation)
 			throws CoreException {
 		final int priority = violation.getRule().getPriority().getPriority();
@@ -90,6 +100,16 @@ public final class PmdMarkersUtils {
 		// marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 
+	/**
+	 * Set violation markers to a file using a generic string message.
+	 *
+	 * @param eclipseFile
+	 *            the file
+	 * @param message
+	 *            the message to be displayed
+	 * @throws CoreException
+	 *             on errors while working with markers
+	 */
 	public static void appendViolationMarker(final IProject eclipseFile, final String message) throws CoreException {
 		final String markerType = PmdMarkersUtils.HIGH_PMD_VIOLATION_MARKER;
 
@@ -102,12 +122,27 @@ public final class PmdMarkersUtils {
 		marker.setAttribute(PmdMarkersUtils.ATTR_KEY_RULESETNAME, "");
 	}
 
+	/**
+	 * Find all markers in one workspace.
+	 *
+	 * @return array of markers
+	 * @throws CoreException
+	 *             on error
+	 */
 	public static IMarker[] findAllMarkers() throws CoreException {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		return workspaceRoot.findMarkers(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER, true,
 				IResource.DEPTH_INFINITE);
 	}
 
+	/**
+	 * Delete markers of a resource.
+	 *
+	 * @param resource
+	 *            the resource which can be a project, a file or all other resources in eclipse
+	 * @throws CoreException
+	 *             on error
+	 */
 	public static void deleteMarkers(final IResource resource) throws CoreException {
 		resource.deleteMarkers(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_COMMON, true, IResource.DEPTH_INFINITE);
 	}
