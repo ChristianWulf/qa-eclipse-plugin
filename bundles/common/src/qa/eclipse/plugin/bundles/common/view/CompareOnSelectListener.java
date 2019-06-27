@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.view;
+package qa.eclipse.plugin.bundles.common.view;
 
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
@@ -28,22 +28,41 @@ import org.osgi.service.prefs.Preferences;
  * @author Christian Wulf
  *
  */
-class CompareOnSelectListener extends SelectionAdapter {
+public class CompareOnSelectListener extends SelectionAdapter {
 
 	private final StructuredViewer structuredViewer;
-	private final int selectedSortProperty;
+	private final ESortProperty selectedSortProperty;
 	private final Preferences preferences;
+	private final String sortOrderKey;
+	private final String sortColumnIndex;
 
+	/**
+	 * Create a listener.
+	 *
+	 * @param preferences
+	 *            preferences
+	 * @param structuredViewer
+	 *            viewer (table) for the list of markers
+	 * @param selectedSortProperty
+	 *            the property by which the table is sorted
+	 * @param sortOrderKey
+	 *            the sort order key
+	 * @param sortColumnIndex
+	 *            the sort column index
+	 */
 	public CompareOnSelectListener(final Preferences preferences, final StructuredViewer structuredViewer,
-			final int selectedSortProperty) {
+			final ESortProperty selectedSortProperty, final String sortOrderKey, final String sortColumnIndex) {
+		super();
 		this.preferences = preferences;
 		this.structuredViewer = structuredViewer;
 		this.selectedSortProperty = selectedSortProperty;
+		this.sortOrderKey = sortOrderKey;
+		this.sortColumnIndex = sortColumnIndex;
 	}
 
 	@Override
-	public void widgetSelected(final SelectionEvent e) {
-		final TableColumn selectedColumn = (TableColumn) e.getSource();
+	public void widgetSelected(final SelectionEvent event) {
+		final TableColumn selectedColumn = (TableColumn) event.getSource();
 		final Table table = selectedColumn.getParent();
 
 		// toggle sort order
@@ -51,10 +70,10 @@ class CompareOnSelectListener extends SelectionAdapter {
 		table.setSortDirection(sortOrder);
 		table.setSortColumn(selectedColumn);
 
-		this.preferences.putInt(PmdViolationsView.PREF_SORT_DIRECTION, sortOrder);
-		this.preferences.putInt(PmdViolationsView.PREF_SORT_COLUMN_INDEX, (Integer) table.getSortColumn().getData());
+		this.preferences.putInt(this.sortOrderKey, sortOrder);
+		this.preferences.putInt(this.sortColumnIndex, (Integer) table.getSortColumn().getData());
 
-		final PmdViolationMarkerComparator comparator = (PmdViolationMarkerComparator) this.structuredViewer
+		final ViolationMarkerComparator comparator = (ViolationMarkerComparator) this.structuredViewer
 				.getComparator();
 		comparator.setSelectedSortProperty(this.selectedSortProperty);
 		this.structuredViewer.refresh();

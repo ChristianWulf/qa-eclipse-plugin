@@ -31,6 +31,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import qa.eclipse.plugin.bundles.checkstyle.tool.CheckstyleJob;
+import qa.eclipse.plugin.bundles.common.ILoggingFacility;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 
 /**
@@ -38,7 +39,7 @@ import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
  *
  * @author Christian Wulf
  */
-public class CheckstyleUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
+public class CheckstyleUIPlugin extends AbstractUIPlugin implements ILoggingFacility, IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.checkstyle"; //$NON-NLS-1$

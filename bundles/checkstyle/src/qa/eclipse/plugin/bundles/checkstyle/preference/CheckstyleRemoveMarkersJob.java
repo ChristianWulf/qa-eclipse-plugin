@@ -29,9 +29,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
 import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
+import qa.eclipse.plugin.bundles.common.icons.FileIconDecoratorUtils;
 
 /**
- * 
+ *
  * @author Christian Wulf
  *
  */
@@ -53,7 +54,7 @@ final class CheckstyleRemoveMarkersJob extends Job {
 			CheckstyleUIPlugin.getDefault().logThrowable(message, e);
 		}
 
-		FileIconDecorator.refresh();
+		FileIconDecoratorUtils.refresh(FileIconDecorator.ID);
 
 		return Status.OK_STATUS;
 	}

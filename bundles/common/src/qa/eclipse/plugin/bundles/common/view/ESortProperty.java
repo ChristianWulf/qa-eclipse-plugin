@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.common.view;
 
 /**
  * @author Reiner Jung
@@ -21,11 +21,11 @@ package qa.eclipse.plugin.bundles.checkstyle.view;
  */
 public enum ESortProperty {
 	SORT_PROP_PRIORITY, // sort by error priority
-	SORT_PROP_CHECK_NAME, // sort by check name
+	SORT_PROP_RULE_NAME, // sort by check name
 	SORT_PROP_LINENUMBER, //
 	SORT_PROP_PROJECTNAME, //
-	SORT_PROP_CHECK_PACKAGE_NAME, //
-	SORT_PROP_VIOLATION_MSG, //
+	SORT_PROP_RULESET_NAME, //
+	SORT_PROP_MESSAGE, //
 	SORT_PROP_PATH, // sort by directory of the files
 	SORT_PROP_FILENAME
 }

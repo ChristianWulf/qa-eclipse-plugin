@@ -27,9 +27,16 @@ import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
  * @author Christian Wulf
  *
  */
-class PmdPriorityViewerFilter extends ViewerFilter {
+public class PmdPriorityViewerFilter extends ViewerFilter {
 
 	private int lowestPriority = RulePriority.LOW.getPriority();
+
+	/**
+	 * Create a priority filter.
+	 */
+	public PmdPriorityViewerFilter() {
+		super();
+	}
 
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {

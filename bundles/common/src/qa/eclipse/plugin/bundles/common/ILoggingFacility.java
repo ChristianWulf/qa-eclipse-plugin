@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2019 Christian Wulf
+ * Copyright (C) 2019
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.pmd.view;
-
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
-
-import qa.eclipse.plugin.pmd.markers.PmdViolationMarker;
+package qa.eclipse.plugin.bundles.common;
 
 /**
  *
- * @author Christian Wulf
+ * @author Reiner Jung
  *
+ * @since 1.1.0
  */
-public class PmdProjectNameViewerFilter extends ViewerFilter {
+public interface ILoggingFacility {
 
-	private String projectName;
+	/**
+	 * Log message to view including the associated exception.
+	 *
+	 * @param message
+	 *            message to display
+	 * @param throwable
+	 *            exception
+	 */
+	void logThrowable(final String message, final Throwable throwable);
 
-	@Override
-	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
-		final PmdViolationMarker marker = (PmdViolationMarker) element;
-		if (this.projectName == null) {
-			return true;
-		}
-		return marker.getProjectName().equals(this.projectName);
-	}
-
-	public void setProjectName(final String projectName) {
-		this.projectName = projectName;
-	}
-
+	/**
+	 * Log a warning message to the checkstyle summary view.
+	 *
+	 * @param message
+	 *            the message to display
+	 */
+	void logWarning(final String message);
 }

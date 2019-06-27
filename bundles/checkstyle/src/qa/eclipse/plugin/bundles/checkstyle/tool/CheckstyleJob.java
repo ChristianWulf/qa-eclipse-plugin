@@ -39,6 +39,7 @@ import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
 import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleMarkersUtils;
 import qa.eclipse.plugin.bundles.checkstyle.preference.CheckstylePreferences;
 import qa.eclipse.plugin.bundles.common.LoggerUtils;
+import qa.eclipse.plugin.bundles.common.icons.FileIconDecoratorUtils;
 
 /**
  * Workspace job for checkstyle analysis.
@@ -84,7 +85,7 @@ public final class CheckstyleJob extends WorkspaceJob {
 		}
 
 		// update explorer view so that the violation flags are not displayed anymore
-		FileIconDecorator.refresh();
+		FileIconDecoratorUtils.refresh(FileIconDecorator.ID);
 
 		final CheckstyleListener checkstyleListener = new CheckstyleListener(monitor, eclipseFileByFilePath);
 

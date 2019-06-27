@@ -102,16 +102,10 @@ public final class PmdMarkersUtils {
 		marker.setAttribute(PmdMarkersUtils.ATTR_KEY_RULESETNAME, "");
 	}
 
-	public static IMarker[] findAllInWorkspace() {
+	public static IMarker[] findAllMarkers() throws CoreException {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		final IMarker[] markers;
-		try {
-			markers = workspaceRoot.findMarkers(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER, true,
-					IResource.DEPTH_INFINITE);
-		} catch (final CoreException e) {
-			throw new IllegalStateException(e);
-		}
-		return markers;
+		return workspaceRoot.findMarkers(PmdMarkersUtils.ABSTRACT_PMD_VIOLATION_MARKER, true,
+				IResource.DEPTH_INFINITE);
 	}
 
 	public static void deleteMarkers(final IResource resource) throws CoreException {

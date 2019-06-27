@@ -32,6 +32,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import qa.eclipse.plugin.bundles.common.ILoggingFacility;
 import qa.eclipse.plugin.bundles.common.ImageRegistryKeyUtils;
 import qa.eclipse.plugin.pmd.builder.IncrementalViolationMarkerBuilder;
 import qa.eclipse.plugin.pmd.tool.PmdTool;
@@ -42,7 +43,7 @@ import qa.eclipse.plugin.pmd.ui.visitors.ResourceDeltaFileCollector;
  *
  * @author Christian wulf
  */
-public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeListener {
+public class PmdUIPlugin extends AbstractUIPlugin implements ILoggingFacility, IResourceChangeListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "qa.eclipse.plugin.bundles.pmd"; //$NON-NLS-1$
@@ -196,6 +197,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	 * @param throwable
 	 *            associated throwable
 	 */
+	@Override
 	public void logThrowable(final String message, final Throwable throwable) {
 		final IStatus status = new Status(IStatus.ERROR, PmdUIPlugin.PLUGIN_ID, message, throwable);
 		this.getLog().log(status);
@@ -207,6 +209,7 @@ public class PmdUIPlugin extends AbstractUIPlugin implements IResourceChangeList
 	 * @param message
 	 *            message
 	 */
+	@Override
 	public void logWarning(final String message) {
 		final IStatus status = new Status(IStatus.WARNING, PmdUIPlugin.PLUGIN_ID, message);
 		this.getLog().log(status);
