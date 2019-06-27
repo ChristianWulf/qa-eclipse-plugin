@@ -20,15 +20,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IDecoratorManager;
-import org.eclipse.ui.PlatformUI;
 
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
@@ -92,7 +86,7 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		int highestPriority = SeverityLevel.IGNORE.ordinal();
 		for (final IMarker marker : markers) {
 			final CheckstyleViolationMarker violationMarker = new CheckstyleViolationMarker(marker);
-			final int priority = violationMarker.getSeverityLevelIndex();
+			final int priority = violationMarker.getPriority();
 			// 3 is the highest priority, so compare with '<'
 			if (priority > highestPriority) {
 				highestPriority = priority;
@@ -112,23 +106,6 @@ public class FileIconDecorator extends LabelProvider implements ILightweightLabe
 		}
 
 		return imageDescriptor;
-	}
-
-	/**
-	 * Update decorations of file and package symbols.
-	 */
-	public static void refresh() {
-		final IDecoratorManager manager = PlatformUI.getWorkbench().getDecoratorManager();
-		final IBaseLabelProvider decorator = manager.getBaseLabelProvider(FileIconDecorator.ID);
-		if (decorator != null) { // decorator is enabled
-			final ILabelProviderListener listener = (ILabelProviderListener) manager;
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					listener.labelProviderChanged(new LabelProviderChangedEvent(decorator));
-				}
-			});
-		}
 	}
 
 }

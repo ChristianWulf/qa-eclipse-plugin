@@ -39,7 +39,7 @@ class CheckstylePriorityViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
 		final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
-		final int severityLevelIndex = marker.getSeverityLevelIndex();
+		final int severityLevelIndex = marker.getPriority();
 
 		final int transformedSeverityLevelIndex = SeverityLevel.ERROR.ordinal() - severityLevelIndex;
 

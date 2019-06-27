@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.common.view;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.common.markers.AbstractViolationMarker;
 
 /**
+ * Filter for viewer results based on the project name.
  *
- * @author Christian Wulf
+ * @param <T>
+ *            violation markers
  *
+ * @author Christian Wulf -- initial contribution
+ * @author Reiner Jung -- generalization
  */
-class CheckstyleProjectNameViewerFilter extends ViewerFilter {
+public class ProjectNameViewerFilter<T extends AbstractViolationMarker> extends ViewerFilter {
 
 	private String projectName;
 
-	public CheckstyleProjectNameViewerFilter() {
+	/** create a project name filter. */
+	public ProjectNameViewerFilter() {
 		super();
 	}
 
@@ -38,7 +43,8 @@ class CheckstyleProjectNameViewerFilter extends ViewerFilter {
 		if (this.projectName == null) {
 			return true;
 		} else {
-			final CheckstyleViolationMarker marker = (CheckstyleViolationMarker) element;
+			@SuppressWarnings("unchecked")
+			final T marker = (T) element;
 			return marker.getProjectName().equals(this.projectName);
 		}
 	}

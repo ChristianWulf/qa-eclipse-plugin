@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.common.view;
 
 import java.util.List;
 
@@ -32,52 +32,68 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 
-import qa.eclipse.plugin.bundles.checkstyle.icons.FileIconDecorator;
-import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.common.icons.FileIconDecoratorUtils;
+import qa.eclipse.plugin.bundles.common.markers.AbstractViolationMarker;
 
 /**
  *
- * @author Christian Wulf
+ * @param <T>
+ *            kind of marker
  *
+ * @author Christian Wulf
+ * @author Reiner Jung -- generalization
  */
-final class ClearViolationsViewJob extends WorkspaceJob {
+public final class ClearViolationsViewJob<T extends AbstractViolationMarker> extends WorkspaceJob {
 
-	private final List<CheckstyleViolationMarker> violationMarkers;
+	private final List<T> violationMarkers;
+	private final String decratorId;
 
-	private ClearViolationsViewJob(final List<CheckstyleViolationMarker> violationMarkers) {
+	private ClearViolationsViewJob(final List<T> violationMarkers, final String decoratorId) {
 		super("Clear violations view");
 		this.violationMarkers = violationMarkers;
+		this.decratorId = decoratorId;
 	}
 
 	@Override
 	public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException {
 		final SubMonitor subMonitor = SubMonitor.convert(monitor);
 
-		for (final CheckstyleViolationMarker checkstyleViolationMarker : this.violationMarkers) {
-			final IMarker marker = checkstyleViolationMarker.getMarker();
+		for (final T violationMarker : this.violationMarkers) {
+			final IMarker marker = violationMarker.getMarker();
 
 			subMonitor.split(1);
 			marker.delete();
 		}
 
-		FileIconDecorator.refresh();
+		FileIconDecoratorUtils.refresh(this.decratorId);
 
 		return Status.OK_STATUS;
 	}
 
-	public static void startAsyncAnalysis(final List<CheckstyleViolationMarker> violationMarkers) {
+	/**
+	 * Create and start an analysis job.
+	 *
+	 * @param violationMarkers
+	 *            collection of violation markers
+	 * @param decoratorId
+	 *            id of the file decorator
+	 *
+	 * @param <T>
+	 *            type of markers
+	 */
+	public static <T extends AbstractViolationMarker> void startAsyncAnalysis(final List<T> violationMarkers, final String decoratorId) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 
 		ISchedulingRule jobRule = null;
-		for (final CheckstyleViolationMarker violationMakrer : violationMarkers) {
-			final IMarker marker = violationMakrer.getMarker();
+		for (final T violationMarker : violationMarkers) {
+			final IMarker marker = violationMarker.getMarker();
 			final IResource resource = marker.getResource();
 			final ISchedulingRule fileRule = ruleFactory.markerRule(resource);
 			jobRule = MultiRule.combine(jobRule, fileRule);
 		}
 
-		final Job job = new ClearViolationsViewJob(violationMarkers);
+		final Job job = new ClearViolationsViewJob<>(violationMarkers, decoratorId);
 		job.setRule(jobRule);
 		job.setUser(true);
 		job.schedule();

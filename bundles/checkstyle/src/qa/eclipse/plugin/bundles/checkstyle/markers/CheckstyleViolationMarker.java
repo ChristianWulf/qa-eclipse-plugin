@@ -15,18 +15,16 @@
  ***************************************************************************/
 package qa.eclipse.plugin.bundles.checkstyle.markers;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IMarker;
+
+import qa.eclipse.plugin.bundles.common.markers.AbstractViolationMarker;
 
 /**
  *
  * @author Christian Wulf
  *
  */
-public class CheckstyleViolationMarker {
-
-	private final IMarker marker;
+public class CheckstyleViolationMarker extends AbstractViolationMarker {
 
 	/**
 	 *
@@ -34,95 +32,24 @@ public class CheckstyleViolationMarker {
 	 *            marker
 	 */
 	public CheckstyleViolationMarker(final IMarker marker) {
-		super();
-		this.marker = marker;
-	}
-
-	public IMarker getMarker() {
-		return this.marker;
+		super(marker);
 	}
 
 	/**
 	 * @return the priority (3 highest to 0 lowest) or -1 otherwise.
 	 */
-	public int getSeverityLevelIndex() {
+	@Override
+	public int getPriority() {
 		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_PRIORITY, -1);
 	}
 
-	/**
-	 * @return the line number or 0 otherwise.
-	 */
-	public int getLineNumer() {
-		return this.marker.getAttribute(IMarker.LINE_NUMBER, 0);
-	}
-
-	/**
-	 * @return the violation message or the empty string otherwise.
-	 */
-	public String getMessage() {
-		return this.marker.getAttribute(IMarker.MESSAGE, "");
-	}
-
-	public String getCheckName() {
+	@Override
+	public String getRuleName() {
 		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_NAME, "");
 	}
 
-	public String getCheckPackageName() {
+	@Override
+	public String getRuleSetName() {
 		return this.marker.getAttribute(CheckstyleMarkersUtils.ATTR_KEY_CHECK_PACKAGE, "");
 	}
-
-	public String getProjectName() {
-		return this.marker.getResource().getProject().getName();
-	}
-
-	/**
-	 * Get the string representing the directory of the file which this is a marker from.
-	 *
-	 * @return directory name
-	 */
-	public String getDirectoryPath() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
-		return file.getParent();
-	}
-
-	/**
-	 * Get the string representing the file which is associated to this marker.
-	 *
-	 * @return file name
-	 */
-	public String getFileName() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
-		return file.getName();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + (this.marker == null ? 0 : this.marker.hashCode()); // NOPMD
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		final CheckstyleViolationMarker other = (CheckstyleViolationMarker) obj;
-		if (this.marker == null) {
-			if (other.marker != null) {
-				return false;
-			}
-		} else if (!this.marker.equals(other.marker)) {
-			return false;
-		}
-		return true;
-	}
-
 }

@@ -15,108 +15,42 @@
  ***************************************************************************/
 package qa.eclipse.plugin.pmd.markers;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
+
+import qa.eclipse.plugin.bundles.common.markers.AbstractViolationMarker;
 
 /**
  *
  * @author Christian Wulf
  *
  */
-public class PmdViolationMarker {
-
-	private final IMarker marker;
-
-	public PmdViolationMarker(final IMarker marker) {
-		this.marker = marker;
-	}
+public class PmdViolationMarker extends AbstractViolationMarker {
 
 	/**
-	 * @return the line number or 0 otherwise.
+	 * Create a pmd violation marker.
+	 *
+	 * @param marker
+	 *            marker
 	 */
-	public int getLineNumer() {
-		return this.marker.getAttribute(IMarker.LINE_NUMBER, 0);
+	public PmdViolationMarker(final IMarker marker) {
+		super(marker);
 	}
 
 	/**
 	 * @return the priority (1 highest to 5 lowest) or 0 otherwise.
 	 */
+	@Override
 	public int getPriority() {
 		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_PRIORITY, 0);
 	}
 
-	/**
-	 * @return the violation message or the empty string otherwise.
-	 */
-	public String getMessage() {
-		return this.marker.getAttribute(IMarker.MESSAGE, "");
-	}
-
-	public String getProjectName() {
-		return this.marker.getResource().getProject().getName();
-	}
-
-	public String getDirectoryPath() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
-		return file.getParent();
-	}
-
-	public String getFileName() {
-		final File file = this.marker.getResource().getRawLocation().toFile();
-		return file.getName();
-	}
-
+	@Override
 	public String getRuleName() {
 		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_RULENAME, "unknown");
 	}
 
+	@Override
 	public String getRuleSetName() {
 		return this.marker.getAttribute(PmdMarkersUtils.ATTR_KEY_RULESETNAME, "unknown");
 	}
-
-	public IMarker getMarker() {
-		return this.marker;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Comparable<Object> getAttribute(final String markerAttributeKey) {
-		try {
-			return (Comparable<Object>) this.marker.getAttribute(markerAttributeKey);
-		} catch (final CoreException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((this.marker == null) ? 0 : this.marker.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		final PmdViolationMarker other = (PmdViolationMarker) obj;
-		if (this.marker == null) {
-			if (other.marker != null) {
-				return false;
-			}
-		} else if (!this.marker.equals(other.marker)) {
-			return false;
-		}
-		return true;
-	}
-
 }

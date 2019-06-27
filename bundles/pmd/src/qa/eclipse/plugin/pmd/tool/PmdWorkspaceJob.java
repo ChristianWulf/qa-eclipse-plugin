@@ -46,6 +46,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 
 import qa.eclipse.plugin.bundles.common.ProjectUtils;
+import qa.eclipse.plugin.bundles.common.icons.FileIconDecoratorUtils;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
 import qa.eclipse.plugin.pmd.preference.PmdPreferences;
@@ -94,7 +95,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 		}
 
 		// update explorer view so that the violation flag are not displayed anymore
-		FileIconDecorator.refresh();
+		FileIconDecoratorUtils.refresh(FileIconDecorator.ID);
 
 		final String taskName = String.format("Analyzing %d file(s)...", this.eclipseFiles.size());
 		final SubMonitor subMonitor = SubMonitor.convert(monitor, taskName, this.eclipseFiles.size());
@@ -165,7 +166,7 @@ class PmdWorkspaceJob extends WorkspaceJob {
 			// }
 
 			// update explorer view so that the new violation flags are displayed
-			FileIconDecorator.refresh();
+			FileIconDecoratorUtils.refresh(FileIconDecorator.ID);
 		}
 
 		report.errors().forEachRemaining(error -> {

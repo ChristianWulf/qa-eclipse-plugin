@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 
+import qa.eclipse.plugin.bundles.common.icons.FileIconDecoratorUtils;
 import qa.eclipse.plugin.pmd.PmdUIPlugin;
 import qa.eclipse.plugin.pmd.icons.FileIconDecorator;
 import qa.eclipse.plugin.pmd.markers.PmdMarkersUtils;
@@ -53,7 +54,7 @@ final class PmdRemoveMarkersJob extends Job {
 			PmdUIPlugin.getDefault().logThrowable(message, e);
 		}
 
-		FileIconDecorator.refresh();
+		FileIconDecoratorUtils.refresh(FileIconDecorator.ID);
 
 		return Status.OK_STATUS;
 	}

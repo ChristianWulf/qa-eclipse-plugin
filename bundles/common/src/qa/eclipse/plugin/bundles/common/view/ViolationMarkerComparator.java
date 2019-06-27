@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package qa.eclipse.plugin.bundles.checkstyle.view;
+package qa.eclipse.plugin.bundles.common.view;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -21,24 +21,33 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 
-import qa.eclipse.plugin.bundles.checkstyle.CheckstyleUIPlugin;
-import qa.eclipse.plugin.bundles.checkstyle.markers.CheckstyleViolationMarker;
+import qa.eclipse.plugin.bundles.common.ILoggingFacility;
+import qa.eclipse.plugin.bundles.common.markers.AbstractViolationMarker;
 
 /**
  *
  * @author Christian Wulf
  *
  */
-class CheckstyleViolationMarkerComparator extends ViewerComparator {
+public class ViolationMarkerComparator extends ViewerComparator {
 
-	private ESortProperty selectedSortProperty;
+	private ESortProperty selectedSortProperty = ESortProperty.SORT_PROP_RULE_NAME;
+	private final ILoggingFacility logger;
 
-	public CheckstyleViolationMarkerComparator() {
+	/**
+	 * Create a violation marker comparator.
+	 *
+	 * @param logger
+	 *            logger for runtime errors provided by the UI plugin
+	 */
+	public ViolationMarkerComparator(final ILoggingFacility logger) {
 		super();
+		this.logger = logger;
 	}
 
 	@Override
-	public int compare(final Viewer viewer, final Object object1, final Object object2) {
+	public int compare(final Viewer viewer, final Object object1, final Object object2) { // NOPMD
+		// pmd: complexity cannot be reduced; also we do not want to use the default compare operation
 		final TableViewer tableViewer = (TableViewer) viewer;
 		final Table table = tableViewer.getTable();
 		final int sortDirection = table.getSortDirection();
@@ -46,16 +55,16 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			return 0;
 		}
 
-		final CheckstyleViolationMarker marker1 = (CheckstyleViolationMarker) object1;
-		final CheckstyleViolationMarker marker2 = (CheckstyleViolationMarker) object2;
+		final AbstractViolationMarker marker1 = (AbstractViolationMarker) object1;
+		final AbstractViolationMarker marker2 = (AbstractViolationMarker) object2;
 
 		int compareResult;
 		switch (this.selectedSortProperty) {
 		case SORT_PROP_PRIORITY:
-			compareResult = -1 * Integer.compare(marker1.getSeverityLevelIndex(), marker2.getSeverityLevelIndex());
+			compareResult = -1 * Integer.compare(marker1.getPriority(), marker2.getPriority());
 			break;
-		case SORT_PROP_CHECK_NAME:
-			compareResult = marker1.getCheckName().compareToIgnoreCase(marker2.getCheckName());
+		case SORT_PROP_RULE_NAME:
+			compareResult = marker1.getRuleName().compareToIgnoreCase(marker2.getRuleName());
 			break;
 		case SORT_PROP_LINENUMBER:
 			compareResult = Integer.compare(marker1.getLineNumer(), marker2.getLineNumer());
@@ -63,10 +72,10 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 		case SORT_PROP_PROJECTNAME:
 			compareResult = marker1.getProjectName().compareToIgnoreCase(marker2.getProjectName());
 			break;
-		case SORT_PROP_CHECK_PACKAGE_NAME:
-			compareResult = marker1.getCheckPackageName().compareToIgnoreCase(marker2.getCheckPackageName());
+		case SORT_PROP_RULESET_NAME:
+			compareResult = marker1.getRuleSetName().compareToIgnoreCase(marker2.getRuleSetName());
 			break;
-		case SORT_PROP_VIOLATION_MSG:
+		case SORT_PROP_MESSAGE:
 			compareResult = marker1.getMessage().compareToIgnoreCase(marker2.getMessage());
 			break;
 		case SORT_PROP_PATH:
@@ -79,7 +88,7 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 			compareResult = 0;
 			final String messageFormatString = "Cannot sort table. Don't know selected sort property '%d'";
 			final String message = String.format(messageFormatString, this.selectedSortProperty);
-			CheckstyleUIPlugin.getDefault().logWarning(message);
+			this.logger.logWarning(message);
 			break;
 		}
 
@@ -95,5 +104,4 @@ class CheckstyleViolationMarkerComparator extends ViewerComparator {
 	public void setSelectedSortProperty(final ESortProperty selectedSortProperty) {
 		this.selectedSortProperty = selectedSortProperty;
 	}
-
 }
