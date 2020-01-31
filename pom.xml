@@ -18,7 +18,7 @@
 
 		<eclipseRepoUrl>http://download.eclipse.org/releases/oxygen</eclipseRepoUrl>
 		<pmdVersion>6.13.0</pmdVersion>
-		<checkstyleVersion>8.18</checkstyleVersion>
+		<checkstyleVersion>8.29</checkstyleVersion>
 		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
 		<!-- maven.deploy.skip>true</maven.deploy.skip -->
 	</properties>
