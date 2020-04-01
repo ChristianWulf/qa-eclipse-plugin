@@ -14,11 +14,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<checkstyle.config.location>cs-conf.xml</checkstyle.config.location>
-		<tychoVersion>1.3.0</tychoVersion>
+		<tychoVersion>1.6.0</tychoVersion>
 
-		<eclipseRepoUrl>http://download.eclipse.org/releases/oxygen</eclipseRepoUrl>
+		<eclipseRepoUrl>http://download.eclipse.org/releases/2020-03</eclipseRepoUrl>
 		<pmdVersion>6.13.0</pmdVersion>
-		<checkstyleVersion>8.18</checkstyleVersion>
+		<checkstyleVersion>8.29</checkstyleVersion>
 		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
 		<!-- maven.deploy.skip>true</maven.deploy.skip -->
 	</properties>
@@ -26,7 +26,7 @@
 	<modules>
 		<module>bundles</module>
 		<module>features</module>
-		<module>releng</module>
+		<module>qa.eclipse.plugin.updatesite</module>
 	</modules>
 
 	<repositories>
@@ -102,13 +102,7 @@
 				<version>${tychoVersion}</version>
 				<configuration>
 					<pomDependencies>consider</pomDependencies>
-					<executionEnvironment>JavaSE-1.8</executionEnvironment>
 					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
@@ -118,11 +112,6 @@
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
 						</environment>
 						<environment>
 							<os>win32</os>
@@ -140,7 +129,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.1.0</version>
 					<dependencies>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
