@@ -90,7 +90,7 @@
 							<serverId>repo</serverId>
 							<fromDir>${buildRepoPath}</fromDir>
 							<includes>**</includes>
-							<url>${updateSiteUrl}</url>
+							<url>${update-site-url}</url>
 							<toDir>snapshot</toDir>
 						</configuration>
 					</execution>
