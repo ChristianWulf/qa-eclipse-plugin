@@ -1,5 +1,10 @@
 pipeline {
-	agent { label 'build-node4' }
+	agent {
+        docker {
+          image 'maven:3.8.1-openjdk-11'
+          alwaysPull true
+        }
+      }
 
 	environment {
 		KEYSTORE = credentials('kdt-jenkins-key')
