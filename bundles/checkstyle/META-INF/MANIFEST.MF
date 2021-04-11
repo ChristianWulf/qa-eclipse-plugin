@@ -18,5 +18,5 @@ Require-Bundle: org.eclipse.ui,
  qa.eclipse.plugin.bundles.common;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/checkstyle-8.8-all.jar,
+Bundle-ClassPath: lib/checkstyle-8.41.1-all.jar,
  .
