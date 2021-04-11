@@ -1,5 +1,5 @@
 pipeline {
-	agent { label 'build-node8' }
+	agent { label 'build-node4' }
 
 	environment {
 		KEYSTORE = credentials('kdt-jenkins-key')
