@@ -1,5 +1,10 @@
 pipeline {
-	agent any
+	agent {
+        docker {
+          image 'maven:3.6.3-openjdk-14'
+          alwaysPull true
+        }
+      }
 
 	environment {
 		KEYSTORE = credentials('kdt-jenkins-key')
@@ -9,17 +14,17 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
-				sh 'mvn --batch-mode compile'
+				sh 'mvn --batch-mode -Dmaven.repo.local=maven compile'
 			}
 		}
 		stage('Test') {
 			steps {
-				sh 'mvn --batch-mode test'
+				sh 'mvn --batch-mode -Dmaven.repo.local=maven test'
 			}
 		}
 		stage('Check') {
 			steps {
-				sh 'mvn --batch-mode package checkstyle:checkstyle pmd:pmd -Dworkspace=' + env.WORKSPACE // spotbugs:spotbugs
+				sh 'mvn --batch-mode -Dmaven.repo.local=maven package checkstyle:checkstyle pmd:pmd -Dworkspace=' + env.WORKSPACE // spotbugs:spotbugs
 			}
 			post {
 				always {
@@ -32,7 +37,7 @@ pipeline {
 		}
 		stage('Package') {
 			steps {
-				sh 'mvn --batch-mode package'
+				sh 'mvn --batch-mode -Dmaven.repo.local=maven package'
 			}
 		}
 		stage ('Update Repository') {
@@ -40,7 +45,7 @@ pipeline {
 				branch 'master'
 			}
 			steps {
-				sh 'mvn --settings settings.xml --batch-mode install -Dkeystore=${KEYSTORE} -Dupdate-site-url=${UPDATE_SITE_URL}'
+				sh 'mvn -Dmaven.repo.local=maven --settings settings.xml --batch-mode install -Dkeystore=${KEYSTORE} -Dupdate-site-url=${UPDATE_SITE_URL}'
 			}
 		}
 	}
