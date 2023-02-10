@@ -35,50 +35,48 @@ import org.eclipse.core.runtime.CoreException;
  */
 class ResourceCollector implements IResourceVisitor {
 
-	private static final Collection<String> ACCEPTED_FILE_EXTENSIONS = Arrays.asList(new String[] {
-		"java", "jar", "class",
-	});
+    private static final Collection<String> ACCEPTED_FILE_EXTENSIONS = Arrays.asList(new String[] { "java" });
 
-	private final Map<IProject, List<IFile>> projectResources = new ConcurrentHashMap<>();
+    private final Map<IProject, List<IFile>> projectResources = new ConcurrentHashMap<>();
 
-	/**
-	 * Default constructor.
-	 */
-	public ResourceCollector() {
-		// nothing to be done here
-	}
+    /**
+     * Default constructor.
+     */
+    public ResourceCollector() {
+        // nothing to be done here
+    }
 
-	@Override
-	public boolean visit(final IResource resource) throws CoreException {
-		final int resourceType = resource.getType();
-		switch (resourceType) {
-		case IResource.FILE: {
-			final IProject project = resource.getProject();
-			List<IFile> files = this.projectResources.get(project);
-			if (files == null) {
-				files = new ArrayList<>();
-				this.projectResources.put(project, files);
-			}
+    @Override
+    public boolean visit(final IResource resource) throws CoreException {
+        final int resourceType = resource.getType();
+        switch (resourceType) {
+        case IResource.FILE: {
+            final IProject project = resource.getProject();
+            List<IFile> files = this.projectResources.get(project);
+            if (files == null) {
+                files = new ArrayList<>();
+                this.projectResources.put(project, files);
+            }
 
-			final IFile file = (IFile) resource;
-			if (ResourceCollector.ACCEPTED_FILE_EXTENSIONS.contains(file.getFileExtension())) {
-				files.add(file);
-			}
-			return false;
-		}
-		case IResource.FOLDER:
-			return true;
-		case IResource.PROJECT:
-			return true;
-		case IResource.ROOT:
-			return true;
-		default:
-			return false;
-		}
-	}
+            final IFile file = (IFile) resource;
+            if (ResourceCollector.ACCEPTED_FILE_EXTENSIONS.contains(file.getFileExtension())) {
+                files.add(file);
+            }
+            return false;
+        }
+        case IResource.FOLDER:
+            return true;
+        case IResource.PROJECT:
+            return true;
+        case IResource.ROOT:
+            return true;
+        default:
+            return false;
+        }
+    }
 
-	public Map<IProject, List<IFile>> getProjectResources() {
-		return this.projectResources;
-	}
+    public Map<IProject, List<IFile>> getProjectResources() {
+        return this.projectResources;
+    }
 
 }
