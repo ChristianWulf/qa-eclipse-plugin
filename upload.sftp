@@ -1,0 +1,14 @@
+lcd releng/qa.eclipse.plugin.updatesite/target/repository
+rm artifacts.jar
+rm artifacts.xml.xz
+rm content.jar
+rm content.xml.xz   
+rm features/*
+rm p2.index
+rm plugins/*
+rmdir features
+rmdir plugins
+mput -r *
+quit
+           
+
