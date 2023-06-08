@@ -66,10 +66,8 @@ public class CheckstyleTool {
 	/**
 	 * You need to catch potential runtime exceptions if you call this method.
 	 *
-	 * @param eclipseFiles
-	 *            collection of files
-	 * @param checkstyleListener
-	 *            listener for checkstyle
+	 * @param eclipseFiles collection of files
+	 * @param checkstyleListener listener for checkstyle
 	 */
 	public void startAsyncAnalysis(final List<IFile> eclipseFiles, final CheckstyleListener checkstyleListener) {
 		final IFile file = eclipseFiles.get(0);
@@ -136,8 +134,12 @@ public class CheckstyleTool {
 		final List<File> files = new ArrayList<>();
 
 		for (final IFile eclipseFile : eclipseFiles) {
-			final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
-			files.add(sourceCodeFile);
+			if ("java".equals(eclipseFile.getFileExtension())) {
+				final File sourceCodeFile = eclipseFile.getLocation().toFile().getAbsoluteFile();
+				files.add(sourceCodeFile);
+			} else {
+				System.err.println(eclipseFile.getName());
+			}
 		}
 
 		try {
@@ -147,7 +149,8 @@ public class CheckstyleTool {
 		}
 	}
 
-	private void configureChecker(final Configuration configuration, final CheckstyleListener checkstyleListener, final URLClassLoader moduleClassLoader) {
+	private void configureChecker(final Configuration configuration, final CheckstyleListener checkstyleListener,
+			final URLClassLoader moduleClassLoader) {
 		this.checker.setModuleClassLoader(moduleClassLoader);
 
 		try {

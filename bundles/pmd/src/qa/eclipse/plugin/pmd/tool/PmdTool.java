@@ -55,8 +55,10 @@ public class PmdTool {
 
 		ISchedulingRule jobRule = null;
 		for (final IFile eclipseFile : eclipseFiles) {
-			final ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
-			jobRule = MultiRule.combine(jobRule, fileRule);
+			if ("java".equals(eclipseFile.getFileExtension())) {
+				final ISchedulingRule fileRule = ruleFactory.markerRule(eclipseFile);
+				jobRule = MultiRule.combine(jobRule, fileRule);
+			}
 		}
 
 		final Job job = new PmdWorkspaceJob("Analysis by PMD", eclipseFiles);
