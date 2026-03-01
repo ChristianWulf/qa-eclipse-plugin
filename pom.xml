@@ -17,7 +17,7 @@
 		<tychoVersion>2.2.0</tychoVersion>
 
 		<eclipseRepoUrl>http://download.eclipse.org/releases/2020-03</eclipseRepoUrl>
-		<pmdVersion>6.13.0</pmdVersion>
+		<pmdVersion>7.22.0</pmdVersion>
 		<checkstyleVersion>8.29</checkstyleVersion>
 		<!-- only the updatesite should be deployed when invoking "mvn deploy" -->
 		<!-- maven.deploy.skip>true</maven.deploy.skip -->
